@@ -71,6 +71,9 @@ matrix:
   allow_failures:
     - php: nightly
 
+before_install:
+  - mysql_upgrade -u root
+
 install:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
