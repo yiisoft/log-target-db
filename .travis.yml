@@ -77,7 +77,6 @@ install:
       # disable xdebug for performance reasons when code coverage is not needed
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
-
   # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
@@ -94,7 +93,6 @@ before_script:
       psql --version
       mysql --version
     fi
-
   # initialize databases
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
@@ -104,13 +102,11 @@ before_script:
       mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
       psql -U postgres -c 'CREATE DATABASE yiitest;';
     fi
-
   # enable code coverage
   - |
     if [ $TASK_TESTS_COVERAGE == 1 ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
-
   # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
   # For Yii2 tests, messages will be enabled by tests/bootstrap.php
   - |
@@ -119,15 +115,12 @@ before_script:
       echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
       phpenv config-add /tmp/php-config.ini;
     fi
-
-
 script:
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group wincache,xcache
     fi
-
 after_script:
   - |
     if [ $TASK_TESTS_COVERAGE == 1 ]; then

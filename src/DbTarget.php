@@ -24,8 +24,6 @@ use yii\helpers\VarDumper;
  * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
  *
  * You may change the name of the table used to store the data by setting [[logTable]].
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
  */
 class DbTarget extends Target
 {
