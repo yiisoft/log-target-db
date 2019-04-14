@@ -54,6 +54,7 @@ addons:
       - mysql-5.7-trusty
     packages:
       - mysql-server
+      - mysql-client
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
@@ -72,7 +73,9 @@ matrix:
     - php: nightly
 
 before_install:
-  - mysql_upgrade -u root
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('new_password') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - sudo mysql_upgrade -u root -pnew_password
+  - sudo service mysql restart
 
 install:
   - |
