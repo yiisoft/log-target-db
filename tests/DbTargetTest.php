@@ -78,13 +78,13 @@ abstract class DbTargetTest extends TestCase
             static::markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
 
-        $this->runConsoleAction('migrate/up', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
+        $this->runConsoleAction('migrate/up', ['migrationPath' => '@Yii/Log/migrations/', 'interactive' => false]);
     }
 
     public function tearDown()
     {
         self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
-        $this->runConsoleAction('migrate/down', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
+        $this->runConsoleAction('migrate/down', ['migrationPath' => '@Yii/Log/migrations/', 'interactive' => false]);
         if (static::$db) {
             static::$db->close();
         }
