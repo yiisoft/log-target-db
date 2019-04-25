@@ -5,15 +5,15 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log\Tests;
+namespace Yiisoft\Log\Tests;
 
 use Psr\Log\LogLevel;
 use yii\console\ExitCode;
 use yii\console\tests\unit\controllers\EchoMigrateController;
 use yii\db\Connection;
 use yii\db\Query;
-use Yii\Log\DbTarget;
-use Yii\Log\Logger;
+use Yiisoft\Log\DbTarget;
+use Yiisoft\Log\Logger;
 use yii\tests\TestCase;
 
 /**

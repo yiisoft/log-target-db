@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log\Tests;
+namespace Yiisoft\Log\Tests;
 
 /**
  * @group db

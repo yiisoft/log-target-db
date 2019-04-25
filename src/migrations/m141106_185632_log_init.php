@@ -8,7 +8,7 @@
 use yii\db\Migration;
 use yii\exceptions\InvalidConfigException;
 use yii\helpers\Yii;
-use Yii\Log\DbTarget;
+use Yiisoft\Log\DbTarget;
 
 /**
  * Initializes log table.
@@ -34,8 +34,8 @@ class m141106_185632_log_init extends Migration
     {
         if ($this->dbTargets === []) {
             $logger = Yii::getApp()->getLogger();
-            if (!$logger instanceof \Yii\Log\Logger) {
-                throw new InvalidConfigException('You should configure "logger" to be instance of "\Yii\Log\Logger" before executing this migration.');
+            if (!$logger instanceof \Yiisoft\Log\Logger) {
+                throw new InvalidConfigException('You should configure "logger" to be instance of "\Yiisoft\Log\Logger" before executing this migration.');
             }
 
             $usedTargets = [];

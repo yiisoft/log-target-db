@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log;
+namespace Yiisoft\Log;
 
 use yii\db\ConnectionInterface;
 use yii\db\Exception;
