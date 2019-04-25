@@ -42,18 +42,12 @@ abstract class DbTargetTest extends TestCase
                 'migrate' => EchoMigrateController::class,
             ],
         ], null, [
-            'logger' => [
-                '__class' => Logger::class,
-                '__construct()' => [
-                    'targets' => [
-                        'db' => [
-                            '__class' => DbTarget::class,
-                            'levels' => [LogLevel::WARNING],
-                            'logTable' => self::$logTable,
-                        ],
-                    ],
-                ],
-            ],
+            'logger' => function ($container) {
+                $db = new DbTarget($container->get('db'));
+                $db->levels = [LogLevel::WARNING];
+                $db->logTable = '{{%log}}';
+                return new Logger(['db' => $db]);
+            },
             'db' => static::getConnection(),
         ]);
 
@@ -78,13 +72,13 @@ abstract class DbTargetTest extends TestCase
             static::markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
 
-        $this->runConsoleAction('migrate/up', ['migrationPath' => '@Yii/Log/migrations/', 'interactive' => false]);
+        $this->runConsoleAction('migrate/up', ['migrationPath' => '@Yiisoft/Log/migrations/', 'interactive' => false]);
     }
 
     public function tearDown()
     {
         self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
-        $this->runConsoleAction('migrate/down', ['migrationPath' => '@Yii/Log/migrations/', 'interactive' => false]);
+        $this->runConsoleAction('migrate/down', ['migrationPath' => '@Yiisoft/Log/migrations/', 'interactive' => false]);
         if (static::$db) {
             static::$db->close();
         }
@@ -92,10 +86,10 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * @throws \yii\exceptions\InvalidArgumentException
+     * @return \yii\db\Connection
      * @throws \yii\db\Exception
      * @throws \yii\exceptions\InvalidConfigException
-     * @return \yii\db\Connection
+     * @throws \yii\exceptions\InvalidArgumentException
      */
     public static function getConnection()
     {
