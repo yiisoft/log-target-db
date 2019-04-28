@@ -9,7 +9,6 @@ namespace Yiisoft\Log\Tests;
 
 use Psr\Log\LogLevel;
 use Yiisoft\Yii\Console\ExitCode;
-use Yiisoft\Yii\Console\Tests\Controllers\EchoMigrateController;
 use yii\db\Connection;
 use yii\db\Query;
 use Yiisoft\Log\DbTarget;
