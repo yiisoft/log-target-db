@@ -28,7 +28,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "yiisoft/log": "^3.0@dev"
+        "yiisoft/log": "^3.0@dev",
+        "yiisoft/db": "^3.0@dev"
     },
     "require-dev": {
         "yiisoft/yii-core": "^3.0@dev",
@@ -36,7 +37,6 @@
         "yiisoft/cache": "^3.0@dev",
         "yiisoft/yii-web": "^3.0@dev",
         "yiisoft/yii-console": "^3.0@dev",
-        "yiisoft/db": "^3.0@dev",
         "yiisoft/db-mysql": "^3.0@dev",
         "yiisoft/db-pgsql": "^3.0@dev",
         "phpunit/phpunit": "^7.3",
