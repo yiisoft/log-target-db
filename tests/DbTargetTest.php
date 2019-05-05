@@ -9,8 +9,8 @@ namespace Yiisoft\Log\Tests;
 
 use Psr\Log\LogLevel;
 use Yiisoft\Yii\Console\ExitCode;
-use yii\db\Connection;
-use yii\db\Query;
+use Yiisoft\Db\Connection;
+use Yiisoft\Db\Query;
 use Yiisoft\Log\DbTarget;
 use Yiisoft\Log\Logger;
 use yii\tests\TestCase;
@@ -85,8 +85,8 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * @return \yii\db\Connection
-     * @throws \yii\db\Exception
+     * @return \Yiisoft\Db\Connection
+     * @throws \Yiisoft\Db\Exception
      * @throws \yii\exceptions\InvalidConfigException
      * @throws \yii\exceptions\InvalidArgumentException
      */

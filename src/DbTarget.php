@@ -7,8 +7,8 @@
 
 namespace Yiisoft\Log;
 
-use yii\db\ConnectionInterface;
-use yii\db\Exception;
+use Yiisoft\Db\ConnectionInterface;
+use Yiisoft\Db\Exception;
 use yii\exceptions\InvalidConfigException;
 use yii\helpers\VarDumper;
 
