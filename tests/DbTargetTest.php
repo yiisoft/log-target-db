@@ -22,7 +22,7 @@ use yii\tests\TestCase;
 abstract class DbTargetTest extends TestCase
 {
     protected static $database;
-    protected static $driverName = 'mysql';
+    protected static $driverName;
 
     /**
      * @var Connection
@@ -42,9 +42,9 @@ abstract class DbTargetTest extends TestCase
             ],
         ], null, [
             'logger' => function ($container) {
-                $db = new DbTarget($container->get('db'));
-                $db->levels = [LogLevel::WARNING];
-                $db->logTable = '{{%log}}';
+                $db = new DbTarget($container->get('db'), '{{%log}}');
+                $db->setLevels([LogLevel::WARNING]);
+
                 return new Logger(['db' => $db]);
             },
             'db' => static::getConnection(),
@@ -92,7 +92,7 @@ abstract class DbTargetTest extends TestCase
      */
     public static function getConnection()
     {
-        if (static::$db == null) {
+        if (static::$db === null) {
             $db = new Connection();
             $db->dsn = static::$database['dsn'];
             if (isset(static::$database['username'])) {
@@ -117,6 +117,7 @@ abstract class DbTargetTest extends TestCase
      */
     public function testTimestamp()
     {
+        /** @var Logger $logger */
         $logger = $this->app->getLogger();
 
         $time = 1424865393.0105;
@@ -143,6 +144,7 @@ abstract class DbTargetTest extends TestCase
     public function testTransactionRollBack()
     {
         $db = self::getConnection();
+        /** @var Logger $logger */
         $logger = $this->app->getLogger();
 
         $tx = $db->beginTransaction();
@@ -163,7 +165,7 @@ abstract class DbTargetTest extends TestCase
         // current db connection should still have a transaction
         $this->assertNotNull($db->transaction);
         // log db connection should not have transaction
-        $this->assertNull($this->app->getLogger()->getTargets()['db']->db->transaction);
+        $this->assertNull($this->app->getLogger()->getTargets()['db']->getDb()->transaction);
 
         $tx->rollBack();
 

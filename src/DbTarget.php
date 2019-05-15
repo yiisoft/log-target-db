@@ -7,10 +7,10 @@
 
 namespace Yiisoft\Log;
 
+use Yiisoft\Db\Command;
 use Yiisoft\Db\ConnectionInterface;
 use Yiisoft\Db\Exception;
-use yii\exceptions\InvalidConfigException;
-use yii\helpers\VarDumper;
+use Yiisoft\VarDumper\VarDumper;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -33,29 +33,29 @@ class DbTarget extends Target
      * with a DB connection object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
-    public $db;
+    private $db;
     /**
      * @var string name of the DB table to store cache content. Defaults to "log".
      */
-    public $logTable = '{{%log}}';
-
+    private $logTable;
 
     /**
      * Initializes the DbTarget component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
      * @param ConnectionInterface $db
-     * @throws InvalidConfigException if [[db]] is invalid.
+     * @param string $logTable
      */
-    public function __construct(ConnectionInterface $db)
+    public function __construct(ConnectionInterface $db, $logTable = '{{%log}}')
     {
         $this->db = $db;
+        $this->logTable = $logTable;
     }
 
     /**
      * Stores log messages to DB.
-
      * @throws Exception
      * @throws LogRuntimeException
+     * @throws \Throwable
      */
     public function export(): void
     {
@@ -68,8 +68,10 @@ class DbTarget extends Target
         $tableName = $this->db->quoteTableName($this->logTable);
         $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
                 VALUES (:level, :category, :log_time, :prefix, :message)";
+
+        /** @var Command $command */
         $command = $this->db->createCommand($sql);
-        foreach ($this->messages as $message) {
+        foreach ($this->getMessages() as $message) {
             [$level, $text, $context] = $message;
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
@@ -88,7 +90,23 @@ class DbTarget extends Target
                 ])->execute() > 0) {
                 continue;
             }
-            throw new LogRuntimeException('Unable to export log through database!');
+            throw new LogRuntimeException('Unable to export log through database.');
         }
+    }
+
+    /**
+     * @return ConnectionInterface
+     */
+    public function getDb(): ConnectionInterface
+    {
+        return $this->db;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogTable(): string
+    {
+        return $this->logTable;
     }
 }

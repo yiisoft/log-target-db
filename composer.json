@@ -28,8 +28,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "psr/log": "^1.1",
+        "yiisoft/db": "^3.0@dev",
         "yiisoft/log": "^3.0@dev",
-        "yiisoft/db": "^3.0@dev"
+        "yiisoft/var-dumper": "^3.0@dev"
     },
     "require-dev": {
         "yiisoft/yii-core": "^3.0@dev",

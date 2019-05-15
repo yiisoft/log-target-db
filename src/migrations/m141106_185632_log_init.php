@@ -26,6 +26,13 @@ class m141106_185632_log_init extends Migration
      */
     private $dbTargets = [];
 
+    private $logger;
+
+    public function __construct(\Psr\Log\LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * @throws InvalidConfigException
      * @return DbTarget[]
@@ -33,17 +40,17 @@ class m141106_185632_log_init extends Migration
     protected function getDbTargets()
     {
         if ($this->dbTargets === []) {
-            $logger = Yii::getApp()->getLogger();
-            if (!$logger instanceof \Yiisoft\Log\Logger) {
+
+            if (!$this->logger instanceof \Yiisoft\Log\Logger) {
                 throw new InvalidConfigException('You should configure "logger" to be instance of "\Yiisoft\Log\Logger" before executing this migration.');
             }
 
             $usedTargets = [];
-            foreach ($logger->getTargets() as $target) {
+            foreach ($this->logger->getTargets() as $target) {
                 if ($target instanceof DbTarget) {
                     $currentTarget = [
-                        $target->db,
-                        $target->logTable,
+                        $target->getDb(),
+                        $target->getLogTable(),
                     ];
                     if (!in_array($currentTarget, $usedTargets, true)) {
                         // do not create same table twice
@@ -64,7 +71,7 @@ class m141106_185632_log_init extends Migration
     public function up()
     {
         foreach ($this->getDbTargets() as $target) {
-            $this->db = $target->db;
+            $this->db = $target->getDb();
 
             $tableOptions = null;
             if ($this->db->driverName === 'mysql') {
@@ -72,7 +79,7 @@ class m141106_185632_log_init extends Migration
                 $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
             }
 
-            $this->createTable($target->logTable, [
+            $this->createTable($target->getLogTable(), [
                 'id' => $this->bigPrimaryKey(),
                 'level' => $this->string(),
                 'category' => $this->string(),
@@ -81,17 +88,17 @@ class m141106_185632_log_init extends Migration
                 'message' => $this->text(),
             ], $tableOptions);
 
-            $this->createIndex('idx_log_level', $target->logTable, 'level');
-            $this->createIndex('idx_log_category', $target->logTable, 'category');
+            $this->createIndex('idx_log_level', $target->getLogTable(), 'level');
+            $this->createIndex('idx_log_category', $target->getLogTable(), 'category');
         }
     }
 
     public function down()
     {
         foreach ($this->getDbTargets() as $target) {
-            $this->db = $target->db;
+            $this->db = $target->getDb();
 
-            $this->dropTable($target->logTable);
+            $this->dropTable($target->getLogTable());
         }
     }
 }
