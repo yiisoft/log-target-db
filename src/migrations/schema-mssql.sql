@@ -4,11 +4,6 @@
  * The indexes declared are not required. They are mainly used to improve the performance
  * of some queries about message levels and categories. Depending on your actual needs, you may
  * want to create additional indexes (e.g. index on `log_time`).
- *
- * @author Alexander Makarov <sam@rmcreative.ru>
- * @link http://www.yiiframework.com/
- * @copyright 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
  */
 
 if object_id('[log]', 'U') is not null

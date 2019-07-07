@@ -1,10 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
 use Yiisoft\Db\Migration;
 use yii\exceptions\InvalidConfigException;
 use yii\helpers\Yii;
@@ -16,8 +10,6 @@ use Yiisoft\Log\DbTarget;
  * The indexes declared are not required. They are mainly used to improve the performance
  * of some queries about message levels and categories. Depending on your actual needs, you may
  * want to create additional indexes (e.g. index on `log_time`).
- *
- * @author Alexander Makarov <sam@rmcreative.ru>
  */
 class m141106_185632_log_init extends Migration
 {
