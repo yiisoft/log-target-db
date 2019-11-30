@@ -32,7 +32,6 @@ class m141106_185632_log_init extends Migration
     protected function getDbTargets()
     {
         if ($this->dbTargets === []) {
-
             if (!$this->logger instanceof \Yiisoft\Log\Logger) {
                 throw new InvalidConfigException('You should configure "logger" to be instance of "\Yiisoft\Log\Logger" before executing this migration.');
             }
