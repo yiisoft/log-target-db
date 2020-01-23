@@ -1,4 +1,5 @@
 <?php
+
 use Yiisoft\Db\Migration;
 use yii\exceptions\InvalidConfigException;
 use yii\helpers\Yii;

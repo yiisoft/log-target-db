@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpIncludeInspection */
+<?php
+
+/** @noinspection PhpIncludeInspection */
 
 use hiqdev\composer\config\Builder;
 use yii\di\Container;
