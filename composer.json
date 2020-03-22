@@ -34,7 +34,7 @@
         "yiisoft/db-mysql": "^3.0@dev",
         "yiisoft/db-pgsql": "^3.0@dev",
         "phpunit/phpunit": "^8.4",
-        "hiqdev/composer-config-plugin": "^1.0@dev"
+        "yiisoft/composer-config-plugin": "^1.0@dev"
     },
     "autoload": {
         "psr-4": {
