@@ -2,7 +2,7 @@
 
 /** @noinspection PhpIncludeInspection */
 
-use hiqdev\composer\config\Builder;
+use Yiisoft\Composer\Config\Builder;
 use yii\di\Container;
 use yii\helpers\Yii;
 
