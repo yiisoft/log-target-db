@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log\Tests;
 
 use Yiisoft\Yii\Console\Controllers\MigrateController;

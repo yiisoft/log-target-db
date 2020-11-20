@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log\Tests;
 
 use Psr\Log\LogLevel;
-use Yiisoft\Yii\Console\ExitCode;
+use yii\tests\TestCase;
 use Yiisoft\Db\Connection;
 use Yiisoft\Db\Query;
 use Yiisoft\Log\DbTarget;
 use Yiisoft\Log\Logger;
-use yii\tests\TestCase;
+use Yiisoft\Yii\Console\ExitCode;
 
 /**
  * @group db
@@ -80,10 +82,11 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * @return \Yiisoft\Db\Connection
      * @throws \Yiisoft\Db\Exception
      * @throws \yii\exceptions\InvalidConfigException
      * @throws \yii\exceptions\InvalidArgumentException
+     *
+     * @return \Yiisoft\Db\Connection
      */
     public static function getConnection()
     {
@@ -108,6 +111,7 @@ abstract class DbTargetTest extends TestCase
 
     /**
      * Tests that precision isn't lost for log timestamps.
+     *
      * @see https://github.com/yiisoft/yii2/issues/7384
      */
     public function testTimestamp()
@@ -125,7 +129,7 @@ abstract class DbTargetTest extends TestCase
                 'category' => 'test',
                 'time' => $time,
                 'trace' => [],
-            ]
+            ],
         ];
 
         $logger->messages[] = $messsageData;
@@ -151,7 +155,7 @@ abstract class DbTargetTest extends TestCase
                 'category' => 'test',
                 'time' => time(),
                 'trace' => [],
-            ]
+            ],
         ];
 
         $logger->messages[] = $messsageData;

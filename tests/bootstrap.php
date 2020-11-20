@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /** @noinspection PhpIncludeInspection */
 
-use Yiisoft\Composer\Config\Builder;
 use yii\di\Container;
 use yii\helpers\Yii;
+use Yiisoft\Composer\Config\Builder;
 
 // ensure we get report on all possible php errors
 error_reporting(-1);
