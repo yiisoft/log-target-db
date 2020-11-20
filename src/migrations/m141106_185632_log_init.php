@@ -1,8 +1,9 @@
 <?php
 
-use Yiisoft\Db\Migration;
+declare(strict_types=1);
+
 use yii\exceptions\InvalidConfigException;
-use yii\helpers\Yii;
+use Yiisoft\Db\Migration;
 use Yiisoft\Log\DbTarget;
 
 /**
@@ -21,13 +22,14 @@ class m141106_185632_log_init extends Migration
 
     private $logger;
 
-    public function __construct(\Psr\Log\LoggerInterface $logger)
+    public function __construct(Psr\Log\LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
     /**
      * @throws InvalidConfigException
+     *
      * @return DbTarget[]
      */
     protected function getDbTargets()

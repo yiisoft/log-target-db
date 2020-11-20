@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log;
 
 use Yiisoft\Db\Command;
@@ -37,6 +39,7 @@ class DbTarget extends Target
     /**
      * Initializes the DbTarget component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
+     *
      * @param ConnectionInterface $db
      * @param string $logTable
      */
@@ -48,6 +51,7 @@ class DbTarget extends Target
 
     /**
      * Stores log messages to DB.
+     *
      * @throws Exception
      * @throws LogRuntimeException
      * @throws \Throwable
@@ -77,12 +81,12 @@ class DbTarget extends Target
                 }
             }
             if ($command->bindValues([
-                    ':level' => $level,
-                    ':category' => $context['category'],
-                    ':log_time' => $context['time'],
-                    ':prefix' => $this->getMessagePrefix($message),
-                    ':message' => $text,
-                ])->execute() > 0) {
+                ':level' => $level,
+                ':category' => $context['category'],
+                ':log_time' => $context['time'],
+                ':prefix' => $this->getMessagePrefix($message),
+                ':message' => $text,
+            ])->execute() > 0) {
                 continue;
             }
             throw new LogRuntimeException('Unable to export log through database.');
