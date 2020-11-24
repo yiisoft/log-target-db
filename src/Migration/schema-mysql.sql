@@ -1,5 +1,5 @@
 /**
- * Database schema required by \Yiisoft\Log\DbTarget.
+ * Database schema required by \Yiisoft\Log\Target\Db.
  *
  * The indexes declared are not required. They are mainly used to improve the performance
  * of some queries about message levels and categories. Depending on your actual needs, you may

@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log;
+namespace Yiisoft\Log\Target\Db;
 
-use Yiisoft\Db\Command;
-use Yiisoft\Db\ConnectionInterface;
-use Yiisoft\Db\Exception;
+use Yiisoft\Db\Command\Command;
+use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Log\LogRuntimeException;
 use Yiisoft\VarDumper\VarDumper;
+use Yiisoft\Log\Target;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -30,11 +32,11 @@ class DbTarget extends Target
      * with a DB connection object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
-    private $db;
+    private ConnectionInterface $db;
     /**
      * @var string name of the DB table to store cache content. Defaults to "log".
      */
-    private $logTable;
+    private string $logTable;
 
     /**
      * Initializes the DbTarget component.
@@ -68,7 +70,6 @@ class DbTarget extends Target
         $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
                 VALUES (:level, :category, :log_time, :prefix, :message)";
 
-        /** @var Command $command */
         $command = $this->db->createCommand($sql);
         foreach ($this->getMessages() as $message) {
             [$level, $text, $context] = $message;
@@ -77,7 +78,7 @@ class DbTarget extends Target
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
                     $text = (string) $text;
                 } else {
-                    $text = VarDumper::export($text);
+                    $text = VarDumper::create($text)->export();
                 }
             }
             if ($command->bindValues([
