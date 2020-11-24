@@ -27,7 +27,6 @@
         "php": "^7.4|^8.0"
     },
     "require-dev": {
-        "phan/phan": "^3.0",
         "phpunit/phpunit": "^9.3",
         "vimeo/psalm": "^4.2",
         "yiisoft/cache": "^3.0@dev",
