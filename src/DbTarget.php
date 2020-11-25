@@ -47,6 +47,7 @@ class DbTarget extends Target
     {
         $this->db = $db;
         $this->logTable = $logTable;
+        parent::__construct();
     }
 
     /**
