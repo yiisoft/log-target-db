@@ -1,5 +1,5 @@
 /**
- * Database schema required by \Yiisoft\Log\DbTarget.
+ * Database schema required by \Yiisoft\Log\Target\Db.
  *
  * The indexes declared are not required. They are mainly used to improve the performance
  * of some queries about message levels and categories. Depending on your actual needs, you may
@@ -10,10 +10,10 @@ drop table if exists "log";
 
 create table "log"
 (
-   "id"          bigserial NOT NULL PRIMARY KEY,
+   "id"          integer PRIMARY KEY AUTOINCREMENT NOT NULL,
    "level"       integer,
    "category"    varchar(255),
-   "log_time"    double precision,
+   "log_time"    double,
    "prefix"      text,
    "message"     text
 );

@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
-use yii\exceptions\InvalidConfigException;
-use Yiisoft\Db\Migration;
-use Yiisoft\Log\DbTarget;
+namespace Yiisoft\Log\Target\Db\Tests\Migration;
+
+use Psr\Log\LoggerInterface;
+use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Log\Target\Db\DbTarget;
+use Yiisoft\Log\Target\Db\Exception\InvalidConfigException;
+use Yiisoft\Yii\Db\Migration\Migration;
 
 /**
  * Initializes log table.
@@ -18,13 +22,14 @@ class m141106_185632_log_init extends Migration
     /**
      * @var DbTarget[] Targets to create log table for
      */
-    private $dbTargets = [];
+    private array $dbTargets = [];
 
-    private $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(Psr\Log\LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, ConnectionInterface $db)
     {
         $this->logger = $logger;
+        parent::__construct($db);
     }
 
     /**
@@ -62,7 +67,7 @@ class m141106_185632_log_init extends Migration
         return $this->dbTargets;
     }
 
-    public function up()
+    public function up(): void
     {
         foreach ($this->getDbTargets() as $target) {
             $this->db = $target->getDb();
@@ -87,7 +92,7 @@ class m141106_185632_log_init extends Migration
         }
     }
 
-    public function down()
+    public function down(): void
     {
         foreach ($this->getDbTargets() as $target) {
             $this->db = $target->getDb();
