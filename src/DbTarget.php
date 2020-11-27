@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db;
 
-use Yiisoft\Db\Command\Command;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Log\LogRuntimeException;
