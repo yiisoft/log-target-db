@@ -14,7 +14,6 @@ create table `log`
    `level`       integer,
    `category`    varchar(255),
    `log_time`    double,
-   `prefix`      text,
    `message`     text,
    key `idx_log_level` (`level`),
    key `idx_log_category` (`category`)

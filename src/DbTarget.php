@@ -67,26 +67,18 @@ class DbTarget extends Target
         }
 
         $tableName = $this->db->quoteTableName($this->logTable);
-        $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
-                VALUES (:level, :category, :log_time, :prefix, :message)";
+        $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[message]])
+                VALUES (:level, :category, :log_time, :message)";
 
         $command = $this->db->createCommand($sql);
-        foreach ($this->getMessages() as $message) {
-            [$level, $text, $context] = $message;
-            if (!is_string($text)) {
-                // exceptions may not be serializable if in the call stack somewhere is a Closure
-                if ($text instanceof \Throwable || $text instanceof \Exception) {
-                    $text = (string) $text;
-                } else {
-                    $text = VarDumper::create($text)->export();
-                }
-            }
+        $messages = $this->getMessages();
+
+        foreach ($this->getFormattedMessages() as $key => $message) {
             if ($command->bindValues([
-                ':level' => $level,
-                ':category' => $context['category'],
-                ':log_time' => $context['time'],
-                ':prefix' => $this->getMessagePrefix($message),
-                ':message' => $text,
+                ':level' => $messages[$key][0],
+                ':category' => $messages[$key][2]['category'],
+                ':log_time' => $messages[$key][2]['time'],
+                ':message' => $message,
             ])->execute() > 0) {
                 continue;
             }
