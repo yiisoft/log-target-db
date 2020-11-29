@@ -83,7 +83,6 @@ class m141106_185632_log_init extends Migration
                 'level' => $this->string(),
                 'category' => $this->string(),
                 'log_time' => $this->double(),
-                'prefix' => $this->text(),
                 'message' => $this->text(),
             ], $tableOptions);
 

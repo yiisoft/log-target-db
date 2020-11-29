@@ -15,7 +15,6 @@ create table [log]
    [level]       integer,
    [category]    varchar(255),
    [log_time]    float,
-   [prefix]      text,
    [message]     text
 );
 
