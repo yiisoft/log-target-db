@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db;
 
+use RuntimeException;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
-use Yiisoft\Log\LogRuntimeException;
 use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Log\Target;
 
@@ -55,7 +55,7 @@ class DbTarget extends Target
      * Stores log messages to DB.
      *
      * @throws Exception
-     * @throws LogRuntimeException
+     * @throws RuntimeException
      * @throws \Throwable
      */
     public function export(): void
@@ -82,7 +82,7 @@ class DbTarget extends Target
             ])->execute() > 0) {
                 continue;
             }
-            throw new LogRuntimeException('Unable to export log through database.');
+            throw new RuntimeException('Unable to export log through database.');
         }
     }
 
