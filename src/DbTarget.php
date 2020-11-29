@@ -7,7 +7,6 @@ namespace Yiisoft\Log\Target\Db;
 use RuntimeException;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
-use Yiisoft\VarDumper\VarDumper;
 use Yiisoft\Log\Target;
 
 /**
