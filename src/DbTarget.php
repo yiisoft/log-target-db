@@ -70,14 +70,14 @@ class DbTarget extends Target
                 VALUES (:level, :category, :log_time, :message)";
 
         $command = $this->db->createCommand($sql);
-        $messages = $this->getMessages();
+        $formatted = $this->getFormattedMessages();
 
-        foreach ($this->getFormattedMessages() as $key => $message) {
+        foreach ($this->getMessages() as $key => $message) {
             if ($command->bindValues([
-                ':level' => $messages[$key][0],
-                ':category' => $messages[$key][2]['category'],
-                ':log_time' => $messages[$key][2]['time'],
-                ':message' => $message,
+                ':level' => $message->level(),
+                ':category' => $message->context('category'),
+                ':log_time' => $message->context('time'),
+                ':message' => $formatted[$key],
             ])->execute() > 0) {
                 continue;
             }
