@@ -11,7 +11,7 @@ drop table if exists "log";
 create table "log"
 (
    "id"          bigserial NOT NULL PRIMARY KEY,
-   "level"       integer,
+   "level"       varchar(16),
    "category"    varchar(255),
    "log_time"    double precision,
    "message"     text

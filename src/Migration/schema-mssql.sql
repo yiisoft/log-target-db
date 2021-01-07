@@ -12,7 +12,7 @@ if object_id('[log]', 'U') is not null
 create table [log]
 (
    [id]          bigint IDENTITY PRIMARY KEY,
-   [level]       integer,
+   [level]       varchar(16),
    [category]    varchar(255),
    [log_time]    float,
    [message]     text

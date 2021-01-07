@@ -80,7 +80,7 @@ class m141106_185632_log_init extends Migration
 
             $this->createTable($target->getLogTable(), [
                 'id' => $this->bigPrimaryKey(),
-                'level' => $this->string(),
+                'level' => $this->string(16),
                 'category' => $this->string(),
                 'log_time' => $this->double(),
                 'message' => $this->text(),

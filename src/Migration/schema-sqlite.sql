@@ -11,7 +11,7 @@ drop table if exists "log";
 create table "log"
 (
    "id"          integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-   "level"       integer,
+   "level"       varchar(16),
    "category"    varchar(255),
    "log_time"    double,
    "message"     text
