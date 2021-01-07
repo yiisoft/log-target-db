@@ -1,5 +1,3 @@
-Yii Log - DB Target Change Log
-==============================
+# Yii Log - DB Target Change Log
 
-3.0.0 under development
------------------------
+1.0.0 under development
