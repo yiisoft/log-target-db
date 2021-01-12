@@ -27,14 +27,14 @@ final class DbTarget extends Target
     private ConnectionInterface $db;
 
     /**
-     * @var string The name of the database table to store the cache content. Defaults to "log".
+     * @var string The name of the database table to store the log messages. Defaults to "log".
      */
     private string $logTable;
 
     /**
      *
      * @param ConnectionInterface $db The database connection instance.
-     * @param string $logTable The name of the database table to store the cache content. Defaults to "log".
+     * @param string $logTable The name of the database table to store the log messages. Defaults to "log".
      */
     public function __construct(ConnectionInterface $db, $logTable = '{{%log}}')
     {
@@ -54,7 +54,7 @@ final class DbTarget extends Target
     }
 
     /**
-     * Gets the name of the database table to store the cache content.
+     * Gets the name of the database table to store the log messages.
      *
      * @return string
      */
