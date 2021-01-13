@@ -29,17 +29,17 @@ final class DbTarget extends Target
     /**
      * @var string The name of the database table to store the log messages. Defaults to "log".
      */
-    private string $logTable;
+    private string $table;
 
     /**
      *
      * @param ConnectionInterface $db The database connection instance.
-     * @param string $logTable The name of the database table to store the log messages. Defaults to "log".
+     * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(ConnectionInterface $db, $logTable = '{{%log}}')
+    public function __construct(ConnectionInterface $db, string $table = '{{%log}}')
     {
         $this->db = $db;
-        $this->logTable = $logTable;
+        $this->table = $table;
         parent::__construct();
     }
 
@@ -58,9 +58,9 @@ final class DbTarget extends Target
      *
      * @return string
      */
-    public function getLogTable(): string
+    public function getTable(): string
     {
-        return $this->logTable;
+        return $this->table;
     }
 
     /**
@@ -71,10 +71,10 @@ final class DbTarget extends Target
     protected function export(): void
     {
         $formattedMessages = $this->getFormattedMessages();
-        $tableName = $this->db->getSchema()->quoteTableName($this->logTable);
+        $table = $this->db->getSchema()->quoteTableName($this->table);
 
-        $sql = "INSERT INTO {$tableName} ([[level]], [[category]], [[log_time]], [[message]])
-                VALUES (:level, :category, :log_time, :message)";
+        $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
+            . " VALUES (:level, :category, :log_time, :message)";
 
         try {
             $command = $this->db->createCommand($sql);
@@ -91,7 +91,7 @@ final class DbTarget extends Target
                 throw new RuntimeException(sprintf(
                     'The log message is not written to the database "%s;table:%s".',
                     $this->db->getDsn(),
-                    $tableName,
+                    $table,
                 ));
             }
         } catch (Throwable $e) {

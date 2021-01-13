@@ -33,7 +33,7 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
 
         foreach ($logger->getTargets() as $target) {
             if ($target instanceof DbTarget) {
-                $this->targets[md5($target->getDb()->getDsn() . ':' . $target->getLogTable())] = $target;
+                $this->targets[md5($target->getDb()->getDsn() . ':' . $target->getTable())] = $target;
             }
         }
 
@@ -50,7 +50,7 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
         foreach ($this->targets as $target) {
             $builder = new MigrationBuilder($target->getDb());
 
-            $builder->createTable($target->getLogTable(), [
+            $builder->createTable($target->getTable(), [
                 'id' => $builder->bigPrimaryKey(),
                 'level' => $builder->string(16),
                 'category' => $builder->string(),
@@ -58,8 +58,8 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
                 'message' => $builder->text(),
             ]);
 
-            $builder->createIndex('idx_log_level', $target->getLogTable(), 'level');
-            $builder->createIndex('idx_log_category', $target->getLogTable(), 'category');
+            $builder->createIndex('idx_log_level', $target->getTable(), 'level');
+            $builder->createIndex('idx_log_category', $target->getTable(), 'category');
         }
     }
 
@@ -67,7 +67,7 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
     {
         foreach ($this->targets as $target) {
             $builder = new MigrationBuilder($target->getDb());
-            $builder->dropTable($target->getLogTable());
+            $builder->dropTable($target->getTable());
         }
     }
 }
