@@ -9,6 +9,7 @@ use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Target;
 
+use function microtime;
 use function sprintf;
 
 /**
@@ -70,6 +71,7 @@ final class DbTarget extends Target
      */
     protected function export(): void
     {
+        $defaultLogTime = microtime(true);
         $formattedMessages = $this->getFormattedMessages();
         $table = $this->db->getSchema()->quoteTableName($this->table);
 
@@ -82,8 +84,8 @@ final class DbTarget extends Target
             foreach ($this->getMessages() as $key => $message) {
                 if ($command->bindValues([
                         ':level' => $message->level(),
-                        ':category' => $message->context('category'),
-                        ':log_time' => $message->context('time'),
+                        ':category' => $message->context('category', ''),
+                        ':log_time' => $message->context('time', $defaultLogTime),
                         ':message' => $formattedMessages[$key],
                     ])->execute() > 0) {
                     continue;
