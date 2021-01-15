@@ -11,6 +11,7 @@ use Yiisoft\Db\Command\Command;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
+use Yiisoft\Log\Target\Db\DbFactory;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
 use Yiisoft\Yii\Db\Migration\MigrationBuilder;
@@ -40,21 +41,21 @@ final class DbTargetTest extends TestCase
         $time = microtime(true);
 
         $this->createDbTarget(null, 'test-table-1')->collect([
-            new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'app']),
+            new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
         ], true);
 
         $this->createDbTarget(null, 'test-table-2')->collect([
-            new Message(LogLevel::INFO, 'Message-1', ['time' => $time]),
+            new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
             new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
         ], true);
 
         $this->assertSame(
             [
                 [
-                    'id' => 1,
+                    'id' => '1',
                     'level' => LogLevel::INFO,
-                    'category' => 'app',
-                    'log_time' => $time,
+                    'category' => 'application',
+                    'log_time' => (string) $time,
                     'message' => '[info] Message',
                 ],
             ],
@@ -64,17 +65,17 @@ final class DbTargetTest extends TestCase
         $this->assertSame(
             [
                 [
-                    'id' => 2,
+                    'id' => '1',
                     'level' => LogLevel::ALERT,
-                    'category' => 'application',
-                    'log_time' => $time,
+                    'category' => 'app',
+                    'log_time' => (string) $time,
                     'message' => '[alert] Message-1',
                 ],
                 [
-                    'id' => 2,
+                    'id' => '2',
                     'level' => LogLevel::ERROR,
-                    'category' => 'application',
-                    'log_time' => $time,
+                    'category' => '',
+                    'log_time' => (string) $time,
                     'message' => '[error] Message-2',
                 ],
             ],
@@ -92,6 +93,7 @@ final class DbTargetTest extends TestCase
     public function testExportWithStoreFailure(): void
     {
         $command = $this->getMockBuilder(Command::class)
+            ->onlyMethods(['execute'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass()
         ;
@@ -106,7 +108,10 @@ final class DbTargetTest extends TestCase
 
     private function createDbTarget(ConnectionInterface $db = null, string $table = 'log'): DbTarget
     {
-        $target = new DbTarget($db ?? $this->getContainer()->get(ConnectionInterface::class), $table);
+        $target = new DbTarget(
+            new DbFactory($this->getContainer(), $db ? fn () => $db : ConnectionInterface::class),
+            $table,
+        );
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
         return $target;
     }

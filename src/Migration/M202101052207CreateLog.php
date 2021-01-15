@@ -58,8 +58,8 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
                 'message' => $builder->text(),
             ]);
 
-            $builder->createIndex('idx_log_level', $target->getTable(), 'level');
-            $builder->createIndex('idx_log_category', $target->getTable(), 'category');
+            $builder->createIndex("idx-{$target->getTable()}-level", $target->getTable(), 'level');
+            $builder->createIndex("idx-{$target->getTable()}-category", $target->getTable(), 'category');
         }
     }
 

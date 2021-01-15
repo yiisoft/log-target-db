@@ -10,6 +10,7 @@ use RuntimeException;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Logger;
 use Yiisoft\Log\StreamTarget;
+use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
 use Yiisoft\Yii\Db\Migration\MigrationBuilder;
 
@@ -32,6 +33,20 @@ final class MigrationTest extends TestCase
         $this->assertFalse($this->tableExists('table-not-exist'));
     }
 
+    public function testUpWithCheckingEquivalenceOfConnectionInstance(): void
+    {
+        /** @var Logger $logger */
+        $logger = $this->getContainer()->get(LoggerInterface::class);
+
+        $migration = new M202101052207CreateLog($logger);
+        $migration->up($this->getContainer()->get(MigrationBuilder::class));
+
+        /** @var DbTarget[] $targets */
+        $targets = $logger->getTargets();
+
+        $this->assertSame($targets[0]->getDb(), $targets[1]->getDb());
+    }
+
     public function testConstructorThrowExceptionForNotExistentDbTargetOfLogger(): void
     {
         $this->expectException(RuntimeException::class);
@@ -51,8 +66,8 @@ final class MigrationTest extends TestCase
     private function tableExists(string $table): bool
     {
         return (bool) $this->getContainer()->get(ConnectionInterface::class)
-            ->createCommand("SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{$table}'")
-            ->execute()
+            ->createCommand("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{$table}'")
+            ->queryScalar()
         ;
     }
 }

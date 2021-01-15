@@ -21,6 +21,7 @@ use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\Logger;
+use Yiisoft\Log\Target\Db\DbFactory;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Profiler\Profiler;
 use Yiisoft\Profiler\ProfilerInterface;
@@ -31,7 +32,7 @@ use function file_exists;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    private const DB_FILE = __DIR__ . '/runtime/test.sq3';
+    protected const DB_FILE = __DIR__ . '/runtime/test.sq3';
 
     private ?Container $container = null;
 
@@ -71,8 +72,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
 
                 LoggerInterface::class => static fn (ContainerInterface $container) => new Logger([
-                    new DbTarget($container->get(ConnectionInterface::class), 'test-table-1'),
-                    new DbTarget($container->get(ConnectionInterface::class), 'test-table-2'),
+                    new DbTarget(new DbFactory($container, ConnectionInterface::class), 'test-table-1'),
+                    new DbTarget(new DbFactory($container, ConnectionInterface::class), 'test-table-2'),
                 ]),
 
                 ConnectionInterface::class => [

@@ -23,9 +23,16 @@ use function sprintf;
 final class DbTarget extends Target
 {
     /**
-     * @var ConnectionInterface The database connection instance.
+     * @var ConnectionInterface|null The database connection instance.
      */
-    private ConnectionInterface $db;
+    private ?ConnectionInterface $db = null;
+
+    /**
+     * @var DbFactory Factory for creating a database connection instance.
+     * Provides lazy loading of the "Yiisoft\Db\Connection\ConnectionInterface" instance
+     * to prevent a circular reference to the connection when building container definitions.
+     */
+    private DbFactory $factory;
 
     /**
      * @var string The name of the database table to store the log messages. Defaults to "log".
@@ -34,12 +41,14 @@ final class DbTarget extends Target
 
     /**
      *
-     * @param ConnectionInterface $db The database connection instance.
+     * @param DbFactory $factory Factory for creating a database connection instance.
+     * Provides lazy loading of the "Yiisoft\Db\Connection\ConnectionInterface" instance
+     * to prevent a circular reference to the connection when building container definitions.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(ConnectionInterface $db, string $table = '{{%log}}')
+    public function __construct(DbFactory $factory, string $table = '{{%log}}')
     {
-        $this->db = $db;
+        $this->factory = $factory;
         $this->table = $table;
         parent::__construct();
     }
@@ -51,6 +60,10 @@ final class DbTarget extends Target
      */
     public function getDb(): ConnectionInterface
     {
+        if ($this->db === null) {
+            $this->db = $this->factory->create();
+        }
+
         return $this->db;
     }
 
@@ -73,13 +86,13 @@ final class DbTarget extends Target
     {
         $defaultLogTime = microtime(true);
         $formattedMessages = $this->getFormattedMessages();
-        $table = $this->db->getSchema()->quoteTableName($this->table);
+        $table = $this->getDb()->getSchema()->quoteTableName($this->table);
 
         $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
             . " VALUES (:level, :category, :log_time, :message)";
 
         try {
-            $command = $this->db->createCommand($sql);
+            $command = $this->getDb()->createCommand($sql);
 
             foreach ($this->getMessages() as $key => $message) {
                 if ($command->bindValues([
@@ -92,7 +105,7 @@ final class DbTarget extends Target
                 }
                 throw new RuntimeException(sprintf(
                     'The log message is not written to the database "%s;table:%s".',
-                    $this->db->getDsn(),
+                    $this->getDb()->getDsn(),
                     $table,
                 ));
             }
