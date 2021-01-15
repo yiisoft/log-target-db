@@ -40,7 +40,6 @@ final class DbTarget extends Target
     private string $table;
 
     /**
-     *
      * @param DbFactory $factory Factory for creating a database connection instance.
      * Provides lazy loading of the "Yiisoft\Db\Connection\ConnectionInterface" instance
      * to prevent a circular reference to the connection when building container definitions.
