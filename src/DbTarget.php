@@ -89,18 +89,18 @@ final class DbTarget extends Target
         $table = $this->getDb()->getSchema()->quoteTableName($this->table);
 
         $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
-            . " VALUES (:level, :category, :log_time, :message)";
+            . ' VALUES (:level, :category, :log_time, :message)';
 
         try {
             $command = $this->getDb()->createCommand($sql);
 
             foreach ($this->getMessages() as $key => $message) {
                 if ($command->bindValues([
-                        ':level' => $message->level(),
-                        ':category' => $message->context('category', ''),
-                        ':log_time' => $message->context('time', $defaultLogTime),
-                        ':message' => $formattedMessages[$key],
-                    ])->execute() > 0) {
+                    ':level' => $message->level(),
+                    ':category' => $message->context('category', ''),
+                    ':log_time' => $message->context('time', $defaultLogTime),
+                    ':message' => $formattedMessages[$key],
+                ])->execute() > 0) {
                     continue;
                 }
                 throw new RuntimeException(sprintf(
