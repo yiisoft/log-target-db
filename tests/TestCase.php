@@ -19,7 +19,6 @@ use Yiisoft\Di\Container;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
-use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\Db\DbFactory;
 use Yiisoft\Log\Target\Db\DbTarget;
@@ -28,7 +27,6 @@ use Yiisoft\Profiler\ProfilerInterface;
 use Yiisoft\Yii\Db\Migration\Helper\ConsoleHelper;
 
 use function dirname;
-use function file_exists;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -50,10 +48,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         }
 
         unset($this->container);
-
-        if (file_exists(self::DB_FILE)) {
-            FileHelper::unlink(self::DB_FILE);
-        }
     }
 
     protected function getContainer(): Container
