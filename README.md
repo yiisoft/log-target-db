@@ -48,7 +48,7 @@ The configuration can be specified in one of the following forms:
 For more information about container and configuration, see the description of the
 [yiisoft/di](https://github.com/yiisoft/di) and [yiisoft/factory](https://github.com/yiisoft/factory) packages.
 
-> This factory provides lazy loading of the "Yiisoft\Db\Connection\ConnectionInterface" instance
+> This factory provides lazy loading of the `Yiisoft\Db\Connection\ConnectionInterface` instance
 to prevent a circular reference to the connection when building container definitions.
 
 Creating a target:
