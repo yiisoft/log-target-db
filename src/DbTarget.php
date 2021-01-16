@@ -29,7 +29,7 @@ final class DbTarget extends Target
 
     /**
      * @var DbFactory Factory for creating a database connection instance.
-     * Provides lazy loading of the "Yiisoft\Db\Connection\ConnectionInterface" instance
+     * Provides lazy loading of the {@see \Yiisoft\Db\Connection\ConnectionInterface} instance
      * to prevent a circular reference to the connection when building container definitions.
      */
     private DbFactory $factory;
@@ -41,7 +41,7 @@ final class DbTarget extends Target
 
     /**
      * @param DbFactory $factory Factory for creating a database connection instance.
-     * Provides lazy loading of the "Yiisoft\Db\Connection\ConnectionInterface" instance
+     * Provides lazy loading of the {@see \Yiisoft\Db\Connection\ConnectionInterface} instance
      * to prevent a circular reference to the connection when building container definitions.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */

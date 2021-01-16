@@ -18,6 +18,9 @@ use function sprintf;
 
 /**
  * DbFactory creates a database connection instance.
+ *
+ * Provides lazy loading of the {@see \Yiisoft\Db\Connection\ConnectionInterface} instance
+ * to prevent a circular reference to the connection when building container definitions.
  */
 final class DbFactory
 {
@@ -34,7 +37,16 @@ final class DbFactory
     /**
      * @param ContainerInterface $container Container for creating a database connection instance.
      * @param mixed $config The configuration for creating a database connection instance.
-     * For more information, see {@see Normalizer::normalize()}.
+     *
+     * The configuration can be specified in one of the following forms:
+     *
+     * - A string: representing the class name of the object to be created.
+     * - A configuration array: the array  must consist of `__class` contains name of the class to be instantiated,
+     * `__construct()` holds an array of constructor arguments. The rest of the config and property values
+     * and method calls. They are set/called in the order they appear in the array.
+     * - A PHP callable: either an anonymous function or an array representing a class method
+     * (`[$class or $object, $method]`). The callable should return a instance
+     * of the {@see \Yiisoft\Db\Connection\ConnectionInterface}.
      *
      * @throws InvalidConfigException If the configuration is invalid.
      */
