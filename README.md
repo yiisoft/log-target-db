@@ -71,12 +71,12 @@ You can use multiple databases to store log messages:
 ```php
 /**
  * @var \Psr\Container\ContainerInterface $container
- * @var \Yiisoft\Db\Connection\ConnectionInterface $mysqlDb
- * @var \Yiisoft\Db\Connection\ConnectionInterface $redisDb
+ * @var string $mysqlClass // Class name of the Mysql connection
+ * @var array $redisConfig // Configuration array for creating a Redis connection
  */
  
-$mysqlFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $mysqlDb);
-$redisFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $redisDb);
+$mysqlFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $mysqlClass);
+$redisFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $redisConfig);
 
 $logger = new \Yiisoft\Log\Logger([
     new \Yiisoft\Log\Target\Db\DbTarget($mysqlFactory),
