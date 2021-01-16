@@ -17,8 +17,6 @@ use function sprintf;
  *
  * Database schema could be initialized by applying migration:
  * {@see \Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog}.
- *
- * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
  */
 final class DbTarget extends Target
 {
