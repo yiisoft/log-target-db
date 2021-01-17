@@ -57,7 +57,7 @@ Creating a target:
 $dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($dbFactory, $table);
 ```
 
-- `$factory (\Yiisoft\Log\Target\Db\DbFactory)` - Factory for creating a database connection instance.
+- `$dbFactory (\Yiisoft\Log\Target\Db\DbFactory)` - Factory for creating a database connection instance.
 - `$table (string)` - The name of the database table to store the log messages. Defaults to "log".
 
 Creating a logger:
