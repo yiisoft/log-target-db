@@ -27,10 +27,10 @@ composer install yiisoft/log-target-db
 
 ## General usage
 
-Creating a factory:
+Creating a database factory:
 
 ```php
-$factory = new \Yiisoft\Log\Target\Db\DbFactory($container, $config);
+$dbFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $config);
 ```
 
 - `$container (\Psr\Container\ContainerInterface)` - Container for getting an instance of a database connection.
@@ -54,7 +54,7 @@ to prevent a circular reference to the connection when building container defini
 Creating a target:
 
 ```php
-$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($factory, $table);
+$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($dbFactory, $table);
 ```
 
 - `$factory (\Yiisoft\Log\Target\Db\DbFactory)` - Factory for creating a database connection instance.
@@ -137,7 +137,7 @@ The code is statically analyzed with [Psalm](https://psalm.dev/). To run static 
 
 ## License
 
-The Yii Logging Library - Email Target is free software. It is released under the terms of the BSD License.
+The Yii Logging Library - DB Target is free software. It is released under the terms of the BSD License.
 Please see [`LICENSE`](./LICENSE.md) for more information.
 
 Maintained by [Yii Software](https://www.yiiframework.com/).
