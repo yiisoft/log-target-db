@@ -22,42 +22,18 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 The package could be installed with composer:
 
 ```
-composer install yiisoft/log-target-db
+composer require yiisoft/log-target-db
 ```
 
 ## General usage
 
-Creating a database factory:
-
-```php
-$dbFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $config);
-```
-
-- `$container (\Psr\Container\ContainerInterface)` - Container for getting an instance of a database connection.
-- `$config (mixed)` - The configuration for creating a database connection instance.
-
-The configuration can be specified in one of the following forms:
-
-- A string: representing the class name of the object to be created.
-- A configuration array: the array  must consist of `__class` contains name of the class to be instantiated,
-  `__construct()` holds an array of constructor arguments. The rest of the config and property values and method calls.
-  They are set/called in the order they appear in the array.
-- A PHP callable: either an anonymous function or an array representing a class method (`[$class or $object, $method]`).
-  The callable should return a instance of the `\Yiisoft\Db\Connection\ConnectionInterface`.
-
-For more information about container and configuration, see the description of the
-[yiisoft/di](https://github.com/yiisoft/di) and [yiisoft/factory](https://github.com/yiisoft/factory) packages.
-
-> This factory provides lazy loading of the `Yiisoft\Db\Connection\ConnectionInterface` instance
-to prevent a circular reference to the connection when building container definitions.
-
 Creating a target:
 
 ```php
-$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($dbFactory, $table);
+$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($db, $table);
 ```
 
-- `$dbFactory (\Yiisoft\Log\Target\Db\DbFactory)` - Factory for creating a database connection instance.
+- `$db (\Yiisoft\Db\Connection\ConnectionInterface)` - The database connection instance.
 - `$table (string)` - The name of the database table to store the log messages. Defaults to "log".
 
 Creating a logger:
@@ -70,17 +46,13 @@ You can use multiple databases to store log messages:
 
 ```php
 /**
- * @var \Psr\Container\ContainerInterface $container
- * @var string $mysqlClass // Class name of the Mysql connection
- * @var array $redisConfig // Configuration array for creating a Redis connection
+ * @var \Yiisoft\Db\Connection\ConnectionInterface $mysqlDb
+ * @var \Yiisoft\Db\Connection\ConnectionInterface $redisDb
  */
- 
-$mysqlFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $mysqlClass);
-$redisFactory = new \Yiisoft\Log\Target\Db\DbFactory($container, $redisConfig);
 
 $logger = new \Yiisoft\Log\Logger([
-    new \Yiisoft\Log\Target\Db\DbTarget($mysqlFactory),
-    new \Yiisoft\Log\Target\Db\DbTarget($redisFactory),
+    new \Yiisoft\Log\Target\Db\DbTarget($mysqlDb),
+    new \Yiisoft\Log\Target\Db\DbTarget($redisDb),
 ]);
 ```
 

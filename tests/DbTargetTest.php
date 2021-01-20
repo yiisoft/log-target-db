@@ -11,7 +11,6 @@ use Yiisoft\Db\Command\Command;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
-use Yiisoft\Log\Target\Db\DbFactory;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
 use Yiisoft\Yii\Db\Migration\MigrationBuilder;
@@ -108,10 +107,7 @@ final class DbTargetTest extends TestCase
 
     private function createDbTarget(ConnectionInterface $db = null, string $table = 'log'): DbTarget
     {
-        $target = new DbTarget(
-            new DbFactory($this->getContainer(), $db ? fn () => $db : ConnectionInterface::class),
-            $table,
-        );
+        $target = new DbTarget($db ?? $this->getContainer()->get(ConnectionInterface::class), $table);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
         return $target;
     }

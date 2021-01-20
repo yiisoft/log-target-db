@@ -20,7 +20,6 @@ use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Factory\Definitions\Reference;
 use Yiisoft\Log\Logger;
-use Yiisoft\Log\Target\Db\DbFactory;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Profiler\Profiler;
 use Yiisoft\Profiler\ProfilerInterface;
@@ -66,14 +65,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
 
                 LoggerInterface::class => static fn (ContainerInterface $container) => new Logger([
-                    new DbTarget(new DbFactory($container, ConnectionInterface::class), 'test-table-1'),
-                    new DbTarget(new DbFactory($container, ConnectionInterface::class), 'test-table-2'),
+                    new DbTarget($container->get(ConnectionInterface::class), 'test-table-1'),
+                    new DbTarget($container->get(ConnectionInterface::class), 'test-table-2'),
                 ]),
 
                 ConnectionInterface::class => [
                     '__class' => SqlLiteConnection::class,
                     '__construct()' => [
-                        'dsn' => 'sqlite:' . self::DB_FILE,
+                        'sqlite:' . self::DB_FILE
                     ],
                 ],
 
