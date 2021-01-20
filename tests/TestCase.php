@@ -72,7 +72,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ConnectionInterface::class => [
                     '__class' => SqlLiteConnection::class,
                     '__construct()' => [
-                        'sqlite:' . self::DB_FILE
+                        'sqlite:' . self::DB_FILE,
                     ],
                 ],
 
