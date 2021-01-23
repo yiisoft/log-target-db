@@ -13,6 +13,7 @@ use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
+use Yiisoft\Yii\Db\Migration\Informer\MigrationInformerInterface;
 use Yiisoft\Yii\Db\Migration\MigrationBuilder;
 
 use function microtime;
@@ -23,7 +24,11 @@ final class DbTargetTest extends TestCase
     {
         parent::setUp();
 
-        $migration = new M202101052207CreateLog($this->getContainer()->get(LoggerInterface::class));
+        $migration = new M202101052207CreateLog(
+            $this->getContainer()->get(LoggerInterface::class),
+            $this->getContainer()->get(MigrationInformerInterface::class),
+        );
+
         $migration->up($this->getContainer()->get(MigrationBuilder::class));
     }
 

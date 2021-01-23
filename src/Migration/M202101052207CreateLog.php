@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\Db\DbTarget;
+use Yiisoft\Yii\Db\Migration\Informer\MigrationInformerInterface;
 use Yiisoft\Yii\Db\Migration\MigrationBuilder;
 use Yiisoft\Yii\Db\Migration\RevertibleMigrationInterface;
 
@@ -18,12 +19,14 @@ use function md5;
  */
 final class M202101052207CreateLog implements RevertibleMigrationInterface
 {
+    private MigrationInformerInterface $migrationInformer;
+
     /**
      * @var DbTarget[] Targets for creating a log table.
      */
     private array $targets = [];
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, MigrationInformerInterface $migrationInformer)
     {
         if (!($logger instanceof Logger)) {
             throw new RuntimeException(
@@ -43,12 +46,14 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
                 . ' one or more database targets before executing this migration.'
             );
         }
+
+        $this->migrationInformer = $migrationInformer;
     }
 
     public function up(MigrationBuilder $b): void
     {
         foreach ($this->targets as $target) {
-            $builder = new MigrationBuilder($target->getDb());
+            $builder = new MigrationBuilder($target->getDb(), $this->migrationInformer);
 
             $builder->createTable($target->getTable(), [
                 'id' => $builder->bigPrimaryKey(),
@@ -66,7 +71,7 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
     public function down(MigrationBuilder $b): void
     {
         foreach ($this->targets as $target) {
-            $builder = new MigrationBuilder($target->getDb());
+            $builder = new MigrationBuilder($target->getDb(), $this->migrationInformer);
             $builder->dropTable($target->getTable());
         }
     }

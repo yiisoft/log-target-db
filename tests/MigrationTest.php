@@ -12,13 +12,26 @@ use Yiisoft\Log\Logger;
 use Yiisoft\Log\StreamTarget;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
+use Yiisoft\Yii\Db\Migration\Informer\MigrationInformerInterface;
 use Yiisoft\Yii\Db\Migration\MigrationBuilder;
 
 final class MigrationTest extends TestCase
 {
+    private MigrationInformerInterface $migrationInformer;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->migrationInformer = $this->getContainer()->get(MigrationInformerInterface::class);
+    }
+
     public function testUpAndDown(): void
     {
-        $migration = new M202101052207CreateLog($this->getContainer()->get(LoggerInterface::class));
+        $migration = new M202101052207CreateLog(
+            $this->getContainer()->get(LoggerInterface::class),
+            $this->migrationInformer,
+        );
 
         $migration->up($this->getContainer()->get(MigrationBuilder::class));
 
@@ -38,7 +51,7 @@ final class MigrationTest extends TestCase
         /** @var Logger $logger */
         $logger = $this->getContainer()->get(LoggerInterface::class);
 
-        $migration = new M202101052207CreateLog($logger);
+        $migration = new M202101052207CreateLog($logger, $this->migrationInformer);
         $migration->up($this->getContainer()->get(MigrationBuilder::class));
 
         /** @var DbTarget[] $targets */
@@ -50,7 +63,7 @@ final class MigrationTest extends TestCase
     public function testConstructorThrowExceptionForNotExistentDbTargetOfLogger(): void
     {
         $this->expectException(RuntimeException::class);
-        new M202101052207CreateLog(new Logger([new StreamTarget()]));
+        new M202101052207CreateLog(new Logger([new StreamTarget()]), $this->migrationInformer);
     }
 
     public function testConstructorThrowExceptionForNotYiiLogger(): void
@@ -60,7 +73,7 @@ final class MigrationTest extends TestCase
             public function log($level, $message, array $context = []): void
             {
             }
-        });
+        }, $this->migrationInformer);
     }
 
     private function tableExists(string $table): bool
