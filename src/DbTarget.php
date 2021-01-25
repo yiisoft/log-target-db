@@ -5,87 +5,45 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db;
 
 use RuntimeException;
+use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Log\Target;
+
+use function microtime;
+use function sprintf;
 
 /**
  * DbTarget stores log messages in a database table.
  *
- * The database connection is specified by [[db]]. Database schema could be initialized by applying migration:
- *
- * ```
- * yii migrate --migrationPath=@yii/log/migrations/
- * ```
- *
- * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
- *
- * You may change the name of the table used to store the data by setting [[logTable]].
+ * Database schema could be initialized by applying migration:
+ * {@see \Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog}.
  */
-class DbTarget extends Target
+final class DbTarget extends Target
 {
     /**
-     * @var ConnectionInterface the DB connection object or the application component ID of the DB connection.
-     * After the DbTarget object is created, if you want to change this property, you should only assign it
-     * with a DB connection object.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var ConnectionInterface The database connection instance.
      */
     private ConnectionInterface $db;
-    /**
-     * @var string name of the DB table to store cache content. Defaults to "log".
-     */
-    private string $logTable;
 
     /**
-     * Initializes the DbTarget component.
-     * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
-     *
-     * @param ConnectionInterface $db
-     * @param string $logTable
+     * @var string The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(ConnectionInterface $db, $logTable = '{{%log}}')
+    private string $table;
+
+    /**
+     * @param ConnectionInterface $db The database connection instance.
+     * @param string $table The name of the database table to store the log messages. Defaults to "log".
+     */
+    public function __construct(ConnectionInterface $db, string $table = '{{%log}}')
     {
         $this->db = $db;
-        $this->logTable = $logTable;
+        $this->table = $table;
         parent::__construct();
     }
 
     /**
-     * Stores log messages to DB.
+     * Gets an instance of a database connection.
      *
-     * @throws Exception
-     * @throws RuntimeException
-     * @throws \Throwable
-     */
-    public function export(): void
-    {
-        if ($this->db->getTransaction()) {
-            // create new database connection, if there is an open transaction
-            // to ensure insert statement is not affected by a rollback
-            $this->db = clone $this->db;
-        }
-
-        $tableName = $this->db->quoteTableName($this->logTable);
-        $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[message]])
-                VALUES (:level, :category, :log_time, :message)";
-
-        $command = $this->db->createCommand($sql);
-        $formatted = $this->getFormattedMessages();
-
-        foreach ($this->getMessages() as $key => $message) {
-            if ($command->bindValues([
-                ':level' => $message->level(),
-                ':category' => $message->context('category'),
-                ':log_time' => $message->context('time'),
-                ':message' => $formatted[$key],
-            ])->execute() > 0) {
-                continue;
-            }
-            throw new RuntimeException('Unable to export log through database.');
-        }
-    }
-
-    /**
      * @return ConnectionInterface
      */
     public function getDb(): ConnectionInterface
@@ -94,10 +52,49 @@ class DbTarget extends Target
     }
 
     /**
+     * Gets the name of the database table to store the log messages.
+     *
      * @return string
      */
-    public function getLogTable(): string
+    public function getTable(): string
     {
-        return $this->logTable;
+        return $this->table;
+    }
+
+    /**
+     * Stores log messages to the database.
+     *
+     * @throws RuntimeException If the log cannot be exported.
+     */
+    protected function export(): void
+    {
+        $defaultLogTime = microtime(true);
+        $formattedMessages = $this->getFormattedMessages();
+        $table = $this->db->getSchema()->quoteTableName($this->table);
+
+        $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
+            . ' VALUES (:level, :category, :log_time, :message)';
+
+        try {
+            $command = $this->db->createCommand($sql);
+
+            foreach ($this->getMessages() as $key => $message) {
+                if ($command->bindValues([
+                    ':level' => $message->level(),
+                    ':category' => $message->context('category', ''),
+                    ':log_time' => $message->context('time', $defaultLogTime),
+                    ':message' => $formattedMessages[$key],
+                ])->execute() > 0) {
+                    continue;
+                }
+                throw new RuntimeException(sprintf(
+                    'The log message is not written to the database "%s;table:%s".',
+                    $this->db->getDsn(),
+                    $table,
+                ));
+            }
+        } catch (Throwable $e) {
+            throw new RuntimeException('Unable to export log through database.', 0, $e);
+        }
     }
 }

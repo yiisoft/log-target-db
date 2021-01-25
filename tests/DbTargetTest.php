@@ -2,176 +2,123 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log\Tests;
+namespace Yiisoft\Log\Target\Db\Tests;
 
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use yii\tests\TestCase;
-use Yiisoft\Db\Connection;
-use Yiisoft\Db\Query;
-use Yiisoft\Log\DbTarget;
-use Yiisoft\Log\Logger;
-use Yiisoft\Yii\Console\ExitCode;
+use RuntimeException;
+use Yiisoft\Db\Command\Command;
+use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Query\Query;
+use Yiisoft\Log\Message;
+use Yiisoft\Log\Target\Db\DbTarget;
+use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
+use Yiisoft\Yii\Db\Migration\Informer\MigrationInformerInterface;
+use Yiisoft\Yii\Db\Migration\MigrationBuilder;
 
-/**
- * @group db
- * @group log
- */
-abstract class DbTargetTest extends TestCase
+use function microtime;
+
+final class DbTargetTest extends TestCase
 {
-    protected static $database;
-    protected static $driverName;
-
-    /**
-     * @var Connection
-     */
-    protected static $db;
-
-    protected static $logTable = '{{%log}}';
-
-    protected function runConsoleAction($route, $params = [])
-    {
-        $this->destroyApplication();
-        $this->mockApplication([
-            'id' => 'Migrator',
-            'basePath' => '@yii/tests',
-            'controllerMap' => [
-                'migrate' => EchoMigrateController::class,
-            ],
-        ], null, [
-            'logger' => function ($container) {
-                $db = new DbTarget($container->get('db'), '{{%log}}');
-                $db->setLevels([LogLevel::WARNING]);
-
-                return new Logger(['db' => $db]);
-            },
-            'db' => static::getConnection(),
-        ]);
-
-        ob_start();
-        $result = $this->app->runAction($route, $params);
-        echo 'Result is ' . $result;
-        if ($result !== ExitCode::OK) {
-            ob_end_flush();
-        } else {
-            ob_end_clean();
-        }
-    }
-
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
-        $databases = static::getParam('databases');
-        static::$database = $databases[static::$driverName];
-        $pdo_database = 'pdo_' . static::$driverName;
 
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-            static::markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
-        }
+        $migration = new M202101052207CreateLog(
+            $this->getContainer()->get(LoggerInterface::class),
+            $this->getContainer()->get(MigrationInformerInterface::class),
+        );
 
-        $this->runConsoleAction('migrate/up', ['migrationPath' => '@Yiisoft/Log/migrations/', 'interactive' => false]);
+        $migration->up($this->getContainer()->get(MigrationBuilder::class));
     }
 
-    public function tearDown()
+    public function testGetters(): void
     {
-        self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
-        $this->runConsoleAction('migrate/down', ['migrationPath' => '@Yiisoft/Log/migrations/', 'interactive' => false]);
-        if (static::$db) {
-            static::$db->close();
-        }
-        parent::tearDown();
+        $target = $this->createDbTarget();
+
+        $this->assertSame('log', $target->getTable());
+        $this->assertSame($this->getContainer()->get(ConnectionInterface::class), $target->getDb());
     }
 
-    /**
-     * @throws \Yiisoft\Db\Exception
-     * @throws \yii\exceptions\InvalidConfigException
-     * @throws \yii\exceptions\InvalidArgumentException
-     *
-     * @return \Yiisoft\Db\Connection
-     */
-    public static function getConnection()
+    public function testExport(): void
     {
-        if (static::$db === null) {
-            $db = new Connection();
-            $db->dsn = static::$database['dsn'];
-            if (isset(static::$database['username'])) {
-                $db->username = static::$database['username'];
-                $db->password = static::$database['password'];
-            }
-            if (isset(static::$database['attributes'])) {
-                $db->attributes = static::$database['attributes'];
-            }
-            if (!$db->isActive) {
-                $db->open();
-            }
-            static::$db = $db;
-        }
+        $time = microtime(true);
 
-        return static::$db;
-    }
+        $this->createDbTarget(null, 'test-table-1')->collect([
+            new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
+        ], true);
 
-    /**
-     * Tests that precision isn't lost for log timestamps.
-     *
-     * @see https://github.com/yiisoft/yii2/issues/7384
-     */
-    public function testTimestamp()
-    {
-        /** @var Logger $logger */
-        $logger = $this->app->getLogger();
+        $this->createDbTarget(null, 'test-table-2')->collect([
+            new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
+            new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
+        ], true);
 
-        $time = 1424865393.0105;
-
-        // forming message data manually in order to set time
-        $messsageData = [
-            LogLevel::WARNING,
-            'test',
+        $this->assertSame(
             [
-                'category' => 'test',
-                'time' => $time,
-                'trace' => [],
+                [
+                    'id' => '1',
+                    'level' => LogLevel::INFO,
+                    'category' => 'application',
+                    'log_time' => (string) $time,
+                    'message' => '[info] Message',
+                ],
             ],
-        ];
+            $this->findData('test-table-1'),
+        );
 
-        $logger->messages[] = $messsageData;
-        $logger->flush(true);
-
-        $query = (new Query())->select('log_time')->from(self::$logTable)->where(['category' => 'test']);
-        $loggedTime = $query->createCommand(self::getConnection())->queryScalar();
-        $this->assertEquals($time, $loggedTime);
+        $this->assertSame(
+            [
+                [
+                    'id' => '1',
+                    'level' => LogLevel::ALERT,
+                    'category' => 'app',
+                    'log_time' => (string) $time,
+                    'message' => '[alert] Message-1',
+                ],
+                [
+                    'id' => '2',
+                    'level' => LogLevel::ERROR,
+                    'category' => '',
+                    'log_time' => (string) $time,
+                    'message' => '[error] Message-2',
+                ],
+            ],
+            $this->findData('test-table-2'),
+        );
     }
 
-    public function testTransactionRollBack()
+    public function testExportWithEmptyMessages(): void
     {
-        $db = self::getConnection();
-        /** @var Logger $logger */
-        $logger = $this->app->getLogger();
+        $this->createDbTarget(null, 'test-table-1')->collect([], true);
 
-        $tx = $db->beginTransaction();
+        $this->assertSame([], $this->findData('test-table-1'));
+    }
 
-        $messsageData = [
-            LogLevel::WARNING,
-            'test',
-            [
-                'category' => 'test',
-                'time' => time(),
-                'trace' => [],
-            ],
-        ];
+    public function testExportWithStoreFailure(): void
+    {
+        $command = $this->getMockBuilder(Command::class)
+            ->onlyMethods(['execute'])
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass()
+        ;
+        $command->method('execute')->willReturn(0);
 
-        $logger->messages[] = $messsageData;
-        $logger->flush(true);
+        $db = $this->createMock(ConnectionInterface::class);
+        $db->method('createCommand')->willReturn($command);
 
-        // current db connection should still have a transaction
-        $this->assertNotNull($db->transaction);
-        // log db connection should not have transaction
-        $this->assertNull($this->app->getLogger()->getTargets()['db']->getDb()->transaction);
+        $this->expectException(RuntimeException::class);
+        $this->createDbTarget($db)->collect([new Message(LogLevel::INFO, 'Message')], true);
+    }
 
-        $tx->rollBack();
+    private function createDbTarget(ConnectionInterface $db = null, string $table = 'log'): DbTarget
+    {
+        $target = new DbTarget($db ?? $this->getContainer()->get(ConnectionInterface::class), $table);
+        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        return $target;
+    }
 
-        $count = (new Query())
-            ->from(self::$logTable)
-            ->where(['category' => 'test', 'message' => 'test'])
-            ->count();
-        static::assertEquals(1, $count);
+    private function findData(string $table): array
+    {
+        return (new Query($this->getContainer()->get(ConnectionInterface::class)))->from($table)->all();
     }
 }
