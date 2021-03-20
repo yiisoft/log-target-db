@@ -66,7 +66,7 @@ For use in the [Yii framework](http://www.yiiframework.com/), see the configurat
 You need to set up a database connection and run this console command to create tables to store the log messages:
 
 ```shell
-./vendor/bin/yii migrate/up
+./yii migrate/up
 ```
 
 See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
