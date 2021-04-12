@@ -55,7 +55,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
 
                 CacheInterface::class => [
-                    '__class' => Cache::class,
+                    'class' => Cache::class,
                     '__construct()' => [Reference::to(ArrayCache::class)],
                 ],
 
@@ -65,7 +65,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ]),
 
                 ConnectionInterface::class => [
-                    '__class' => SqlLiteConnection::class,
+                    'class' => SqlLiteConnection::class,
                     '__construct()' => [
                         'sqlite:' . self::DB_FILE,
                     ],
