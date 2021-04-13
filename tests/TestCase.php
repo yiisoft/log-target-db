@@ -17,7 +17,7 @@ use Yiisoft\Db\Sqlite\Connection as SqlLiteConnection;
 use Yiisoft\Di\Container;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
-use Yiisoft\Factory\Definitions\Reference;
+use Yiisoft\Factory\Definition\Reference;
 use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Profiler\Profiler;
@@ -55,7 +55,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ],
 
                 CacheInterface::class => [
-                    '__class' => Cache::class,
+                    'class' => Cache::class,
                     '__construct()' => [Reference::to(ArrayCache::class)],
                 ],
 
@@ -65,7 +65,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ]),
 
                 ConnectionInterface::class => [
-                    '__class' => SqlLiteConnection::class,
+                    'class' => SqlLiteConnection::class,
                     '__construct()' => [
                         'sqlite:' . self::DB_FILE,
                     ],
