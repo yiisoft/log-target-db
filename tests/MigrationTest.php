@@ -69,7 +69,7 @@ final class MigrationTest extends TestCase
     public function testConstructorThrowExceptionForNotYiiLogger(): void
     {
         $this->expectException(RuntimeException::class);
-        new M202101052207CreateLog(new class() extends AbstractLogger implements LoggerInterface {
+        new M202101052207CreateLog(new class () extends AbstractLogger implements LoggerInterface {
             public function log($level, $message, array $context = []): void
             {
             }
