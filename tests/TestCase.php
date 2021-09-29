@@ -13,11 +13,12 @@ use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
 use Yiisoft\Cache\CacheInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Factory\DatabaseFactory;
 use Yiisoft\Db\Sqlite\Connection as SqlLiteConnection;
+use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
-use Yiisoft\Definitions\Reference;
 use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Profiler\Profiler;
@@ -49,9 +50,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if ($this->container === null) {
             $this->container = new Container([
                 Aliases::class => [
-                    '@root' => dirname(__DIR__, 2),
-                    '@runtime' => __DIR__ . '/runtime',
-                    '@yiisoft/yii/db/migration' => '@root',
+                    'class' => Aliases::class,
+                    '__construct()' => [
+                        '@root' => dirname(__DIR__, 2),
+                        '@runtime' => __DIR__ . '/runtime',
+                        '@yiisoft/yii/db/migration' => '@root',
+                    ],
                 ],
 
                 CacheInterface::class => [
@@ -77,6 +81,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ProfilerInterface::class => Profiler::class,
             ]);
         }
+
+        DatabaseFactory::initialize($this->container, []);
 
         return $this->container;
     }
