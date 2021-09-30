@@ -13,7 +13,6 @@ use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
 use Yiisoft\Cache\CacheInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Db\Factory\DatabaseFactory;
 use Yiisoft\Db\Sqlite\Connection as SqlLiteConnection;
 use Yiisoft\Definitions\DynamicReference;
 use Yiisoft\Definitions\Reference;
