@@ -15,6 +15,7 @@ use Yiisoft\Cache\CacheInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Factory\DatabaseFactory;
 use Yiisoft\Db\Sqlite\Connection as SqlLiteConnection;
+use Yiisoft\Definitions\DynamicReference;
 use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
@@ -63,16 +64,19 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     '__construct()' => [Reference::to(ArrayCache::class)],
                 ],
 
-                LoggerInterface::class => static fn (ContainerInterface $container) => new Logger([
+                Logger::class => static fn (ContainerInterface $container) => new Logger([
                     new DbTarget($container->get(ConnectionInterface::class), 'test-table-1'),
                     new DbTarget($container->get(ConnectionInterface::class), 'test-table-2'),
                 ]),
+
+                LoggerInterface::class => Logger::class,
 
                 ConnectionInterface::class => [
                     'class' => SqlLiteConnection::class,
                     '__construct()' => [
                         'sqlite:' . self::DB_FILE,
                     ],
+                    'setLogger()' => [DynamicReference::to(Logger::class)],
                 ],
 
                 MigrationInformerInterface::class => NullMigrationInformer::class,
@@ -81,8 +85,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 ProfilerInterface::class => Profiler::class,
             ]);
         }
-
-        DatabaseFactory::initialize($this->container, []);
 
         return $this->container;
     }
