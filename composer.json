@@ -21,7 +21,7 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.4|^8.0",
-        "yiisoft/db": "dev-move-schemacache-to-schema-class as 3.0",
+        "yiisoft/db": "^3.0",
         "yiisoft/log": "^1.0",
         "yiisoft/yii-db-migration": "^1.0"
     },
@@ -30,7 +30,7 @@
         "roave/infection-static-analysis-plugin": "^1.6",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.4",
-        "yiisoft/db-sqlite": "dev-refactore-code as 3.0",
+        "yiisoft/db-sqlite": "^3.0",
         "yiisoft/di": "^3.0"
     },
     "autoload": {
@@ -60,15 +60,5 @@
     "scripts": {
         "test": "phpunit --testdox --no-interaction",
         "test-watch": "phpunit-watcher watch"
-    },
-    "repositories": [
-        {
-            "type": "github",
-            "url": "https://github.com/terabytesoftw/db"
-        },
-        {
-            "type": "github",
-            "url": "https://github.com/terabytesoftw/db-sqlite"
-        }
-    ]
+    }
 }
