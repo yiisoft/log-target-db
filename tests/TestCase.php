@@ -52,7 +52,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $config = ContainerConfig::create()
                 ->withDefinitions([
                     Aliases::class => [
-                        'class' => Aliases::class,
                         '__construct()' => [
                             '@root' => dirname(__DIR__, 2),
                             '@runtime' => __DIR__ . '/runtime',
