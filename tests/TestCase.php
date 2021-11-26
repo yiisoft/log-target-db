@@ -17,6 +17,7 @@ use Yiisoft\Db\Sqlite\Connection as SqlLiteConnection;
 use Yiisoft\Definitions\DynamicReference;
 use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
+use Yiisoft\Di\ContainerConfig;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
 use Yiisoft\EventDispatcher\Provider\Provider;
 use Yiisoft\Log\Logger;
@@ -48,41 +49,43 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function getContainer(): Container
     {
         if ($this->container === null) {
-            $this->container = new Container([
-                Aliases::class => [
-                    'class' => Aliases::class,
-                    '__construct()' => [
-                        '@root' => dirname(__DIR__, 2),
-                        '@runtime' => __DIR__ . '/runtime',
-                        '@yiisoft/yii/db/migration' => '@root',
+            $config = ContainerConfig::create()
+                ->withDefinitions([
+                    Aliases::class => [
+                        'class' => Aliases::class,
+                        '__construct()' => [
+                            '@root' => dirname(__DIR__, 2),
+                            '@runtime' => __DIR__ . '/runtime',
+                            '@yiisoft/yii/db/migration' => '@root',
+                        ],
                     ],
-                ],
 
-                CacheInterface::class => [
-                    'class' => Cache::class,
-                    '__construct()' => [Reference::to(ArrayCache::class)],
-                ],
-
-                Logger::class => static fn (ContainerInterface $container) => new Logger([
-                    new DbTarget($container->get(ConnectionInterface::class), 'test-table-1'),
-                    new DbTarget($container->get(ConnectionInterface::class), 'test-table-2'),
-                ]),
-
-                LoggerInterface::class => Logger::class,
-
-                ConnectionInterface::class => [
-                    'class' => SqlLiteConnection::class,
-                    '__construct()' => [
-                        'sqlite:' . self::DB_FILE,
+                    CacheInterface::class => [
+                        'class' => Cache::class,
+                        '__construct()' => [Reference::to(ArrayCache::class)],
                     ],
-                    'setLogger()' => [DynamicReference::to(Logger::class)],
-                ],
 
-                MigrationInformerInterface::class => NullMigrationInformer::class,
-                EventDispatcherInterface::class => Dispatcher::class,
-                ListenerProviderInterface::class => Provider::class,
-                ProfilerInterface::class => Profiler::class,
-            ]);
+                    Logger::class => static fn (ContainerInterface $container) => new Logger([
+                        new DbTarget($container->get(ConnectionInterface::class), 'test-table-1'),
+                        new DbTarget($container->get(ConnectionInterface::class), 'test-table-2'),
+                    ]),
+
+                    LoggerInterface::class => Logger::class,
+
+                    ConnectionInterface::class => [
+                        'class' => SqlLiteConnection::class,
+                        '__construct()' => [
+                            'sqlite:' . self::DB_FILE,
+                        ],
+                        'setLogger()' => [DynamicReference::to(Logger::class)],
+                    ],
+
+                    MigrationInformerInterface::class => NullMigrationInformer::class,
+                    EventDispatcherInterface::class => Dispatcher::class,
+                    ListenerProviderInterface::class => Provider::class,
+                    ProfilerInterface::class => Profiler::class,
+                ]);
+            $this->container = new Container($config);
         }
 
         return $this->container;
