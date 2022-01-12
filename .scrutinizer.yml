@@ -6,6 +6,8 @@ filter:
     - "src/*"
 
 build:
+  image: default-bionic
+
   environment:
     php:
       version: 8.0.11
@@ -26,10 +28,8 @@ build:
 
       tests:
         override:
-          - command: ./vendor/bin/phpunit --coverage-clover ./coverage.xml
+          - command: "./vendor/bin/phpunit --coverage-clover ./coverage.xml"
             on_node: 1
             coverage:
               file: coverage.xml
               format: php-clover
-
-
