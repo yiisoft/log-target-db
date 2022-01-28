@@ -21,8 +21,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "ext-pdo": "*",
         "php": "^7.4|^8.0",
+        "ext-pdo": "*",
         "yiisoft/db": "^3.0@dev",
         "yiisoft/log": "^1.0",
         "yiisoft/yii-db-migration": "^1.0@dev"
