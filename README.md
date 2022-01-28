@@ -17,12 +17,17 @@
 
 This package provides the Database target for the [yiisoft/log](https://github.com/yiisoft/log) library.
 
+## Requirements
+
+- PHP 7.4 or higher.
+- `PDO` PHP extension.
+
 ## Installation
 
 The package could be installed with composer:
 
 ```
-composer require yiisoft/log-target-db
+composer require yiisoft/log-target-db --prefer-dist
 ```
 
 ## General usage
@@ -70,6 +75,8 @@ You need to set up a database connection and run this console command to create 
 ```
 
 See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+
+## Testing
 
 ### Unit testing
 
