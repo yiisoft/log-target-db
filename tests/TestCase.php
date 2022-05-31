@@ -37,10 +37,17 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function tearDown(): void
     {
-        $db = $this->getContainer()->get(ConnectionInterface::class);
+        $db = $this
+            ->getContainer()
+            ->get(ConnectionInterface::class);
 
-        foreach ($db->getSchema()->getTableNames() as $tableName) {
-            $db->createCommand()->dropTable($tableName)->execute();
+        foreach ($db
+                     ->getSchema()
+                     ->getTableNames() as $tableName) {
+            $db
+                ->createCommand()
+                ->dropTable($tableName)
+                ->execute();
         }
 
         unset($this->container);

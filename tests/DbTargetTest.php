@@ -25,11 +25,17 @@ final class DbTargetTest extends TestCase
         parent::setUp();
 
         $migration = new M202101052207CreateLog(
-            $this->getContainer()->get(LoggerInterface::class),
-            $this->getContainer()->get(MigrationInformerInterface::class),
+            $this
+                ->getContainer()
+                ->get(LoggerInterface::class),
+            $this
+                ->getContainer()
+                ->get(MigrationInformerInterface::class),
         );
 
-        $migration->up($this->getContainer()->get(MigrationBuilder::class));
+        $migration->up($this
+            ->getContainer()
+            ->get(MigrationBuilder::class));
     }
 
     public function testGetters(): void
@@ -37,21 +43,27 @@ final class DbTargetTest extends TestCase
         $target = $this->createDbTarget();
 
         $this->assertSame('log', $target->getTable());
-        $this->assertSame($this->getContainer()->get(ConnectionInterface::class), $target->getDb());
+        $this->assertSame($this
+            ->getContainer()
+            ->get(ConnectionInterface::class), $target->getDb());
     }
 
     public function testExport(): void
     {
         $time = microtime(true);
 
-        $this->createDbTarget(null, 'test-table-1')->collect([
-            new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
-        ], true);
+        $this
+            ->createDbTarget(null, 'test-table-1')
+            ->collect([
+                new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
+            ], true);
 
-        $this->createDbTarget(null, 'test-table-2')->collect([
-            new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
-            new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
-        ], true);
+        $this
+            ->createDbTarget(null, 'test-table-2')
+            ->collect([
+                new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
+                new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
+            ], true);
 
         $this->assertSame(
             [
@@ -89,36 +101,51 @@ final class DbTargetTest extends TestCase
 
     public function testExportWithEmptyMessages(): void
     {
-        $this->createDbTarget(null, 'test-table-1')->collect([], true);
+        $this
+            ->createDbTarget(null, 'test-table-1')
+            ->collect([], true);
 
         $this->assertSame([], $this->findData('test-table-1'));
     }
 
     public function testExportWithStoreFailure(): void
     {
-        $command = $this->getMockBuilder(Command::class)
+        $command = $this
+            ->getMockBuilder(Command::class)
             ->onlyMethods(['execute'])
             ->disableOriginalConstructor()
             ->getMockForAbstractClass()
         ;
-        $command->method('execute')->willReturn(0);
+        $command
+            ->method('execute')
+            ->willReturn(0);
 
         $db = $this->createMock(ConnectionInterface::class);
-        $db->method('createCommand')->willReturn($command);
+        $db
+            ->method('createCommand')
+            ->willReturn($command);
 
         $this->expectException(RuntimeException::class);
-        $this->createDbTarget($db)->collect([new Message(LogLevel::INFO, 'Message')], true);
+        $this
+            ->createDbTarget($db)
+            ->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
 
     private function createDbTarget(ConnectionInterface $db = null, string $table = 'log'): DbTarget
     {
-        $target = new DbTarget($db ?? $this->getContainer()->get(ConnectionInterface::class), $table);
+        $target = new DbTarget($db ?? $this
+                ->getContainer()
+                ->get(ConnectionInterface::class), $table);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
         return $target;
     }
 
     private function findData(string $table): array
     {
-        return (new Query($this->getContainer()->get(ConnectionInterface::class)))->from($table)->all();
+        return (new Query($this
+            ->getContainer()
+            ->get(ConnectionInterface::class)))
+            ->from($table)
+            ->all();
     }
 }

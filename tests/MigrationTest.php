@@ -23,23 +23,31 @@ final class MigrationTest extends TestCase
     {
         parent::setUp();
 
-        $this->migrationInformer = $this->getContainer()->get(MigrationInformerInterface::class);
+        $this->migrationInformer = $this
+            ->getContainer()
+            ->get(MigrationInformerInterface::class);
     }
 
     public function testUpAndDown(): void
     {
         $migration = new M202101052207CreateLog(
-            $this->getContainer()->get(LoggerInterface::class),
+            $this
+                ->getContainer()
+                ->get(LoggerInterface::class),
             $this->migrationInformer,
         );
 
-        $migration->up($this->getContainer()->get(MigrationBuilder::class));
+        $migration->up($this
+            ->getContainer()
+            ->get(MigrationBuilder::class));
 
         $this->assertTrue($this->tableExists('test-table-1'));
         $this->assertTrue($this->tableExists('test-table-2'));
         $this->assertFalse($this->tableExists('table-not-exist'));
 
-        $migration->down($this->getContainer()->get(MigrationBuilder::class));
+        $migration->down($this
+            ->getContainer()
+            ->get(MigrationBuilder::class));
 
         $this->assertFalse($this->tableExists('test-table-1'));
         $this->assertFalse($this->tableExists('test-table-2'));
@@ -49,10 +57,14 @@ final class MigrationTest extends TestCase
     public function testUpWithCheckingEquivalenceOfConnectionInstance(): void
     {
         /** @var Logger $logger */
-        $logger = $this->getContainer()->get(LoggerInterface::class);
+        $logger = $this
+            ->getContainer()
+            ->get(LoggerInterface::class);
 
         $migration = new M202101052207CreateLog($logger, $this->migrationInformer);
-        $migration->up($this->getContainer()->get(MigrationBuilder::class));
+        $migration->up($this
+            ->getContainer()
+            ->get(MigrationBuilder::class));
 
         /** @var DbTarget[] $targets */
         $targets = $logger->getTargets();
@@ -78,9 +90,11 @@ final class MigrationTest extends TestCase
 
     private function tableExists(string $table): bool
     {
-        return (bool) $this->getContainer()->get(ConnectionInterface::class)
+        return (bool) $this
+            ->getContainer()
+            ->get(ConnectionInterface::class)
             ->createCommand("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{$table}'")
             ->queryScalar()
-        ;
+            ;
     }
 }
