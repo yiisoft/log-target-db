@@ -70,7 +70,9 @@ final class DbTarget extends Target
     {
         $defaultLogTime = microtime(true);
         $formattedMessages = $this->getFormattedMessages();
-        $table = $this->db->getSchema()->quoteTableName($this->table);
+        $table = $this->db
+            ->getSchema()
+            ->quoteTableName($this->table);
 
         $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
             . ' VALUES (:level, :category, :log_time, :message)';
@@ -79,12 +81,14 @@ final class DbTarget extends Target
             $command = $this->db->createCommand($sql);
 
             foreach ($this->getMessages() as $key => $message) {
-                if ($command->bindValues([
-                    ':level' => $message->level(),
-                    ':category' => $message->context('category', ''),
-                    ':log_time' => $message->context('time', $defaultLogTime),
-                    ':message' => $formattedMessages[$key],
-                ])->execute() > 0) {
+                if ($command
+                        ->bindValues([
+                            ':level' => $message->level(),
+                            ':category' => $message->context('category', ''),
+                            ':log_time' => $message->context('time', $defaultLogTime),
+                            ':message' => $formattedMessages[$key],
+                        ])
+                        ->execute() > 0) {
                     continue;
                 }
                 throw new RuntimeException(sprintf(
