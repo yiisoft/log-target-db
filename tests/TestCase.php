@@ -13,7 +13,8 @@ use Yiisoft\Cache\ArrayCache;
 use Yiisoft\Cache\Cache;
 use Yiisoft\Cache\CacheInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Db\Sqlite\Connection as SqlLiteConnection;
+use Yiisoft\Db\Sqlite\ConnectionPDO as SqlLiteConnection;
+use Yiisoft\Db\Sqlite\PDODriver;
 use Yiisoft\Definitions\DynamicReference;
 use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
@@ -31,8 +32,6 @@ use function dirname;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    protected const DB_FILE = __DIR__ . '/runtime/test.sq3';
-
     private ?Container $container = null;
 
     protected function tearDown(): void
@@ -41,13 +40,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             ->getContainer()
             ->get(ConnectionInterface::class);
 
-        foreach ($db
-                     ->getSchema()
-                     ->getTableNames() as $tableName) {
-            $db
-                ->createCommand()
-                ->dropTable($tableName)
-                ->execute();
+        foreach ($db->getSchema()->getTableNames() as $tableName) {
+            $db->createCommand()->dropTable($tableName)->execute();
         }
 
         unset($this->container);
@@ -81,7 +75,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     ConnectionInterface::class => [
                         'class' => SqlLiteConnection::class,
                         '__construct()' => [
-                            'sqlite:' . self::DB_FILE,
+                            new PDODriver('sqlite:' . __DIR__ . '/runtime/test.sq3'),
                         ],
                         'setLogger()' => [DynamicReference::to(Logger::class)],
                     ],

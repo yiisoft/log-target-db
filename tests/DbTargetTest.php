@@ -25,17 +25,11 @@ final class DbTargetTest extends TestCase
         parent::setUp();
 
         $migration = new M202101052207CreateLog(
-            $this
-                ->getContainer()
-                ->get(LoggerInterface::class),
-            $this
-                ->getContainer()
-                ->get(MigrationInformerInterface::class),
+            $this->getContainer()->get(LoggerInterface::class),
+            $this->getContainer()->get(MigrationInformerInterface::class),
         );
 
-        $migration->up($this
-            ->getContainer()
-            ->get(MigrationBuilder::class));
+        $migration->up($this->getContainer()->get(MigrationBuilder::class));
     }
 
     public function testGetters(): void
@@ -43,9 +37,7 @@ final class DbTargetTest extends TestCase
         $target = $this->createDbTarget();
 
         $this->assertSame('log', $target->getTable());
-        $this->assertSame($this
-            ->getContainer()
-            ->get(ConnectionInterface::class), $target->getDb());
+        $this->assertSame($this->getContainer()->get(ConnectionInterface::class), $target->getDb());
     }
 
     public function testExport(): void
@@ -114,16 +106,11 @@ final class DbTargetTest extends TestCase
             ->getMockBuilder(Command::class)
             ->onlyMethods(['execute'])
             ->disableOriginalConstructor()
-            ->getMockForAbstractClass()
-        ;
-        $command
-            ->method('execute')
-            ->willReturn(0);
+            ->getMockForAbstractClass();
+        $command->method('execute')->willReturn(0);
 
         $db = $this->createMock(ConnectionInterface::class);
-        $db
-            ->method('createCommand')
-            ->willReturn($command);
+        $db->method('createCommand')->willReturn($command);
 
         $this->expectException(RuntimeException::class);
         $this
@@ -137,6 +124,7 @@ final class DbTargetTest extends TestCase
                 ->getContainer()
                 ->get(ConnectionInterface::class), $table);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+
         return $target;
     }
 
