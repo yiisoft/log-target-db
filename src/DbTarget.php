@@ -6,7 +6,7 @@ namespace Yiisoft\Log\Target\Db;
 
 use RuntimeException;
 use Throwable;
-use Yiisoft\Db\Driver\PDO\ConnectionPDOInterface;
+use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Target;
 
 use function microtime;
@@ -20,9 +20,9 @@ use function microtime;
 final class DbTarget extends Target
 {
     /**
-     * @var ConnectionPDOInterface The database connection instance.
+     * @var ConnectionInterface The database connection instance.
      */
-    private ConnectionPDOInterface $db;
+    private ConnectionInterface $db;
 
     /**
      * @var string The name of the database table to store the log messages. Defaults to "log".
@@ -30,10 +30,10 @@ final class DbTarget extends Target
     private string $table;
 
     /**
-     * @param ConnectionPDOInterface $db The database connection instance.
+     * @param ConnectionInterface $db The database connection instance.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(ConnectionPDOInterface $db, string $table = '{{%log}}')
+    public function __construct(ConnectionInterface $db, string $table = '{{%log}}')
     {
         $this->db = $db;
         $this->table = $table;
@@ -43,16 +43,11 @@ final class DbTarget extends Target
     /**
      * Gets an instance of a database connection.
      *
-     * @return ConnectionPDOInterface
+     * @return ConnectionInterface
      */
-    public function getDb(): ConnectionPDOInterface
+    public function getDb(): ConnectionInterface
     {
         return $this->db;
-    }
-
-    public function getDsn(): string
-    {
-        return $this->db->getDriver()->getDsn();
     }
 
     /**

@@ -36,7 +36,7 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
 
         foreach ($logger->getTargets() as $target) {
             if ($target instanceof DbTarget) {
-                $this->targets[md5($target->getDsn() . ':' . $target->getTable())] = $target;
+                $this->targets[$target->getTable()] = $target;
             }
         }
 
