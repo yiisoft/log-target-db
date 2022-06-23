@@ -6,7 +6,7 @@ namespace Yiisoft\Log\Target\Db;
 
 use RuntimeException;
 use Throwable;
-use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Driver\PDO\ConnectionPDOInterface;
 use Yiisoft\Log\Target;
 
 use function microtime;
@@ -21,9 +21,9 @@ use function sprintf;
 final class DbTarget extends Target
 {
     /**
-     * @var ConnectionInterface The database connection instance.
+     * @var ConnectionPDOInterface The database connection instance.
      */
-    private ConnectionInterface $db;
+    private ConnectionPDOInterface $db;
 
     /**
      * @var string The name of the database table to store the log messages. Defaults to "log".
@@ -31,10 +31,10 @@ final class DbTarget extends Target
     private string $table;
 
     /**
-     * @param ConnectionInterface $db The database connection instance.
+     * @param ConnectionPDOInterface $db The database connection instance.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(ConnectionInterface $db, string $table = '{{%log}}')
+    public function __construct(ConnectionPDOInterface $db, string $table = '{{%log}}')
     {
         $this->db = $db;
         $this->table = $table;
@@ -44,11 +44,16 @@ final class DbTarget extends Target
     /**
      * Gets an instance of a database connection.
      *
-     * @return ConnectionInterface
+     * @return ConnectionPDOInterface
      */
-    public function getDb(): ConnectionInterface
+    public function getDb(): ConnectionPDOInterface
     {
         return $this->db;
+    }
+
+    public function getDsn(): string
+    {
+        return $this->db->getDriver()->getDsn();
     }
 
     /**
@@ -79,28 +84,19 @@ final class DbTarget extends Target
             $command = $this->db->createCommand($sql);
 
             foreach ($this->getMessages() as $key => $message) {
-                if (
-                        $command
-                            ->bindValues(
-                                [
-                                    ':level' => $message->level(),
-                                    ':category' => $message->context('category', ''),
-                                    ':log_time' => $message->context('time', $defaultLogTime),
-                                    ':message' => $formattedMessages[$key],
-                                ]
-                            )
-                            ->execute() > 0
-                ) {
-                    continue;
-                }
-                throw new RuntimeException(sprintf(
-                    'The log message is not written to the database "%s;table:%s".',
-                    $this->db->getDsn(),
-                    $table,
-                ));
+                $command
+                    ->bindValues(
+                        [
+                            ':level' => $message->level(),
+                            ':category' => $message->context('category', ''),
+                            ':log_time' => $message->context('time', $defaultLogTime),
+                            ':message' => $formattedMessages[$key],
+                        ]
+                    )
+                    ->execute();
             }
         } catch (Throwable $e) {
-            throw new RuntimeException('Unable to export log through database.', 0, $e);
+            throw new RuntimeException('Unable to export log through database.');
         }
     }
 }

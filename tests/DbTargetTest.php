@@ -28,7 +28,6 @@ final class DbTargetTest extends TestCase
             $this->getContainer()->get(LoggerInterface::class),
             $this->getContainer()->get(MigrationInformerInterface::class),
         );
-
         $migration->up($this->getContainer()->get(MigrationBuilder::class));
     }
 
@@ -46,16 +45,22 @@ final class DbTargetTest extends TestCase
 
         $this
             ->createDbTarget(null, 'test-table-1')
-            ->collect([
-                new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
-            ], true);
+            ->collect(
+                [
+                    new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
+                ],
+                true,
+            );
 
         $this
             ->createDbTarget(null, 'test-table-2')
-            ->collect([
-                new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
-                new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
-            ], true);
+            ->collect(
+                [
+                    new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
+                    new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
+                ],
+                true,
+            );
 
         $this->assertSame(
             [
@@ -93,36 +98,19 @@ final class DbTargetTest extends TestCase
 
     public function testExportWithEmptyMessages(): void
     {
-        $this
-            ->createDbTarget(null, 'test-table-1')
-            ->collect([], true);
-
+        $this->createDbTarget(null, 'test-table-1')->collect([], true);
         $this->assertSame([], $this->findData('test-table-1'));
     }
 
     public function testExportWithStoreFailure(): void
     {
-        $command = $this
-            ->getMockBuilder(Command::class)
-            ->onlyMethods(['execute'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-        $command->method('execute')->willReturn(0);
-
-        $db = $this->createMock(ConnectionInterface::class);
-        $db->method('createCommand')->willReturn($command);
-
         $this->expectException(RuntimeException::class);
-        $this
-            ->createDbTarget($db)
-            ->collect([new Message(LogLevel::INFO, 'Message')], true);
+        $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
 
     private function createDbTarget(ConnectionInterface $db = null, string $table = 'log'): DbTarget
     {
-        $target = new DbTarget($db ?? $this
-                ->getContainer()
-                ->get(ConnectionInterface::class), $table);
+        $target = new DbTarget($db ?? $this->getContainer()->get(ConnectionInterface::class), $table);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
 
         return $target;
@@ -130,10 +118,6 @@ final class DbTargetTest extends TestCase
 
     private function findData(string $table): array
     {
-        return (new Query($this
-            ->getContainer()
-            ->get(ConnectionInterface::class)))
-            ->from($table)
-            ->all();
+        return (new Query($this->getContainer()->get(ConnectionInterface::class)))->from($table)->all();
     }
 }
