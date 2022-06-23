@@ -95,7 +95,7 @@ final class DbTarget extends Target
                     ->execute();
             }
         } catch (Throwable $e) {
-            throw new RuntimeException('Unable to export log through database.');
+            throw new RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 }

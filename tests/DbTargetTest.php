@@ -104,6 +104,7 @@ final class DbTargetTest extends TestCase
     public function testExportWithStoreFailure(): void
     {
         $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('SQLSTATE[HY000]: General error: 1 no such table: log');
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
 
