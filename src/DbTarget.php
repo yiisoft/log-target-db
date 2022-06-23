@@ -10,7 +10,6 @@ use Yiisoft\Db\Driver\PDO\ConnectionPDOInterface;
 use Yiisoft\Log\Target;
 
 use function microtime;
-use function sprintf;
 
 /**
  * DbTarget stores log messages in a database table.
