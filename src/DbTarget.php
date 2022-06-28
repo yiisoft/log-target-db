@@ -10,7 +10,6 @@ use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Target;
 
 use function microtime;
-use function sprintf;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -70,9 +69,7 @@ final class DbTarget extends Target
     {
         $defaultLogTime = microtime(true);
         $formattedMessages = $this->getFormattedMessages();
-        $table = $this->db
-            ->getSchema()
-            ->quoteTableName($this->table);
+        $table = $this->db->getQuoter()->quoteTableName($this->table);
 
         $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
             . ' VALUES (:level, :category, :log_time, :message)';
@@ -81,24 +78,19 @@ final class DbTarget extends Target
             $command = $this->db->createCommand($sql);
 
             foreach ($this->getMessages() as $key => $message) {
-                if ($command
-                        ->bindValues([
+                $command
+                    ->bindValues(
+                        [
                             ':level' => $message->level(),
                             ':category' => $message->context('category', ''),
                             ':log_time' => $message->context('time', $defaultLogTime),
                             ':message' => $formattedMessages[$key],
-                        ])
-                        ->execute() > 0) {
-                    continue;
-                }
-                throw new RuntimeException(sprintf(
-                    'The log message is not written to the database "%s;table:%s".',
-                    $this->db->getDsn(),
-                    $table,
-                ));
+                        ]
+                    )
+                    ->execute();
             }
         } catch (Throwable $e) {
-            throw new RuntimeException('Unable to export log through database.', 0, $e);
+            throw new RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 }
