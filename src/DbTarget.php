@@ -20,30 +20,16 @@ use function microtime;
 final class DbTarget extends Target
 {
     /**
-     * @var ConnectionInterface The database connection instance.
-     */
-    private ConnectionInterface $db;
-
-    /**
-     * @var string The name of the database table to store the log messages. Defaults to "log".
-     */
-    private string $table;
-
-    /**
      * @param ConnectionInterface $db The database connection instance.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(ConnectionInterface $db, string $table = '{{%log}}')
+    public function __construct(private ConnectionInterface $db, private string $table = '{{%log}}')
     {
-        $this->db = $db;
-        $this->table = $table;
         parent::__construct();
     }
 
     /**
      * Gets an instance of a database connection.
-     *
-     * @return ConnectionInterface
      */
     public function getDb(): ConnectionInterface
     {
@@ -52,8 +38,6 @@ final class DbTarget extends Target
 
     /**
      * Gets the name of the database table to store the log messages.
-     *
-     * @return string
      */
     public function getTable(): string
     {
