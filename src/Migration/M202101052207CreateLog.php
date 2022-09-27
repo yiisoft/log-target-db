@@ -17,14 +17,12 @@ use Yiisoft\Yii\Db\Migration\RevertibleMigrationInterface;
  */
 final class M202101052207CreateLog implements RevertibleMigrationInterface
 {
-    private MigrationInformerInterface $migrationInformer;
-
     /**
      * @var DbTarget[] Targets for creating a log table.
      */
     private array $targets = [];
 
-    public function __construct(LoggerInterface $logger, MigrationInformerInterface $migrationInformer)
+    public function __construct(LoggerInterface $logger, private MigrationInformerInterface $migrationInformer)
     {
         if (!($logger instanceof Logger)) {
             throw new RuntimeException(
@@ -44,8 +42,6 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
                 . ' one or more database targets before executing this migration.'
             );
         }
-
-        $this->migrationInformer = $migrationInformer;
     }
 
     public function up(MigrationBuilder $b): void
