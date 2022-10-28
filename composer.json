@@ -23,6 +23,7 @@
     "require": {
         "php": "^8.0",
         "ext-pdo": "*",
+        "psr/log": "^3.0",
         "yiisoft/db": "^3.0@dev",
         "yiisoft/log": "^2.0",
         "yiisoft/yii-db-migration": "^1.0@dev"
