@@ -12,7 +12,7 @@ use Yiisoft\Log\Target;
 use function microtime;
 
 /**
- * DbTarget stores log messages in a database table.
+ * `DbTarget` stores log messages in a database table.
  *
  * Database schema could be initialized by applying migration:
  * {@see \Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog}.
@@ -23,8 +23,10 @@ final class DbTarget extends Target
      * @param ConnectionInterface $db The database connection instance.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
-    public function __construct(private ConnectionInterface $db, private string $table = '{{%log}}')
-    {
+    public function __construct(
+        private ConnectionInterface $db,
+        private string $table = '{{%log}}'
+    ) {
         parent::__construct();
     }
 

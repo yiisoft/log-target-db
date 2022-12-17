@@ -22,8 +22,10 @@ final class M202101052207CreateLog implements RevertibleMigrationInterface
      */
     private array $targets = [];
 
-    public function __construct(LoggerInterface $logger, private MigrationInformerInterface $migrationInformer)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        private MigrationInformerInterface $migrationInformer
+    ) {
         if (!($logger instanceof Logger)) {
             throw new RuntimeException(
                 'Implementation of the "\Psr\Log\LoggerInterface" must be an instance of the "\Yiisoft\Log\Logger".'
