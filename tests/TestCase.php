@@ -8,15 +8,12 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Cache\ArrayCache;
-use Yiisoft\Cache\Cache;
-use Yiisoft\Cache\CacheInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Sqlite\ConnectionPDO as SqlLiteConnection;
 use Yiisoft\Db\Sqlite\PDODriver;
 use Yiisoft\Definitions\DynamicReference;
-use Yiisoft\Definitions\Reference;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
 use Yiisoft\EventDispatcher\Dispatcher\Dispatcher;
@@ -25,6 +22,7 @@ use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\Db\DbTarget;
 use Yiisoft\Profiler\Profiler;
 use Yiisoft\Profiler\ProfilerInterface;
+use Yiisoft\Test\Support\SimpleCache\MemorySimpleCache;
 use Yiisoft\Yii\Db\Migration\Informer\MigrationInformerInterface;
 use Yiisoft\Yii\Db\Migration\Informer\NullMigrationInformer;
 
@@ -58,10 +56,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                         ],
                     ],
 
-                    CacheInterface::class => [
-                        'class' => Cache::class,
-                        '__construct()' => [Reference::to(ArrayCache::class)],
-                    ],
+                    CacheInterface::class => MemorySimpleCache::class,
 
                     Logger::class => static fn (ContainerInterface $container) => new Logger([
                         new DbTarget($container->get(ConnectionInterface::class), 'test-table-1'),
