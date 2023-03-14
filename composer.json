@@ -38,7 +38,7 @@
         "yiisoft/db-sqlite": "^3.0@dev",
         "yiisoft/di": "^1.0",
         "yiisoft/test-support": "^3.0",
-        "yiisoft/yii-event": "^1.0@dev"
+        "yiisoft/yii-event": "^2.0@dev"
     },
     "autoload": {
         "psr-4": {
