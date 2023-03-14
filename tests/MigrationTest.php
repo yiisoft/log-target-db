@@ -95,6 +95,6 @@ final class MigrationTest extends TestCase
             ->get(ConnectionInterface::class)
             ->createCommand("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='{$table}'")
             ->queryScalar()
-            ;
+        ;
     }
 }
