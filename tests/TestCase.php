@@ -11,8 +11,8 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Yiisoft\Aliases\Aliases;
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Db\Sqlite\ConnectionPDO as SqlLiteConnection;
-use Yiisoft\Db\Sqlite\PDODriver;
+use Yiisoft\Db\Sqlite\PdoConnection;
+use Yiisoft\Db\Sqlite\PdoDriver;
 use Yiisoft\Definitions\DynamicReference;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
@@ -66,9 +66,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     LoggerInterface::class => Logger::class,
 
                     ConnectionInterface::class => [
-                        'class' => SqlLiteConnection::class,
+                        'class' => PdoConnection::class,
                         '__construct()' => [
-                            new PDODriver('sqlite:' . __DIR__ . '/runtime/test.sq3'),
+                            new PdoDriver('sqlite:' . __DIR__ . '/runtime/test.sq3'),
                         ],
                         'setLogger()' => [DynamicReference::to(Logger::class)],
                     ],
