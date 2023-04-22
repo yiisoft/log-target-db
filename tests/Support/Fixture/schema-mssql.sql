@@ -8,7 +8,7 @@ CREATE TABLE [dbo].[test-table-1] (
     [id] BIGINT IDENTITY NOT NULL,
     [level] NVARCHAR(16),
     [category] NVARCHAR(255),
-    [log_time] DECIMAL(14, 4),
+    [log_time] DECIMAL(15, 4),
     [message] TEXT,
     CONSTRAINT [PK_test-table-1] PRIMARY KEY CLUSTERED (
         [id] ASC
@@ -22,7 +22,7 @@ CREATE TABLE [dbo].[test-table-2] (
     [id] BIGINT IDENTITY NOT NULL,
     [level] NVARCHAR(16),
     [category] NVARCHAR(255),
-    [log_time] DECIMAL(14, 4),
+    [log_time] DECIMAL(15, 4),
     [message] TEXT,
     CONSTRAINT [PK_test-table-2] PRIMARY KEY CLUSTERED (
         [id] ASC
