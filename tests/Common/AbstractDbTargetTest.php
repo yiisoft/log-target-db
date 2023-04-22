@@ -41,7 +41,7 @@ abstract class AbstractDbTargetTest extends TestCase
 
     public function testExport(): void
     {
-        $time = microtime(true);
+        $time = round(microtime(true), 4);
 
         $this
             ->createDbTarget('{{%test-table-1}}')
