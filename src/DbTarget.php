@@ -58,7 +58,7 @@ final class DbTarget extends Target
         $table = $this->db->getQuoter()->quoteTableName($this->table);
 
         $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
-            . ' VALUES (:level, :category, :log_time, :message)';
+            . ' VALUES (:levellog, :category, :log_time, :message)';
 
         try {
             $command = $this->db->createCommand($sql);
@@ -67,7 +67,7 @@ final class DbTarget extends Target
                 $command
                     ->bindValues(
                         [
-                            ':level' => $message->level(),
+                            ':levellog' => $message->level(),
                             ':category' => $message->context('category', ''),
                             ':log_time' => $message->context('time', $defaultLogTime),
                             ':message' => $formattedMessages[$key],

@@ -2,32 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log\Target\Db\Tests;
+namespace Yiisoft\Log\Target\Db\Tests\Common;
 
-use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
-use RuntimeException;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
-use Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog;
-use Yiisoft\Yii\Db\Migration\Informer\MigrationInformerInterface;
-use Yiisoft\Yii\Db\Migration\MigrationBuilder;
 
 use function microtime;
 
-final class DbTargetTest extends TestCase
+abstract class AbstractDbTargetTest extends TestCase
 {
-    public function setUp(): void
+    protected ConnectionInterface $db;
+
+    protected function setUp(): void
     {
         parent::setUp();
+    }
 
-        $migration = new M202101052207CreateLog(
-            $this->getContainer()->get(LoggerInterface::class),
-            $this->getContainer()->get(MigrationInformerInterface::class),
-        );
-        $migration->up($this->getContainer()->get(MigrationBuilder::class));
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->db->close();
+
+        unset($this->db);
     }
 
     public function testGetters(): void
@@ -35,7 +36,7 @@ final class DbTargetTest extends TestCase
         $target = $this->createDbTarget();
 
         $this->assertSame('log', $target->getTable());
-        $this->assertSame($this->getContainer()->get(ConnectionInterface::class), $target->getDb());
+        $this->assertSame($this->db, $target->getDb());
     }
 
     public function testExport(): void
@@ -43,7 +44,7 @@ final class DbTargetTest extends TestCase
         $time = microtime(true);
 
         $this
-            ->createDbTarget(null, 'test-table-1')
+            ->createDbTarget('{{%test-table-1}}')
             ->collect(
                 [
                     new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
@@ -52,7 +53,7 @@ final class DbTargetTest extends TestCase
             );
 
         $this
-            ->createDbTarget(null, 'test-table-2')
+            ->createDbTarget('{{%test-table-2}}')
             ->collect(
                 [
                     new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
@@ -61,7 +62,7 @@ final class DbTargetTest extends TestCase
                 true,
             );
 
-        $this->assertSame(
+        $this->assertEquals(
             [
                 [
                     'id' => '1',
@@ -74,7 +75,7 @@ final class DbTargetTest extends TestCase
             $this->findData('test-table-1'),
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             [
                 [
                     'id' => '1',
@@ -97,20 +98,13 @@ final class DbTargetTest extends TestCase
 
     public function testExportWithEmptyMessages(): void
     {
-        $this->createDbTarget(null, 'test-table-1')->collect([], true);
+        $this->createDbTarget('test-table-1')->collect([], true);
         $this->assertSame([], $this->findData('test-table-1'));
     }
 
-    public function testExportWithStoreFailure(): void
+    protected function createDbTarget(string $table = 'log'): DbTarget
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('SQLSTATE[HY000]: General error: 1 no such table: log');
-        $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
-    }
-
-    private function createDbTarget(ConnectionInterface $db = null, string $table = 'log'): DbTarget
-    {
-        $target = new DbTarget($db ?? $this->getContainer()->get(ConnectionInterface::class), $table);
+        $target = new DbTarget($this->db, $table);
         $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
 
         return $target;
@@ -118,6 +112,6 @@ final class DbTargetTest extends TestCase
 
     private function findData(string $table): array
     {
-        return (new Query($this->getContainer()->get(ConnectionInterface::class)))->from($table)->all();
+        return (new Query($this->db))->from($table)->all();
     }
 }
