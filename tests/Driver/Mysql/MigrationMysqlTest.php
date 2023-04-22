@@ -33,18 +33,34 @@ final class MigrationMysqlTest extends AbstractMigrationTest
 
         sort($indexes);
 
-        $this->assertSame(['category'], $indexes[0]->getColumnNames());
-        $this->assertSame("idx-$table-log-category", $indexes[0]->getName());
-        $this->assertFalse($indexes[0]->isUnique());
-        $this->assertFalse($indexes[0]->isPrimary());
+        if (version_compare(PHP_VERSION, '8.1', '>=')) {
+            $this->assertSame(['category'], $indexes[0]->getColumnNames());
+            $this->assertSame("idx-$table-log-category", $indexes[0]->getName());
+            $this->assertFalse($indexes[0]->isUnique());
+            $this->assertFalse($indexes[0]->isPrimary());
 
-        $this->assertSame(['id'], $indexes[1]->getColumnNames());
-        $this->assertTrue($indexes[1]->isUnique());
-        $this->assertTrue($indexes[1]->isPrimary());
+            $this->assertSame(['id'], $indexes[1]->getColumnNames());
+            $this->assertTrue($indexes[1]->isUnique());
+            $this->assertTrue($indexes[1]->isPrimary());
 
-        $this->assertSame(['level'], $indexes[2]->getColumnNames());
-        $this->assertSame("idx-$table-log-level", $indexes[2]->getName());
-        $this->assertFalse($indexes[2]->isUnique());
-        $this->assertFalse($indexes[2]->isPrimary());
+            $this->assertSame(['level'], $indexes[2]->getColumnNames());
+            $this->assertSame("idx-$table-log-level", $indexes[2]->getName());
+            $this->assertFalse($indexes[2]->isUnique());
+            $this->assertFalse($indexes[2]->isPrimary());
+        } else {
+            $this->assertSame(['category'], $indexes[0]->getColumnNames());
+            $this->assertSame("idx-$table-log-category", $indexes[0]->getName());
+            $this->assertFalse($indexes[0]->isUnique());
+            $this->assertFalse($indexes[0]->isPrimary());
+
+            $this->assertSame(['level'], $indexes[1]->getColumnNames());
+            $this->assertSame("idx-$table-log-level", $indexes[1]->getName());
+            $this->assertFalse($indexes[1]->isUnique());
+            $this->assertFalse($indexes[1]->isPrimary());
+
+            $this->assertSame(['id'], $indexes[2]->getColumnNames());
+            $this->assertTrue($indexes[2]->isUnique());
+            $this->assertTrue($indexes[2]->isPrimary());
+        }
     }
 }
