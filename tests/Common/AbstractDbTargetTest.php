@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db\Tests\Common;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Throwable;
@@ -19,6 +20,7 @@ use function microtime;
 abstract class AbstractDbTargetTest extends TestCase
 {
     protected ConnectionInterface $db;
+    protected string $time = '2023-04-23 12:34:56.123456';
 
     protected function tearDown(): void
     {
@@ -44,13 +46,11 @@ abstract class AbstractDbTargetTest extends TestCase
      */
     public function testExport(): void
     {
-        $time = round(microtime(true), 4);
-
         $this
             ->createDbTarget('{{%test-table-1}}')
             ->collect(
                 [
-                    new Message(LogLevel::INFO, 'Message', ['time' => $time, 'category' => 'application']),
+                    new Message(LogLevel::INFO, 'Message', ['time' => $this->time, 'category' => 'application']),
                 ],
                 true,
             );
@@ -59,8 +59,8 @@ abstract class AbstractDbTargetTest extends TestCase
             ->createDbTarget('{{%test-table-2}}')
             ->collect(
                 [
-                    new Message(LogLevel::ALERT, 'Message-1', ['time' => $time, 'category' => 'app']),
-                    new Message(LogLevel::ERROR, 'Message-2', ['time' => $time, 'foo' => 'bar']),
+                    new Message(LogLevel::ALERT, 'Message-1', ['time' => $this->time, 'category' => 'app']),
+                    new Message(LogLevel::ERROR, 'Message-2', ['time' => $this->time, 'foo' => 'bar']),
                 ],
                 true,
             );
@@ -71,7 +71,7 @@ abstract class AbstractDbTargetTest extends TestCase
                     'id' => '1',
                     'level' => LogLevel::INFO,
                     'category' => 'application',
-                    'log_time' => (string) $time,
+                    'log_time' => $this->time,
                     'message' => '[info] Message',
                 ],
             ],
@@ -84,18 +84,39 @@ abstract class AbstractDbTargetTest extends TestCase
                     'id' => '1',
                     'level' => LogLevel::ALERT,
                     'category' => 'app',
-                    'log_time' => (string) $time,
+                    'log_time' => $this->time,
                     'message' => '[alert] Message-1',
                 ],
                 [
                     'id' => '2',
                     'level' => LogLevel::ERROR,
                     'category' => '',
-                    'log_time' => (string) $time,
+                    'log_time' => $this->time,
                     'message' => '[error] Message-2',
                 ],
             ],
             $this->findData('test-table-2'),
+        );
+    }
+
+    public function testExportWithoutLogTime(): void
+    {
+        $this->createDbTarget('test-table-1')->collect([new Message(LogLevel::INFO, 'Message')], true);
+
+        $data = $this->findData('test-table-1');
+
+        $this->assertInstanceOf(DateTime::class, DateTime::createFromFormat('Y-m-d H:i:s.u', $data[0]['log_time']));
+        $this->assertEquals(
+            [
+                [
+                    'id' => '1',
+                    'level' => LogLevel::INFO,
+                    'category' => '',
+                    'log_time' => $data[0]['log_time'],
+                    'message' => '[info] Message',
+                ],
+            ],
+            $this->findData('test-table-1'),
         );
     }
 
@@ -123,7 +144,7 @@ abstract class AbstractDbTargetTest extends TestCase
      * @throws InvalidConfigException
      * @throws Throwable
      */
-    private function findData(string $table): array
+    protected function findData(string $table): array
     {
         return (new Query($this->db))->from($table)->all();
     }

@@ -9,7 +9,7 @@ CREATE TABLE "test-table-1"
     id BIGSERIAL NOT NULL PRIMARY KEY,
     level VARCHAR(16),
     category VARCHAR(255),
-    log_time DOUBLE PRECISION,
+    log_time TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
     message TEXT
 );
 
@@ -21,7 +21,7 @@ CREATE TABLE "test-table-2"
     id BIGSERIAL NOT NULL PRIMARY KEY,
     level VARCHAR(16),
     category VARCHAR(255),
-    log_time DOUBLE PRECISION,
+    log_time TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
     message TEXT
 );
 

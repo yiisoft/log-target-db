@@ -8,7 +8,7 @@ CREATE TABLE `test-table-1` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `level` VARCHAR(16),
     `category` VARCHAR(255),
-    `log_time` DOUBLE,
+    `log_time` TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
     `message` TEXT,
     CONSTRAINT `test-table-1-pk` PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -20,7 +20,7 @@ CREATE TABLE `test-table-2` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `level` VARCHAR(16),
     `category` VARCHAR(255),
-    `log_time` DOUBLE,
+    `log_time` TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
     `message` TEXT,
     CONSTRAINT `test-table-2-pk` PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

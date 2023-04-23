@@ -8,7 +8,7 @@ CREATE TABLE "log"
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     level VARCHAR(16),
     category VARCHAR(255),
-    log_time DOUBLE,
+    log_time TIMESTAMP(6) DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW', 'UTC')),
     message  TEXT
 );
 

@@ -11,7 +11,7 @@ CREATE TABLE "log"
     "id" NUMBER(20) NOT NULL PRIMARY KEY,
     "level" VARCHAR2(16),
     "category" VARCHAR2(255),
-    "log_time" DOUBLE PRECISION,
+    "log_time" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
     "message" CLOB
 );
 

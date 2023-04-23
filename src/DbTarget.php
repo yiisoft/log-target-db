@@ -52,28 +52,25 @@ final class DbTarget extends Target
      */
     protected function export(): void
     {
-        $defaultLogTime = microtime(true);
         $formattedMessages = $this->getFormattedMessages();
         $table = $this->db->getQuoter()->quoteTableName($this->table);
 
-        $sql = <<<SQL
-            INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]]) VALUES (:log_level, :category, :log_time, :message)
-        SQL;
-
         try {
-            $command = $this->db->createCommand($sql);
+            $command = $this->db->createCommand();
 
             foreach ($this->getMessages() as $key => $message) {
-                $command
-                    ->bindValues(
-                        [
-                            ':log_level' => $message->level(),
-                            ':category' => $message->context('category', ''),
-                            ':log_time' => $message->context('time', $defaultLogTime),
-                            ':message' => $formattedMessages[$key],
-                        ]
-                    )
-                    ->execute();
+                $columns = [
+                    'level' => $message->level(),
+                    'category' => $message->context('category', ''),
+                    'log_time' => $message->context('time', null),
+                    'message' => $formattedMessages[$key],
+                ];
+
+                if ($message->context('time') === null) {
+                    unset($columns['log_time']);
+                }
+
+                $command->insert($table, $columns)->execute();
             }
         } catch (Throwable $e) {
             throw new RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
