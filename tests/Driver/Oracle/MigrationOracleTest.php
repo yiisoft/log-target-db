@@ -44,7 +44,7 @@ final class MigrationOracleTest extends AbstractMigrationTest
         $schema = $this->db->getSchema();
 
         /** @psalm-var IndexConstraint[] $indexes */
-        $indexes = $schema->getTableIndexes($table);
+        $indexes = $schema->getTableIndexes($table, true);
 
         $this->assertSame(['category'], $indexes[0]->getColumnNames());
         $this->assertSame("IDX_$table-category", $indexes[0]->getName());

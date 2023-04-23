@@ -44,7 +44,7 @@ final class MigrationMssqlTest extends AbstractMigrationTest
         $schema = $this->db->getSchema();
 
         /** @psalm-var IndexConstraint[] $indexes */
-        $indexes = $schema->getTableIndexes($table);
+        $indexes = $schema->getTableIndexes($table, true);
 
         $this->assertSame(['id'], $indexes[0]->getColumnNames());
         $this->assertSame("PK_$table", $indexes[0]->getName());

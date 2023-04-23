@@ -44,7 +44,7 @@ final class MigrationMysqlTest extends AbstractMigrationTest
         $schema = $this->db->getSchema();
 
         /** @psalm-var IndexConstraint[] $indexes */
-        $indexes = $schema->getTableIndexes($table);
+        $indexes = $schema->getTableIndexes($table, true);
 
         sort($indexes);
 
