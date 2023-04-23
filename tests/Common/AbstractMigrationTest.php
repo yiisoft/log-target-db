@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db\Tests\Common;
 
-use DateTime;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Logger;

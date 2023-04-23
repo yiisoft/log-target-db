@@ -15,8 +15,6 @@ use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
 
-use function microtime;
-
 abstract class AbstractDbTargetTest extends TestCase
 {
     protected ConnectionInterface $db;

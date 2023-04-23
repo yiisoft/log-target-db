@@ -9,8 +9,6 @@ use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Target;
 
-use function microtime;
-
 /**
  * Stores log messages in a database table.
  *

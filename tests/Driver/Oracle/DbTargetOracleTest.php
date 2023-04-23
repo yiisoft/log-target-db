@@ -22,6 +22,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\OracleHelper;
 final class DbTargetOracleTest extends AbstractDbTargetTest
 {
     protected string $time = '23-APR-23 12.34.56.123456 PM';
+
     /**
      * @throws Exception
      * @throws InvalidConfigException
