@@ -1,5 +1,5 @@
 /**
- * Database schema required by yiisoft/log-target-db db for PostgreSQL.
+ * Database schema required by yiisoft/log-target-db for PostgreSQL.
  */
 DROP TABLE IF EXISTS "log";
 

@@ -12,10 +12,9 @@ use Yiisoft\Log\Target;
 use function microtime;
 
 /**
- * `DbTarget` stores log messages in a database table.
+ * Stores log messages in a database table.
  *
- * Database schema could be initialized by applying migration:
- * {@see \Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog}.
+ * Database schema can be initialized, you must apply the migration of the SQL file of the implementation to use.
  */
 final class DbTarget extends Target
 {
@@ -49,7 +48,7 @@ final class DbTarget extends Target
     /**
      * Stores log messages to the database.
      *
-     * @throws RuntimeException If the log cannot be exported.
+     * @throws RuntimeException If the log can't be exported.
      */
     protected function export(): void
     {
@@ -57,8 +56,9 @@ final class DbTarget extends Target
         $formattedMessages = $this->getFormattedMessages();
         $table = $this->db->getQuoter()->quoteTableName($this->table);
 
-        $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
-            . ' VALUES (:levellog, :category, :log_time, :message)';
+        $sql = <<<SQL
+            INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]]) VALUES (:log_level, :category, :log_time, :message)
+        SQL;
 
         try {
             $command = $this->db->createCommand($sql);
@@ -67,7 +67,7 @@ final class DbTarget extends Target
                 $command
                     ->bindValues(
                         [
-                            ':levellog' => $message->level(),
+                            ':log_level' => $message->level(),
                             ':category' => $message->context('category', ''),
                             ':log_time' => $message->context('time', $defaultLogTime),
                             ':message' => $formattedMessages[$key],

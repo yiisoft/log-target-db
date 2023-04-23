@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log\Target\Db\Tests\Pgsql;
+namespace Yiisoft\Log\Target\Db\Tests\Driver\Pgsql;
 
+use Yiisoft\Db\Constraint\IndexConstraint;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
 use Yiisoft\Log\Target\Db\Tests\Support\PgsqlHelper;
 
 /**
  * @group pgsql
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 final class MigrationPgsqlTest extends AbstractMigrationTest
 {
@@ -29,6 +32,7 @@ final class MigrationPgsqlTest extends AbstractMigrationTest
     {
         $schema = $this->db->getSchema();
 
+        /** @psalm-var IndexConstraint[] $indexes */
         $indexes = $schema->getTableIndexes($table);
 
         $this->assertSame(['id'], $indexes[0]->getColumnNames());

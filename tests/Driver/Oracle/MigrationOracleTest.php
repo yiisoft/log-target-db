@@ -2,16 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log\Target\Db\Tests\Oracle;
+namespace Yiisoft\Log\Target\Db\Tests\Driver\Oracle;
 
+use Yiisoft\Db\Constraint\IndexConstraint;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
 use Yiisoft\Log\Target\Db\Tests\Support\OracleHelper;
 
 /**
  * @group Oracle
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
  */
 final class MigrationOracleTest extends AbstractMigrationTest
 {
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     protected function setUp(): void
     {
         $this->db = (new OracleHelper())->createConnection();
@@ -29,6 +38,7 @@ final class MigrationOracleTest extends AbstractMigrationTest
     {
         $schema = $this->db->getSchema();
 
+        /** @psalm-var IndexConstraint[] $indexes */
         $indexes = $schema->getTableIndexes($table);
 
         $this->assertSame(['id'], $indexes[0]->getColumnNames());

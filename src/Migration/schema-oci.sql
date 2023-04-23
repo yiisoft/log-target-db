@@ -1,5 +1,5 @@
 /**
- * Database schema required by yiisoft/log-target-db db for Oracle.
+ * Database schema required by yiisoft/log-target-db for Oracle.
  */
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "log"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "log_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--

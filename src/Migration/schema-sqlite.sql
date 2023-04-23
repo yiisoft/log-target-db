@@ -1,5 +1,5 @@
 /**
- * Database schema required by yiisoft/log-target-db db for SQLite.
+ * Database schema required by yiisoft/log-target-db for SQLite.
  */
 DROP TABLE IF EXISTS "log";
 

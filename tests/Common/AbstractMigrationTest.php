@@ -22,10 +22,8 @@ abstract class AbstractMigrationTest extends TestCase
         parent::setUp();
 
         $this->idType = match ($this->db->getDriverName()) {
-            'mysql' => 'bigint',
+            'mysql', 'pgsql', 'sqlsrv' => 'bigint',
             'oracle' => 'number',
-            'pgsql' => 'bigint',
-            'sqlsrv' => 'bigint',
             default => 'integer'
         };
 
@@ -66,16 +64,16 @@ abstract class AbstractMigrationTest extends TestCase
     {
         $tableSchema = $this->db->getTableSchema($table);
 
-        $this->assertSame($table, $tableSchema->getName());
-        $this->assertSame(['id'], $tableSchema->getPrimaryKey());
-        $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema->getColumnNames());
-        $this->assertSame($this->idType, $tableSchema->getColumn('id')->getType());
-        $this->assertSame('string', $tableSchema->getColumn('level')->getType());
-        $this->assertSame(16, $tableSchema->getColumn('level')->getSize());
-        $this->assertSame('string', $tableSchema->getColumn('category')->getType());
-        $this->assertSame(255, $tableSchema->getColumn('category')->getSize());
-        $this->assertSame($this->logTime, $tableSchema->getColumn('log_time')->getType());
-        $this->assertSame('text', $tableSchema->getColumn('message')->getType());
+        $this->assertSame($table, $tableSchema?->getName());
+        $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
+        $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
+        $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
+        $this->assertSame('string', $tableSchema?->getColumn('level')->getType());
+        $this->assertSame(16, $tableSchema?->getColumn('level')->getSize());
+        $this->assertSame('string', $tableSchema?->getColumn('category')->getType());
+        $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
+        $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
+        $this->assertSame('text', $tableSchema?->getColumn('message')->getType());
     }
 
     public function testVerifyTableLogStructure(): void
@@ -83,15 +81,15 @@ abstract class AbstractMigrationTest extends TestCase
         $table = 'log';
         $tableSchema = $this->dbFixture->getTableSchema($table);
 
-        $this->assertSame($table, $tableSchema->getName());
-        $this->assertSame(['id'], $tableSchema->getPrimaryKey());
-        $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema->getColumnNames());
-        $this->assertSame($this->idType, $tableSchema->getColumn('id')->getType());
-        $this->assertSame('string', $tableSchema->getColumn('level')->getType());
-        $this->assertSame(16, $tableSchema->getColumn('level')->getSize());
-        $this->assertSame('string', $tableSchema->getColumn('category')->getType());
-        $this->assertSame(255, $tableSchema->getColumn('category')->getSize());
-        $this->assertSame($this->logTime, $tableSchema->getColumn('log_time')->getType());
-        $this->assertSame('text', $tableSchema->getColumn('message')->getType());
+        $this->assertSame($table, $tableSchema?->getName());
+        $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
+        $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
+        $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
+        $this->assertSame('string', $tableSchema?->getColumn('level')->getType());
+        $this->assertSame(16, $tableSchema?->getColumn('level')->getSize());
+        $this->assertSame('string', $tableSchema?->getColumn('category')->getType());
+        $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
+        $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
+        $this->assertSame('text', $tableSchema?->getColumn('message')->getType());
     }
 }

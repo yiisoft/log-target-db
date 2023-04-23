@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db\Tests\Support;
 
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Pgsql\Connection;
 use Yiisoft\Db\Pgsql\Driver;
 
@@ -15,6 +17,10 @@ final class PgsqlHelper extends ConnectionHelper
     private string $password = 'root';
     private string $charset = 'UTF8';
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     public function createConnection(
         bool $reset = true,
         string $fixture = __DIR__ . '/Fixture/schema-pgsql.sql'

@@ -1,5 +1,5 @@
 /**
- * Database schema required by yiisoft/cache db for MSSQL.
+ * Database schema required by yiisoft/log-target-db for MSSQL.
  */
 IF OBJECT_ID('[dbo].[log]', 'U') IS NOT NULL DROP TABLE [dbo].[log];
 

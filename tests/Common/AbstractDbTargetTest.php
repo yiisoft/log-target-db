@@ -6,7 +6,10 @@ namespace Yiisoft\Log\Target\Db\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
+use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
@@ -16,11 +19,6 @@ use function microtime;
 abstract class AbstractDbTargetTest extends TestCase
 {
     protected ConnectionInterface $db;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
 
     protected function tearDown(): void
     {
@@ -39,6 +37,11 @@ abstract class AbstractDbTargetTest extends TestCase
         $this->assertSame($this->db, $target->getDb());
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     public function testExport(): void
     {
         $time = round(microtime(true), 4);
@@ -96,6 +99,11 @@ abstract class AbstractDbTargetTest extends TestCase
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     public function testExportWithEmptyMessages(): void
     {
         $this->createDbTarget('test-table-1')->collect([], true);
@@ -110,6 +118,11 @@ abstract class AbstractDbTargetTest extends TestCase
         return $target;
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     private function findData(string $table): array
     {
         return (new Query($this->db))->from($table)->all();
