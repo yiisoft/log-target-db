@@ -9,8 +9,9 @@ CREATE TABLE `log` (
     `category` VARCHAR(255),
     `log_time` TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP(6),
     `message` TEXT,
-    CONSTRAINT `log_pk` PRIMARY KEY (`id`)
+    CONSTRAINT `PK_log` PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE INDEX `idx-log-category` ON `log` (`category`);
-CREATE INDEX `idx-log-level` ON `log` (`level`);
+CREATE INDEX `IDX_log-category` ON `log` (`category`);
+CREATE INDEX `IDX_log-level` ON `log` (`level`);
+CREATE INDEX `IDX_log-time` ON `log` (`log_time`);

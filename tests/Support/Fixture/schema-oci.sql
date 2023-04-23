@@ -10,29 +10,33 @@ BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "test-table-2_SEQ"'; EXCEPTION WHEN OTHER
 
 CREATE TABLE "test-table-1"
 (
-    "id" NUMBER(20) NOT NULL PRIMARY KEY,
+    "id" NUMBER(20) NOT NULL,
     "level" VARCHAR2(16),
     "category" VARCHAR2(255),
     "log_time" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
-    "message" CLOB
+    "message" CLOB,
+    CONSTRAINT "PK_test-table-1" PRIMARY KEY ("id")
 );
 
 CREATE SEQUENCE "test-table-1_SEQ" START WITH 1 INCREMENT BY 1;
-CREATE INDEX "CN_test-table-1-log-category" ON "test-table-1" ("category");
-CREATE INDEX "CN_test-table-1-log-level" ON "test-table-1" ("level");
+CREATE INDEX "IDX_test-table-1-category" ON "test-table-1" ("category");
+CREATE INDEX "IDX_test-table-1-level" ON "test-table-1" ("level");
+CREATE INDEX "IDX_test-table-1-time" ON "test-table-1" ("log_time");
 
 CREATE TABLE "test-table-2"
 (
-    "id" NUMBER(20) NOT NULL PRIMARY KEY,
+    "id" NUMBER(20) NOT NULL,
     "level" VARCHAR2(16),
     "category" VARCHAR2(255),
     "log_time" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
-    "message" CLOB
+    "message" CLOB,
+    CONSTRAINT "PK_test-table-2" PRIMARY KEY ("id")
 );
 
 CREATE SEQUENCE "test-table-2_SEQ" START WITH 1 INCREMENT BY 1;
-CREATE INDEX "CN_test-table-2-log-category" ON "test-table-2" ("category");
-CREATE INDEX "CN_test-table-2-log-level" ON "test-table-2" ("level");
+CREATE INDEX "IDX_test-table-2-category" ON "test-table-2" ("category");
+CREATE INDEX "IDX_test-table-2-level" ON "test-table-2" ("level");
+CREATE INDEX "IDX_test-table-2-time" ON "test-table-2" ("log_time");
 
 /* TRIGGERS */
 

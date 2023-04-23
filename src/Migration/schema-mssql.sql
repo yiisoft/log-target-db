@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[log] (
     ) ON [PRIMARY]
 );
 
-CREATE INDEX [idx-log-category] ON [log] ([category]);
-CREATE INDEX [idx-log-level] ON [log] ([level]);
-CREATE INDEX [idx-log-log_time] ON [log] ([log_time]);
+CREATE INDEX [IDX_log-category] ON [log] ([category]);
+CREATE INDEX [IDX_log-level] ON [log] ([level]);
+CREATE INDEX [IDX_log-time] ON [log] ([log_time]);
 

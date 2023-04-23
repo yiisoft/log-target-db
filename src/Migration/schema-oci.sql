@@ -8,16 +8,18 @@ BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "log_SEQ"'; EXCEPTION WHEN OTHERS THEN IF
 
 CREATE TABLE "log"
 (
-    "id" NUMBER(20) NOT NULL PRIMARY KEY,
+    "id" NUMBER(20) NOT NULL,
     "level" VARCHAR2(16),
     "category" VARCHAR2(255),
     "log_time" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
-    "message" CLOB
+    "message" CLOB,
+    CONSTRAINT "PK_log" PRIMARY KEY ("id")
 );
 
 CREATE SEQUENCE "log_SEQ" START WITH 1 INCREMENT BY 1;
-CREATE INDEX "CN_log-category" ON "log" ("category");
-CREATE INDEX "CN_log-level" ON "log" ("level");
+CREATE INDEX "IDX_log-category" ON "log" ("category");
+CREATE INDEX "IDX_log-level" ON "log" ("level");
+CREATE INDEX "IDX_log-time" ON "log" ("log_time");
 
 /* TRIGGERS */
 
