@@ -49,7 +49,6 @@ final class MigrationMysqlTest extends AbstractMigrationTest
         $this->assertFalse($indexes[0]->isPrimary());
 
         if (PHP_VERSION_ID >= 80100) {
-
             $this->assertSame(['id'], $indexes[1]->getColumnNames());
             $this->assertTrue($indexes[1]->isUnique());
             $this->assertTrue($indexes[1]->isPrimary());
@@ -59,7 +58,6 @@ final class MigrationMysqlTest extends AbstractMigrationTest
             $this->assertFalse($indexes[2]->isUnique());
             $this->assertFalse($indexes[2]->isPrimary());
         } else {
-
             $this->assertSame(['level'], $indexes[1]->getColumnNames());
             $this->assertSame("idx-$table-log-level", $indexes[1]->getName());
             $this->assertFalse($indexes[1]->isUnique());
