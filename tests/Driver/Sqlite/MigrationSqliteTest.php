@@ -18,9 +18,6 @@ final class MigrationSqliteTest extends AbstractMigrationTest
     protected function setUp(): void
     {
         $this->db = (new SqliteHelper())->createConnection();
-        $this->dbFixture = (new SqliteHelper())->createConnection(
-            fixture: dirname(__DIR__, 3) . '/src/Migration/schema-sqlite.sql'
-        );
 
         parent::setUp();
     }

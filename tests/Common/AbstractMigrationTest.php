@@ -12,7 +12,6 @@ use Yiisoft\Log\Target\Db\DbTarget;
 abstract class AbstractMigrationTest extends TestCase
 {
     protected ConnectionInterface $db;
-    protected ConnectionInterface $dbFixture;
     protected string $idType = '';
     protected Logger $logger;
     protected string $logTime = '';
@@ -46,7 +45,7 @@ abstract class AbstractMigrationTest extends TestCase
 
         $this->db->close();
 
-        unset($this->db, $this->dbFixture, $this->idType, $this->logger);
+        unset($this->db, $this->idType, $this->logger);
     }
 
     public static function tableListProvider(): array
@@ -79,7 +78,7 @@ abstract class AbstractMigrationTest extends TestCase
     public function testVerifyTableLogStructure(): void
     {
         $table = 'log';
-        $tableSchema = $this->dbFixture->getTableSchema($table);
+        $tableSchema = $this->db->getTableSchema($table);
 
         $this->assertSame($table, $tableSchema?->getName());
         $this->assertSame(['id'], $tableSchema?->getPrimaryKey());

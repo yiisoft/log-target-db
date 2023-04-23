@@ -18,9 +18,6 @@ final class MigrationPgsqlTest extends AbstractMigrationTest
     protected function setUp(): void
     {
         $this->db = (new PgsqlHelper())->createConnection();
-        $this->dbFixture = (new PgsqlHelper())->createConnection(
-            fixture: dirname(__DIR__, 3) . '/src/Migration/schema-pgsql.sql'
-        );
 
         parent::setUp();
     }

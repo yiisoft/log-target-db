@@ -19,17 +19,19 @@ final class SqliteHelper extends ConnectionHelper
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public function createConnection(
-        bool $reset = true,
-        string $fixture = __DIR__ . '/Fixture/schema-sqlite.sql'
-    ): ConnectionInterface {
+    public function createConnection(bool $reset = true): ConnectionInterface
+    {
         $pdoDriver = new Driver($this->dsn, '', '');
         $pdoDriver->charset($this->charset);
 
         $db = new Connection($pdoDriver, $this->createSchemaCache());
 
         if ($reset) {
-            DbHelper::loadFixture($db, $fixture);
+            DbHelper::loadFixture(
+                $db,
+                __DIR__ . '/Fixture/schema-sqlite.sql',
+                dirname(__DIR__, 2) . '/src/Migration/schema-sqlite.sql',
+            );
         }
 
         return $db;

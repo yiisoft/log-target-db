@@ -24,9 +24,6 @@ final class MigrationMssqlTest extends AbstractMigrationTest
     protected function setUp(): void
     {
         $this->db = (new MssqlHelper())->createConnection();
-        $this->dbFixture = (new MssqlHelper())->createConnection(
-            fixture: dirname(__DIR__, 3) . '/src/Migration/schema-mssql.sql'
-        );
 
         parent::setUp();
     }

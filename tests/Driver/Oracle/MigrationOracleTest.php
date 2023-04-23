@@ -24,9 +24,6 @@ final class MigrationOracleTest extends AbstractMigrationTest
     protected function setUp(): void
     {
         $this->db = (new OracleHelper())->createConnection();
-        $this->dbFixture = (new OracleHelper())->createConnection(
-            fixture: dirname(__DIR__, 3) . '/src/Migration/schema-oci.sql'
-        );
 
         parent::setUp();
     }

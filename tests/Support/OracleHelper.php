@@ -22,10 +22,8 @@ final class OracleHelper extends ConnectionHelper
      * @throws InvalidConfigException
      * @throws Exception
      */
-    public function createConnection(
-        bool $reset = true,
-        string $fixture = __DIR__ . '/Fixture/schema-oci.sql'
-    ): ConnectionInterface {
+    public function createConnection(bool $reset = true): ConnectionInterface
+    {
         $pdoDriver = new Driver($this->dsn, $this->username, $this->password);
         $pdoDriver->charset($this->charset);
         $pdoDriver->attributes([PDO::ATTR_STRINGIFY_FETCHES => true]);
@@ -33,7 +31,11 @@ final class OracleHelper extends ConnectionHelper
         $db = new Connection($pdoDriver, $this->createSchemaCache());
 
         if ($reset) {
-            DbHelper::loadFixture($db, $fixture);
+            DbHelper::loadFixture(
+                $db,
+                __DIR__ . '/Fixture/schema-oci.sql',
+                dirname(__DIR__, 2) . '/src/Migration/schema-oci.sql',
+            );
         }
 
         return $db;

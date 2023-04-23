@@ -20,26 +20,28 @@ final class DbHelper
      * @throws Exception
      * @throws InvalidConfigException
      */
-    public static function loadFixture(PdoConnectionInterface $db, string $fixture): void
+    public static function loadFixture(PdoConnectionInterface $db, string ...$fixtures): void
     {
         $db->open();
 
-        if ($db->getDriverName() === 'oci') {
-            [$drops, $creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
-            [$statements, $triggers, $data] = explode('/* TRIGGERS */', $creates, 3);
-            $lines = array_merge(
-                explode('--', $drops),
-                explode(';', $statements),
-                explode('/', $triggers),
-                explode(';', $data)
-            );
-        } else {
-            $lines = explode(';', file_get_contents($fixture));
-        }
+        foreach ($fixtures as $fixture) {
+            if ($db->getDriverName() === 'oci') {
+                [$drops, $creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
+                [$statements, $triggers, $data] = explode('/* TRIGGERS */', $creates, 3);
+                $lines = array_merge(
+                    explode('--', $drops),
+                    explode(';', $statements),
+                    explode('/', $triggers),
+                    explode(';', $data)
+                );
+            } else {
+                $lines = explode(';', file_get_contents($fixture));
+            }
 
-        foreach ($lines as $line) {
-            if (trim($line) !== '') {
-                $db->getPDO()?->exec($line);
+            foreach ($lines as $line) {
+                if (trim($line) !== '') {
+                    $db->getPDO()?->exec($line);
+                }
             }
         }
     }
