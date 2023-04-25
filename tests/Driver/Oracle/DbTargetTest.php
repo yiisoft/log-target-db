@@ -19,7 +19,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\OracleHelper;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class DbTargetOracleTest extends AbstractDbTargetTest
+final class DbTargetTest extends AbstractDbTargetTest
 {
     protected string $time = '23-APR-23 12.34.56.123456 PM';
 
@@ -31,6 +31,8 @@ final class DbTargetOracleTest extends AbstractDbTargetTest
     {
         $this->db = (new OracleHelper())->createConnection();
 
+        $this->db->setTablePrefix('oci_');
+
         parent::setUp();
     }
 
@@ -41,8 +43,8 @@ final class DbTargetOracleTest extends AbstractDbTargetTest
      */
     public function testExportWithStoreFailure(): void
     {
-        if ($this->db->getTableSchema('log', true) !== null) {
-            $this->db->createCommand('DROP TABLE {{log}}')->execute();
+        if ($this->db->getTableSchema('{{%log}}', true) !== null) {
+            $this->db->createCommand('DROP TABLE {{%log}}')->execute();
         }
 
         $this->expectException(RuntimeException::class);
@@ -54,9 +56,9 @@ final class DbTargetOracleTest extends AbstractDbTargetTest
 
     public function testExportWithoutLogTime(): void
     {
-        $this->createDbTarget('test-table-1')->collect([new Message(LogLevel::INFO, 'Message')], true);
+        $this->createDbTarget('{{%test-table-1}}')->collect([new Message(LogLevel::INFO, 'Message')], true);
 
-        $data = $this->findData('test-table-1');
+        $data = $this->findData('{{%test-table-1}}');
 
         $this->assertInstanceOf(DateTime::class, DateTime::createFromFormat('y-M-d H.i.s.u A', $data[0]['log_time']));
         $this->assertEquals(
@@ -69,7 +71,14 @@ final class DbTargetOracleTest extends AbstractDbTargetTest
                     'message' => '[info] Message',
                 ],
             ],
-            $this->findData('test-table-1'),
+            $this->findData('{{%test-table-1}}'),
         );
+    }
+
+    public function testPrefixTable(): void
+    {
+        $this->assertSame('oci_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
+        $this->assertSame('oci_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
+        $this->assertSame('oci_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

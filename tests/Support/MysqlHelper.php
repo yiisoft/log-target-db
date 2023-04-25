@@ -5,37 +5,20 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db\Tests\Support;
 
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Db\Exception\Exception;
-use Yiisoft\Db\Exception\InvalidConfigException;
+use Yiisoft\Db\Mysql\Dsn;
 use Yiisoft\Db\Mysql\Connection;
 use Yiisoft\Db\Mysql\Driver;
 
 final class MysqlHelper extends ConnectionHelper
 {
-    private string $dsn = 'mysql:host=127.0.0.1;dbname=yiitest;port=3306';
-    private string $username = 'root';
-    private string $password = '';
-    private string $charset = 'UTF8MB4';
-
-    /**
-     * @throws InvalidConfigException
-     * @throws Exception
-     */
-    public function createConnection(bool $reset = true): ConnectionInterface
+    public function createConnection(): ConnectionInterface
     {
-        $pdoDriver = new Driver($this->dsn, $this->username, $this->password);
-        $pdoDriver->charset($this->charset);
+        $pdoDriver = new Driver(
+            (new Dsn('mysql', '127.0.0.1', 'yiitest', '3306', ['charset' => 'utf8mb4']))->asString(),
+            'root',
+            '',
+        );
 
-        $db = new Connection($pdoDriver, $this->createSchemaCache());
-
-        if ($reset) {
-            DbHelper::loadFixture(
-                $db,
-                __DIR__ . '/Fixture/schema-mysql.sql',
-                dirname(__DIR__, 2) . '/src/Migration/schema-mysql.sql',
-            );
-        }
-
-        return $db;
+        return new Connection($pdoDriver, $this->createSchemaCache());
     }
 }

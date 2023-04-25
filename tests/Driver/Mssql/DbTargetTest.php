@@ -18,7 +18,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\MssqlHelper;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class DbTargetMssqlTest extends AbstractDbTargetTest
+final class DbTargetTest extends AbstractDbTargetTest
 {
     /**
      * @throws Exception
@@ -27,6 +27,8 @@ final class DbTargetMssqlTest extends AbstractDbTargetTest
     protected function setUp(): void
     {
         $this->db = (new MssqlHelper())->createConnection();
+
+        $this->db->setTablePrefix('mssql_');
 
         parent::setUp();
     }
@@ -47,5 +49,12 @@ final class DbTargetMssqlTest extends AbstractDbTargetTest
             "SQLSTATE[42S02]: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'log'"
         );
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
+    }
+
+    public function testPrefixTable(): void
+    {
+        $this->assertSame('mssql_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
+        $this->assertSame('mssql_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
+        $this->assertSame('mssql_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

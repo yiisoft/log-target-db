@@ -13,6 +13,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
+use Yiisoft\Log\Target\Db\DbHelper;
 use Yiisoft\Log\Target\Db\DbTarget;
 
 abstract class AbstractDbTargetTest extends TestCase
@@ -20,13 +21,24 @@ abstract class AbstractDbTargetTest extends TestCase
     protected ConnectionInterface $db;
     protected string $time = '2023-04-23 12:34:56.123456';
 
+    protected function setup(): void
+    {
+        DbHelper::ensureTable($this->db, '{{%test-table-1}}');
+        DbHelper::ensureTable($this->db, '{{%test-table-2}}');
+
+        parent::setUp();
+    }
+
     protected function tearDown(): void
     {
-        parent::tearDown();
+        DbHelper::dropTable($this->db, '{{%test-table-1}}');
+        DbHelper::dropTable($this->db, '{{%test-table-2}}');
 
         $this->db->close();
 
         unset($this->db);
+
+        parent::tearDown();
     }
 
     public function testGetters(): void
@@ -73,7 +85,7 @@ abstract class AbstractDbTargetTest extends TestCase
                     'message' => '[info] Message',
                 ],
             ],
-            $this->findData('test-table-1'),
+            $this->findData('{{%test-table-1}}'),
         );
 
         $this->assertEquals(
@@ -93,15 +105,15 @@ abstract class AbstractDbTargetTest extends TestCase
                     'message' => '[error] Message-2',
                 ],
             ],
-            $this->findData('test-table-2'),
+            $this->findData('{{%test-table-2}}'),
         );
     }
 
     public function testExportWithoutLogTime(): void
     {
-        $this->createDbTarget('test-table-1')->collect([new Message(LogLevel::INFO, 'Message')], true);
+        $this->createDbTarget('{{%test-table-1}}')->collect([new Message(LogLevel::INFO, 'Message')], true);
 
-        $data = $this->findData('test-table-1');
+        $data = $this->findData('{{%test-table-1}}');
 
         $this->assertInstanceOf(DateTime::class, DateTime::createFromFormat('Y-m-d H:i:s.u', $data[0]['log_time']));
         $this->assertEquals(
@@ -114,7 +126,7 @@ abstract class AbstractDbTargetTest extends TestCase
                     'message' => '[info] Message',
                 ],
             ],
-            $this->findData('test-table-1'),
+            $data,
         );
     }
 
@@ -125,8 +137,8 @@ abstract class AbstractDbTargetTest extends TestCase
      */
     public function testExportWithEmptyMessages(): void
     {
-        $this->createDbTarget('test-table-1')->collect([], true);
-        $this->assertSame([], $this->findData('test-table-1'));
+        $this->createDbTarget('{{%test-table-1}}')->collect([], true);
+        $this->assertSame([], $this->findData('{{%test-table-1}}'));
     }
 
     protected function createDbTarget(string $table = 'log'): DbTarget

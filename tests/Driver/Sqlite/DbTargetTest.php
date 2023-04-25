@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log\Target\Db\Tests\Driver\Pgsql;
+namespace Yiisoft\Log\Target\Db\Tests\Driver\Sqlite;
 
 use Psr\Log\LogLevel;
 use RuntimeException;
@@ -11,18 +11,20 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbTargetTest;
-use Yiisoft\Log\Target\Db\Tests\Support\PgsqlHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\SqliteHelper;
 
 /**
- * @group pgsql
+ * @group sqlite
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class DbTargetPgsqlTest extends AbstractDbTargetTest
+final class DbTargetTest extends AbstractDbTargetTest
 {
     protected function setUp(): void
     {
-        $this->db = (new PgsqlHelper())->createConnection();
+        $this->db = (new SqliteHelper())->createConnection();
+
+        $this->db->setTablePrefix('sqlite3_');
 
         parent::setUp();
     }
@@ -39,7 +41,14 @@ final class DbTargetPgsqlTest extends AbstractDbTargetTest
         }
 
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation "log" does not exist');
+        $this->expectExceptionMessage('SQLSTATE[HY000]: General error: 1 no such table: log');
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
+    }
+
+    public function testPrefixTable(): void
+    {
+        $this->assertSame('sqlite3_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
+        $this->assertSame('sqlite3_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
+        $this->assertSame('sqlite3_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

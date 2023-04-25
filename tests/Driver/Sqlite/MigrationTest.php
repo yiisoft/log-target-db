@@ -13,7 +13,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\SqliteHelper;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class MigrationSqliteTest extends AbstractMigrationTest
+final class MigrationTest extends AbstractMigrationTest
 {
     protected function setUp(): void
     {

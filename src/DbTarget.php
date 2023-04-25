@@ -57,14 +57,15 @@ final class DbTarget extends Target
             $command = $this->db->createCommand();
 
             foreach ($this->getMessages() as $key => $message) {
+                $logTime = $message->context('time', null);
                 $columns = [
                     'level' => $message->level(),
                     'category' => $message->context('category', ''),
-                    'log_time' => $message->context('time', null),
-                    'message' => $formattedMessages[$key],
+                    'log_time' => $logTime,
+                    'message' => $formattedMessages[$key]
                 ];
 
-                if ($message->context('time') === null) {
+                if ($logTime === null) {
                     unset($columns['log_time']);
                 }
 

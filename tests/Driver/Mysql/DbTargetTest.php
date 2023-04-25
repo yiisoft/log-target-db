@@ -18,7 +18,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\MysqlHelper;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class DbTargetMysqlTest extends AbstractDbTargetTest
+final class DbTargetTest extends AbstractDbTargetTest
 {
     /**
      * @throws Exception
@@ -27,6 +27,8 @@ final class DbTargetMysqlTest extends AbstractDbTargetTest
     protected function setUp(): void
     {
         $this->db = (new MysqlHelper())->createConnection();
+
+        $this->db->setTablePrefix('mysql_');
 
         parent::setUp();
     }
@@ -47,5 +49,12 @@ final class DbTargetMysqlTest extends AbstractDbTargetTest
             "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'yiitest.log' doesn't exist"
         );
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
+    }
+
+    public function testPrefixTable(): void
+    {
+        $this->assertSame('mysql_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
+        $this->assertSame('mysql_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
+        $this->assertSame('mysql_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

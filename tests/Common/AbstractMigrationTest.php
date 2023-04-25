@@ -7,23 +7,26 @@ namespace Yiisoft\Log\Target\Db\Tests\Common;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Logger;
+use Yiisoft\Log\Target\Db\DbHelper;
 use Yiisoft\Log\Target\Db\DbTarget;
 
 abstract class AbstractMigrationTest extends TestCase
 {
     protected ConnectionInterface $db;
-    protected string $idType = '';
-    protected Logger $logger;
-    protected string $logTime = '';
+    private string $idType = '';
+    private Logger $logger;
+    private string $logTime = '';
+    private string $messageType = '';
 
     protected function setUp(): void
     {
-        parent::setUp();
+        DbHelper::ensureTable($this->db, '{{%log}}');
+        DbHelper::ensureTable($this->db, '{{%test-table-1}}');
+        DbHelper::ensureTable($this->db, '{{%test-table-2}}');
 
         $this->idType = match ($this->db->getDriverName()) {
-            'mysql', 'pgsql', 'sqlsrv' => 'bigint',
-            'oracle' => 'number',
-            default => 'integer'
+            'oci', 'sqlite' => 'integer',
+            default => 'bigint'
         };
 
         $this->logTime = match ($this->db->getDriverName()) {
@@ -33,19 +36,30 @@ abstract class AbstractMigrationTest extends TestCase
 
         $this->logger = new Logger(
             [
-                new DbTarget($this->db, 'test-table-1'),
-                new DbTarget($this->db, 'test-table-2'),
+                new DbTarget($this->db, '{{%test-table-1}}'),
+                new DbTarget($this->db, '{{%test-table-2}}'),
             ],
         );
+
+        $this->messageType = match ($this->db->getDriverName()) {
+            'sqlsrv' => 'string',
+            default => 'text',
+        };
+
+        parent::setup();
     }
 
     protected function tearDown(): void
     {
-        parent::tearDown();
+        DbHelper::dropTable($this->db, '{{%log}}');
+        DbHelper::dropTable($this->db, '{{%test-table-1}}');
+        DbHelper::dropTable($this->db, '{{%test-table-2}}');
 
         $this->db->close();
 
         unset($this->db, $this->idType, $this->logger);
+
+        parent::tearDown();
     }
 
     public static function tableListProvider(): array
@@ -72,15 +86,14 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame('string', $tableSchema?->getColumn('category')->getType());
         $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
         $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
-        $this->assertSame('text', $tableSchema?->getColumn('message')->getType());
+        $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
     }
 
     public function testVerifyTableLogStructure(): void
     {
-        $table = 'log';
-        $tableSchema = $this->db->getTableSchema($table);
+        $tableSchema = $this->db->getTableSchema('{{%log}}');
 
-        $this->assertSame($table, $tableSchema?->getName());
+        $this->assertSame('log', $tableSchema?->getName());
         $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
         $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
         $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
@@ -89,6 +102,6 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame('string', $tableSchema?->getColumn('category')->getType());
         $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
         $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
-        $this->assertSame('text', $tableSchema?->getColumn('message')->getType());
+        $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
     }
 }

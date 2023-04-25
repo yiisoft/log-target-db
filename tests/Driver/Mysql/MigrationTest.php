@@ -15,7 +15,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\MysqlHelper;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class MigrationMysqlTest extends AbstractMigrationTest
+final class MigrationTest extends AbstractMigrationTest
 {
     /**
      * @throws Exception

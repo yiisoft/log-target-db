@@ -2,28 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Log\Target\Db\Tests\Driver\Mssql;
+namespace Yiisoft\Log\Target\Db\Tests\Driver\Pgsql;
 
 use Yiisoft\Db\Constraint\IndexConstraint;
-use Yiisoft\Db\Exception\Exception;
-use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
-use Yiisoft\Log\Target\Db\Tests\Support\MssqlHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\PgsqlHelper;
 
 /**
- * @group Mssql
+ * @group pgsql
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class MigrationMssqlTest extends AbstractMigrationTest
+final class MigrationTest extends AbstractMigrationTest
 {
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
     protected function setUp(): void
     {
-        $this->db = (new MssqlHelper())->createConnection();
+        $this->db = (new PgsqlHelper())->createConnection();
 
         parent::setUp();
     }
