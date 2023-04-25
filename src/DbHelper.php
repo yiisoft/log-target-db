@@ -28,6 +28,7 @@ final class DbHelper
 
         // `log_Time` Default value custom for all dbms
         $defaultValue = match ($db->getDriverName()) {
+            'mysql' => new Expression('CURRENT_TIMESTAMP(6)'),
             'sqlite' => new Expression("(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW', 'UTC'))"),
             default => new Expression('CURRENT_TIMESTAMP'),
         };
@@ -50,7 +51,7 @@ final class DbHelper
                 'category' => $schema->createColumn(SchemaInterface::TYPE_STRING),
                 'log_time' => $schema->createColumn($logTimeType)->defaultValue($defaultValue),
                 'message' => $schema->createColumn(SchemaInterface::TYPE_TEXT),
-                "CONSTRAINT [[PK_{$tableRawName}]] PRIMARY KEY ([[id]])",
+                "CONSTRAINT [[PK_{$tableRawName}]] PRIMARY KEY ([[id]])"
             ],
         )->execute();
 
