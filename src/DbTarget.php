@@ -62,7 +62,7 @@ final class DbTarget extends Target
                     'level' => $message->level(),
                     'category' => $message->context('category', ''),
                     'log_time' => $logTime,
-                    'message' => $formattedMessages[$key]
+                    'message' => $formattedMessages[$key],
                 ];
 
                 if ($logTime === null) {
