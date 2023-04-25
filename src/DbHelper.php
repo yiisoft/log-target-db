@@ -51,7 +51,7 @@ final class DbHelper
                 'category' => $schema->createColumn(SchemaInterface::TYPE_STRING),
                 'log_time' => $schema->createColumn($logTimeType)->defaultValue($defaultValue),
                 'message' => $schema->createColumn(SchemaInterface::TYPE_TEXT),
-                "CONSTRAINT [[PK_{$tableRawName}]] PRIMARY KEY ([[id]])"
+                "CONSTRAINT [[PK_{$tableRawName}]] PRIMARY KEY ([[id]])",
             ],
         )->execute();
 
