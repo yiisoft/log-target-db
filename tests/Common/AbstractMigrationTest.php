@@ -20,7 +20,7 @@ abstract class AbstractMigrationTest extends TestCase
 
     protected function setUp(): void
     {
-        DbHelper::ensureTable($this->db, '{{%log}}');
+        DbHelper::ensureTable($this->db);
         DbHelper::ensureTable($this->db, '{{%test-table-1}}');
         DbHelper::ensureTable($this->db, '{{%test-table-2}}');
 
@@ -51,7 +51,7 @@ abstract class AbstractMigrationTest extends TestCase
 
     protected function tearDown(): void
     {
-        DbHelper::dropTable($this->db, '{{%log}}');
+        DbHelper::dropTable($this->db);
         DbHelper::dropTable($this->db, '{{%test-table-1}}');
         DbHelper::dropTable($this->db, '{{%test-table-2}}');
 

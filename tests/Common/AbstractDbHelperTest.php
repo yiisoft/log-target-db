@@ -14,14 +14,14 @@ abstract class AbstractDbHelperTest extends TestCase
 
     protected function setup(): void
     {
-        DbHelper::ensureTable($this->db, '{{%log}}');
+        DbHelper::ensureTable($this->db);
 
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
-        DbHelper::dropTable($this->db, '{{%log}}');
+        DbHelper::dropTable($this->db);
 
         $this->db->close();
 
@@ -32,22 +32,20 @@ abstract class AbstractDbHelperTest extends TestCase
 
     public function testDropTable(): void
     {
-        $table = '{{%log}}';
+        DbHelper::dropTable($this->db);
 
-        DbHelper::dropTable($this->db, $table);
-
-        $this->assertNull($this->db->getTableSchema($table, true));
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
 
     public function testEnsureTable(): void
     {
         $table = '{{%log}}';
 
-        DbHelper::dropTable($this->db, '{{%log}}');
+        DbHelper::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema($table, true));
 
-        DbHelper::ensureTable($this->db, $table);
+        DbHelper::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema($table, true));
     }
@@ -56,15 +54,15 @@ abstract class AbstractDbHelperTest extends TestCase
     {
         $table = '{{%log}}';
 
-        DbHelper::dropTable($this->db, '{{%log}}');
+        DbHelper::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema($table, true));
 
-        DbHelper::ensureTable($this->db, $table);
+        DbHelper::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema($table));
 
-        DbHelper::ensureTable($this->db, $table);
+        DbHelper::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema($table));
     }

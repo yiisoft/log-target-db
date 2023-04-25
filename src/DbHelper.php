@@ -10,7 +10,7 @@ use Yiisoft\Db\Schema\SchemaInterface;
 
 final class DbHelper
 {
-    public static function ensureTable(ConnectionInterface $db, string $table): void
+    public static function ensureTable(ConnectionInterface $db, string $table = '{{%log}}'): void
     {
         $command = $db->createCommand();
         $schema = $db->getSchema();
@@ -82,7 +82,7 @@ final class DbHelper
         $command->createIndex($table, "IDX_{$tableRawName}-time", 'log_time')->execute();
     }
 
-    public static function dropTable(ConnectionInterface $db, string $table): void
+    public static function dropTable(ConnectionInterface $db, string $table = '{{%log}}'): void
     {
         $command = $db->createCommand();
         $tableRawName = $db->getSchema()->getRawTableName($table);
