@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db\Tests\Driver\Pgsql;
 
 use Yiisoft\Db\Constraint\IndexConstraint;
+use Yiisoft\Log\Target\Db\Migration;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
 use Yiisoft\Log\Target\Db\Tests\Support\PgsqlHelper;
 
@@ -17,25 +18,27 @@ final class MigrationTest extends AbstractMigrationTest
 {
     protected function setUp(): void
     {
+        // create connection dbms-specific
         $this->db = (new PgsqlHelper())->createConnection();
+
+        // set table prefix
+        $this->db->setTablePrefix('pgsql_');
 
         parent::setUp();
     }
 
-    public static function tableListProvider(): array
-    {
-        return array_merge(parent::tableListProvider(), [['log']]);
-    }
-
     /**
-     * @dataProvider tableListProvider
+     * @dataProvider tableListProviderWithPrefix
      */
-    public function testVerifyTableIndexes(string $table): void
+    public function testVerifyTableIndexes(string $tablewithPrefix, string $table): void
     {
+        Migration::ensureTable($this->db, $tablewithPrefix);
+
         $schema = $this->db->getSchema();
+        $table = $this->db->getTablePrefix() . $table;
 
         /** @psalm-var IndexConstraint[] $indexes */
-        $indexes = $schema->getTableIndexes($table, true);
+        $indexes = $schema->getTableIndexes($tablewithPrefix, true);
 
         $this->assertSame(['id'], $indexes[0]->getColumnNames());
         $this->assertSame("PK_$table", $indexes[0]->getName());

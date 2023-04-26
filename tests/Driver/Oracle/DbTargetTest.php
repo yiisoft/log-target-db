@@ -29,9 +29,8 @@ final class DbTargetTest extends AbstractDbTargetTest
      */
     protected function setUp(): void
     {
+        // create connection dbms-specific
         $this->db = (new OracleHelper())->createConnection();
-
-        $this->db->setTablePrefix('oci_');
 
         parent::setUp();
     }
@@ -73,12 +72,5 @@ final class DbTargetTest extends AbstractDbTargetTest
             ],
             $this->findData('{{%test-table-1}}'),
         );
-    }
-
-    public function testPrefixTable(): void
-    {
-        $this->assertSame('oci_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
-        $this->assertSame('oci_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
-        $this->assertSame('oci_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

@@ -23,6 +23,7 @@ abstract class AbstractDbTargetTest extends TestCase
 
     protected function setup(): void
     {
+        // create migration tables
         Migration::ensureTable($this->db, '{{%test-table-1}}');
         Migration::ensureTable($this->db, '{{%test-table-2}}');
 
@@ -31,6 +32,7 @@ abstract class AbstractDbTargetTest extends TestCase
 
     protected function tearDown(): void
     {
+        // drop tables
         Migration::dropTable($this->db, '{{%test-table-1}}');
         Migration::dropTable($this->db, '{{%test-table-2}}');
 

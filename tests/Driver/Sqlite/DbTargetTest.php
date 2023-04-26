@@ -22,9 +22,8 @@ final class DbTargetTest extends AbstractDbTargetTest
 {
     protected function setUp(): void
     {
+      // create connection dbms-specific
         $this->db = (new SqliteHelper())->createConnection();
-
-        $this->db->setTablePrefix('sqlite3_');
 
         parent::setUp();
     }
@@ -43,12 +42,5 @@ final class DbTargetTest extends AbstractDbTargetTest
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('SQLSTATE[HY000]: General error: 1 no such table: log');
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
-    }
-
-    public function testPrefixTable(): void
-    {
-        $this->assertSame('sqlite3_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
-        $this->assertSame('sqlite3_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
-        $this->assertSame('sqlite3_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

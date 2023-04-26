@@ -26,9 +26,8 @@ final class DbTargetTest extends AbstractDbTargetTest
      */
     protected function setUp(): void
     {
+        // create connection dbms-specific
         $this->db = (new MysqlHelper())->createConnection();
-
-        $this->db->setTablePrefix('mysql_');
 
         parent::setUp();
     }
@@ -49,12 +48,5 @@ final class DbTargetTest extends AbstractDbTargetTest
             "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'yiitest.log' doesn't exist"
         );
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
-    }
-
-    public function testPrefixTable(): void
-    {
-        $this->assertSame('mysql_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
-        $this->assertSame('mysql_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
-        $this->assertSame('mysql_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }

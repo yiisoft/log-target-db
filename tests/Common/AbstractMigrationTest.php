@@ -20,10 +20,6 @@ abstract class AbstractMigrationTest extends TestCase
 
     protected function setUp(): void
     {
-        Migration::ensureTable($this->db);
-        Migration::ensureTable($this->db, '{{%test-table-1}}');
-        Migration::ensureTable($this->db, '{{%test-table-2}}');
-
         $this->idType = match ($this->db->getDriverName()) {
             'oci', 'sqlite' => 'integer',
             default => 'bigint'
@@ -51,6 +47,7 @@ abstract class AbstractMigrationTest extends TestCase
 
     protected function tearDown(): void
     {
+        // drop tables
         Migration::dropTable($this->db);
         Migration::dropTable($this->db, '{{%test-table-1}}');
         Migration::dropTable($this->db, '{{%test-table-2}}');
@@ -62,22 +59,71 @@ abstract class AbstractMigrationTest extends TestCase
         parent::tearDown();
     }
 
-    public static function tableListProvider(): array
+    public function testDropTable(): void
+    {
+        Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+    }
+
+    public function testEnsureTable(): void
+    {
+        $table = '{{%log}}';
+
+        Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema($table, true));
+
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema($table, true));
+    }
+
+    public function testEnsureTableExist(): void
+    {
+        $table = '{{%log}}';
+
+        Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema($table, true));
+
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema($table));
+
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema($table));
+    }
+
+    public static function tableListProviderWithPrefix(): array
     {
         return [
-            ['test-table-1'],
-            ['test-table-2'],
+            ['{{%test-table-1}}', 'test-table-1'],
+            ['{{%test-table-2}}', 'test-table-2'],
+        ];
+    }
+
+    public static function tableListIndexesProvider(): array
+    {
+        return [
+            ['{{%log}}', 'log'],
+            ['{{%test-table-1}}', 'test-table-1'],
+            ['{{%test-table-2}}', 'test-table-2'],
         ];
     }
 
     /**
-     * @dataProvider tableListProvider
+     * @dataProvider tableListProviderWithPrefix
      */
-    public function testVerifyTableStructure(string $table): void
+    public function testVerifyTableStructure(string $tableWithPrefix, string $table): void
     {
-        $tableSchema = $this->db->getTableSchema($table);
+        Migration::ensureTable($this->db, $tableWithPrefix);
 
-        $this->assertSame($table, $tableSchema?->getName());
+        $tableSchema = $this->db->getTableSchema($tableWithPrefix);
+        $prefix = $this->db->getTablePrefix();
+
+        $this->assertSame($prefix . $table, $tableSchema?->getName());
         $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
         $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
         $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
@@ -91,9 +137,12 @@ abstract class AbstractMigrationTest extends TestCase
 
     public function testVerifyTableLogStructure(): void
     {
-        $tableSchema = $this->db->getTableSchema('{{%log}}');
+        Migration::ensureTable($this->db);
 
-        $this->assertSame('log', $tableSchema?->getName());
+        $tableSchema = $this->db->getTableSchema('{{%log}}');
+        $prefix = $this->db->getTablePrefix();
+
+        $this->assertSame($prefix . 'log', $tableSchema?->getName());
         $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
         $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
         $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());

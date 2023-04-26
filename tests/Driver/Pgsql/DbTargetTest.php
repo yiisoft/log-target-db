@@ -22,9 +22,8 @@ final class DbTargetTest extends AbstractDbTargetTest
 {
     protected function setUp(): void
     {
+        // create connection dbms-specific
         $this->db = (new PgsqlHelper())->createConnection();
-
-        $this->db->setTablePrefix('pgsql_');
 
         parent::setUp();
     }
@@ -43,12 +42,5 @@ final class DbTargetTest extends AbstractDbTargetTest
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation "log" does not exist');
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
-    }
-
-    public function testPrefixTable(): void
-    {
-        $this->assertSame('pgsql_log', $this->db->getSchema()->getRawTableName('{{%log}}'));
-        $this->assertSame('pgsql_test-table-1', $this->db->getSchema()->getRawTableName('{{%test-table-1}}'));
-        $this->assertSame('pgsql_test-table-2', $this->db->getSchema()->getRawTableName('{{%test-table-2}}'));
     }
 }
