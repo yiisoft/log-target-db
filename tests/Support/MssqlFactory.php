@@ -9,7 +9,7 @@ use Yiisoft\Db\Mssql\Connection;
 use Yiisoft\Db\Mssql\Driver;
 use Yiisoft\Db\Mssql\Dsn;
 
-final class MssqlHelper extends ConnectionHelper
+final class MssqlFactory extends ConnectionFactory
 {
     public function createConnection(): ConnectionInterface
     {

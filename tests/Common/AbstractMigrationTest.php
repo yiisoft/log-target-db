@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Log\Logger;
-use Yiisoft\Log\Target\Db\DbTarget;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidArgumentException;
+use Yiisoft\Db\Exception\InvalidConfigException;
+use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Log\Target\Db\Migration;
 
 abstract class AbstractMigrationTest extends TestCase
 {
     protected ConnectionInterface $db;
     private string $idType = '';
-    private Logger $logger;
     private string $logTime = '';
     private string $messageType = '';
 
@@ -30,13 +32,6 @@ abstract class AbstractMigrationTest extends TestCase
             default => 'timestamp',
         };
 
-        $this->logger = new Logger(
-            [
-                new DbTarget($this->db, '{{%test-table-1}}'),
-                new DbTarget($this->db, '{{%test-table-2}}'),
-            ],
-        );
-
         $this->messageType = match ($this->db->getDriverName()) {
             'sqlsrv' => 'string',
             default => 'text',
@@ -45,6 +40,11 @@ abstract class AbstractMigrationTest extends TestCase
         parent::setup();
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     protected function tearDown(): void
     {
         // drop tables
@@ -54,11 +54,16 @@ abstract class AbstractMigrationTest extends TestCase
 
         $this->db->close();
 
-        unset($this->db, $this->idType, $this->logger);
+        unset($this->db, $this->idType);
 
         parent::tearDown();
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     public function testDropTable(): void
     {
         Migration::dropTable($this->db);
@@ -66,6 +71,13 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
     public function testEnsureTable(): void
     {
         $table = '{{%log}}';
@@ -79,6 +91,13 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertNotNull($this->db->getTableSchema($table, true));
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
     public function testEnsureTableExist(): void
     {
         $table = '{{%log}}';
@@ -96,7 +115,7 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertNotNull($this->db->getTableSchema($table));
     }
 
-    public static function tableListProviderWithPrefix(): array
+    public static function tableListWithPrefixProvider(): array
     {
         return [
             ['{{%test-table-1}}', 'test-table-1'],
@@ -114,7 +133,13 @@ abstract class AbstractMigrationTest extends TestCase
     }
 
     /**
-     * @dataProvider tableListProviderWithPrefix
+     * @dataProvider tableListWithPrefixProvider
+     *
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
      */
     public function testVerifyTableStructure(string $tableWithPrefix, string $table): void
     {
@@ -135,6 +160,13 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
     public function testVerifyTableLogStructure(): void
     {
         Migration::ensureTable($this->db);

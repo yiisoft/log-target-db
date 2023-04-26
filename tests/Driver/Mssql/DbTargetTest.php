@@ -11,7 +11,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbTargetTest;
-use Yiisoft\Log\Target\Db\Tests\Support\MssqlHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\MssqlFactory;
 
 /**
  * @group Mssql
@@ -23,11 +23,12 @@ final class DbTargetTest extends AbstractDbTargetTest
     /**
      * @throws Exception
      * @throws InvalidConfigException
+     * @throws Throwable
      */
     protected function setUp(): void
     {
         // create connection dbms-specific
-        $this->db = (new MssqlHelper())->createConnection();
+        $this->db = (new MssqlFactory())->createConnection();
 
         parent::setUp();
     }

@@ -10,7 +10,7 @@ use Yiisoft\Db\Oracle\Connection;
 use Yiisoft\Db\Oracle\Driver;
 use Yiisoft\Db\Oracle\Dsn;
 
-final class OracleHelper extends ConnectionHelper
+final class OracleFactory extends ConnectionFactory
 {
     public function createConnection(): ConnectionInterface
     {

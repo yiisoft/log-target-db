@@ -12,7 +12,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbTargetTest;
-use Yiisoft\Log\Target\Db\Tests\Support\OracleHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\OracleFactory;
 
 /**
  * @group oracle
@@ -26,11 +26,12 @@ final class DbTargetTest extends AbstractDbTargetTest
     /**
      * @throws Exception
      * @throws InvalidConfigException
+     * @throws Throwable
      */
     protected function setUp(): void
     {
         // create connection dbms-specific
-        $this->db = (new OracleHelper())->createConnection();
+        $this->db = (new OracleFactory())->createConnection();
 
         parent::setUp();
     }
@@ -53,6 +54,11 @@ final class DbTargetTest extends AbstractDbTargetTest
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     public function testExportWithoutLogTime(): void
     {
         $this->createDbTarget('{{%test-table-1}}')->collect([new Message(LogLevel::INFO, 'Message')], true);

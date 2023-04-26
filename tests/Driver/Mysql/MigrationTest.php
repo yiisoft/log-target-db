@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db\Tests\Driver\Mysql;
 
+use Throwable;
 use Yiisoft\Db\Constraint\IndexConstraint;
 use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
+use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Log\Target\Db\Migration;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
-use Yiisoft\Log\Target\Db\Tests\Support\MysqlHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\MysqlFactory;
 
 /**
  * @group Mysql
@@ -18,14 +21,10 @@ use Yiisoft\Log\Target\Db\Tests\Support\MysqlHelper;
  */
 final class MigrationTest extends AbstractMigrationTest
 {
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
     protected function setUp(): void
     {
         // create connection dbms-specific
-        $this->db = (new MysqlHelper())->createConnection();
+        $this->db = (new MysqlFactory())->createConnection();
 
         // set table prefix
         $this->db->setTablePrefix('mysql_');
@@ -34,17 +33,23 @@ final class MigrationTest extends AbstractMigrationTest
     }
 
     /**
-     * @dataProvider tableListProviderWithPrefix
+     * @dataProvider tableListIndexesProvider
+     *
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
      */
-    public function testVerifyTableIndexes(string $tablewithPrefix, string $table): void
+    public function testVerifyTableIndexes(string $tableWithPrefix, string $table): void
     {
-        Migration::ensureTable($this->db, $tablewithPrefix);
+        Migration::ensureTable($this->db, $tableWithPrefix);
 
         $schema = $this->db->getSchema();
         $table = $this->db->getTablePrefix() . $table;
 
         /** @psalm-var IndexConstraint[] $indexes */
-        $indexes = $schema->getTableIndexes($tablewithPrefix, true);
+        $indexes = $schema->getTableIndexes($tableWithPrefix, true);
 
         sort($indexes);
 

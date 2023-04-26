@@ -11,7 +11,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbTargetTest;
-use Yiisoft\Log\Target\Db\Tests\Support\PgsqlHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\PgsqlFactory;
 
 /**
  * @group pgsql
@@ -23,7 +23,7 @@ final class DbTargetTest extends AbstractDbTargetTest
     protected function setUp(): void
     {
         // create connection dbms-specific
-        $this->db = (new PgsqlHelper())->createConnection();
+        $this->db = (new PgsqlFactory())->createConnection();
 
         parent::setUp();
     }

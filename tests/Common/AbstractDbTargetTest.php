@@ -10,7 +10,9 @@ use Psr\Log\LogLevel;
 use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
+use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
@@ -21,6 +23,13 @@ abstract class AbstractDbTargetTest extends TestCase
     protected ConnectionInterface $db;
     protected string $time = '2023-04-23 12:34:56.123456';
 
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
     protected function setup(): void
     {
         // create migration tables
@@ -30,6 +39,11 @@ abstract class AbstractDbTargetTest extends TestCase
         parent::setUp();
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     protected function tearDown(): void
     {
         // drop tables

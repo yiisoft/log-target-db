@@ -9,7 +9,7 @@ use Yiisoft\Db\Sqlite\Connection;
 use Yiisoft\Db\Sqlite\Driver;
 use Yiisoft\Db\Sqlite\Dsn;
 
-final class SqliteHelper extends ConnectionHelper
+final class SqliteFactory extends ConnectionFactory
 {
     public function createConnection(): ConnectionInterface
     {

@@ -4,13 +4,25 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db;
 
+use Throwable;
 use Yiisoft\Db\Command\CommandInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
+use Yiisoft\Db\Exception\Exception;
+use Yiisoft\Db\Exception\InvalidArgumentException;
+use Yiisoft\Db\Exception\InvalidConfigException;
+use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Expression\Expression;
 use Yiisoft\Db\Schema\SchemaInterface;
 
 final class Migration
 {
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
     public static function ensureTable(ConnectionInterface $db, string $table = '{{%log}}'): void
     {
         $command = $db->createCommand();
@@ -52,7 +64,7 @@ final class Migration
                 'category' => $schema->createColumn(SchemaInterface::TYPE_STRING),
                 'log_time' => $logTimeType,
                 'message' => $schema->createColumn(SchemaInterface::TYPE_TEXT),
-                "CONSTRAINT [[PK_{$tableRawName}]] PRIMARY KEY ([[id]])",
+                "CONSTRAINT [[PK_$tableRawName]] PRIMARY KEY ([[id]])",
             ],
         )->execute();
 
@@ -65,6 +77,11 @@ final class Migration
         $command->createIndex($table, "IDX_{$tableRawName}-time", 'log_time')->execute();
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
     public static function dropTable(ConnectionInterface $db, string $table = '{{%log}}'): void
     {
         $command = $db->createCommand();
@@ -85,6 +102,10 @@ final class Migration
         }
     }
 
+    /**
+     * @throws Exception
+     * @throws Throwable
+     */
     private static function addSequenceAndTrigger(CommandInterface $command, string $tableRawName): void
     {
         // create sequence oracle

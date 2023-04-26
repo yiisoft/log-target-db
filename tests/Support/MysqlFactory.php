@@ -9,7 +9,7 @@ use Yiisoft\Db\Mysql\Dsn;
 use Yiisoft\Db\Mysql\Connection;
 use Yiisoft\Db\Mysql\Driver;
 
-final class MysqlHelper extends ConnectionHelper
+final class MysqlFactory extends ConnectionFactory
 {
     public function createConnection(): ConnectionInterface
     {

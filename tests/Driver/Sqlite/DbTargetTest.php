@@ -11,7 +11,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbTargetTest;
-use Yiisoft\Log\Target\Db\Tests\Support\SqliteHelper;
+use Yiisoft\Log\Target\Db\Tests\Support\SqliteFactory;
 
 /**
  * @group sqlite
@@ -23,7 +23,7 @@ final class DbTargetTest extends AbstractDbTargetTest
     protected function setUp(): void
     {
         // create connection dbms-specific
-        $this->db = (new SqliteHelper())->createConnection();
+        $this->db = (new SqliteFactory())->createConnection();
 
         parent::setUp();
     }

@@ -58,7 +58,7 @@ final class DbTarget extends Target
 
             foreach ($this->getMessages() as $key => $message) {
                 /** @psalm-var mixed $logTime */
-                $logTime = $message->context('time', null);
+                $logTime = $message->context('time');
                 $columns = [
                     'level' => $message->level(),
                     'category' => $message->context('category', ''),
