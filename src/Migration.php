@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db;
 
+use Yiisoft\Db\Command\CommandInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Expression\Expression;
 use Yiisoft\Db\Schema\SchemaInterface;
 
-final class DbHelper
+final class Migration
 {
     public static function ensureTable(ConnectionInterface $db, string $table = '{{%log}}'): void
     {
@@ -20,17 +21,17 @@ final class DbHelper
             return;
         }
 
-        // `log_Time` Type custom for all dbms
-        $logTimeType = match ($db->getDriverName()) {
-            'sqlsrv' => 'DATETIME2(6)',
-            default => 'TIMESTAMP(6)',
-        };
-
         // `log_Time` Default value custom for all dbms
         $defaultValue = match ($db->getDriverName()) {
             'mysql' => new Expression('CURRENT_TIMESTAMP(6)'),
             'sqlite' => new Expression("(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW', 'UTC'))"),
             default => new Expression('CURRENT_TIMESTAMP'),
+        };
+
+        // `log_Time` Type custom for all dbms
+        $logTimeType = match ($db->getDriverName()) {
+            'sqlsrv' => $schema->createColumn('DATETIME2(6)')->defaultValue($defaultValue),
+            default => $schema->createColumn(SchemaInterface::TYPE_TIMESTAMP, 6)->defaultValue($defaultValue),
         };
 
         // `id` AutoIncrement custom for all dbms
@@ -49,32 +50,14 @@ final class DbHelper
                 'id' => $id,
                 'level' => $schema->createColumn(SchemaInterface::TYPE_STRING, 16),
                 'category' => $schema->createColumn(SchemaInterface::TYPE_STRING),
-                'log_time' => $schema->createColumn($logTimeType)->defaultValue($defaultValue),
+                'log_time' => $logTimeType,
                 'message' => $schema->createColumn(SchemaInterface::TYPE_TEXT),
                 "CONSTRAINT [[PK_{$tableRawName}]] PRIMARY KEY ([[id]])",
             ],
         )->execute();
 
         if ($db->getDriverName() === 'oci') {
-            // create sequence oracle
-            $command->setSql(
-                <<<SQL
-                CREATE SEQUENCE {{{$tableRawName}_SEQ}}
-                START WITH 1
-                INCREMENT BY 1
-                NOMAXVALUE
-                SQL,
-            )->execute();
-
-            // create trigger oracle
-            $command->setSql(
-                <<<SQL
-                CREATE TRIGGER {{{$tableRawName}_TRG}} BEFORE INSERT ON {{{$tableRawName}}} FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
-                IF INSERTING AND :NEW."id" IS NULL THEN SELECT {{{$tableRawName}_SEQ}}.NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
-                END COLUMN_SEQUENCES;
-                END;
-                SQL,
-            )->execute();
+            self::addSequenceAndTrigger($command, $tableRawName);
         }
 
         $command->createIndex($table, "IDX_{$tableRawName}-category", 'category')->execute();
@@ -100,5 +83,28 @@ final class DbHelper
                 )->execute();
             }
         }
+    }
+
+    private static function addSequenceAndTrigger(CommandInterface $command, string $tableRawName): void
+    {
+        // create sequence oracle
+        $command->setSql(
+            <<<SQL
+            CREATE SEQUENCE {{{$tableRawName}_SEQ}}
+            START WITH 1
+            INCREMENT BY 1
+            NOMAXVALUE
+            SQL,
+        )->execute();
+
+        // create trigger oracle
+        $command->setSql(
+            <<<SQL
+            CREATE TRIGGER {{{$tableRawName}_TRG}} BEFORE INSERT ON {{{$tableRawName}}} FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
+            IF INSERTING AND :NEW."id" IS NULL THEN SELECT {{{$tableRawName}_SEQ}}.NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
+            END COLUMN_SEQUENCES;
+            END;
+            SQL,
+        )->execute();
     }
 }

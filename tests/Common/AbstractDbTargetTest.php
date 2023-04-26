@@ -13,8 +13,8 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
-use Yiisoft\Log\Target\Db\DbHelper;
 use Yiisoft\Log\Target\Db\DbTarget;
+use Yiisoft\Log\Target\Db\Migration;
 
 abstract class AbstractDbTargetTest extends TestCase
 {
@@ -23,16 +23,16 @@ abstract class AbstractDbTargetTest extends TestCase
 
     protected function setup(): void
     {
-        DbHelper::ensureTable($this->db, '{{%test-table-1}}');
-        DbHelper::ensureTable($this->db, '{{%test-table-2}}');
+        Migration::ensureTable($this->db, '{{%test-table-1}}');
+        Migration::ensureTable($this->db, '{{%test-table-2}}');
 
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
-        DbHelper::dropTable($this->db, '{{%test-table-1}}');
-        DbHelper::dropTable($this->db, '{{%test-table-2}}');
+        Migration::dropTable($this->db, '{{%test-table-1}}');
+        Migration::dropTable($this->db, '{{%test-table-2}}');
 
         $this->db->close();
 

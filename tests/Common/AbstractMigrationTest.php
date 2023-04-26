@@ -7,8 +7,8 @@ namespace Yiisoft\Log\Target\Db\Tests\Common;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Logger;
-use Yiisoft\Log\Target\Db\DbHelper;
 use Yiisoft\Log\Target\Db\DbTarget;
+use Yiisoft\Log\Target\Db\Migration;
 
 abstract class AbstractMigrationTest extends TestCase
 {
@@ -20,9 +20,9 @@ abstract class AbstractMigrationTest extends TestCase
 
     protected function setUp(): void
     {
-        DbHelper::ensureTable($this->db);
-        DbHelper::ensureTable($this->db, '{{%test-table-1}}');
-        DbHelper::ensureTable($this->db, '{{%test-table-2}}');
+        Migration::ensureTable($this->db);
+        Migration::ensureTable($this->db, '{{%test-table-1}}');
+        Migration::ensureTable($this->db, '{{%test-table-2}}');
 
         $this->idType = match ($this->db->getDriverName()) {
             'oci', 'sqlite' => 'integer',
@@ -51,9 +51,9 @@ abstract class AbstractMigrationTest extends TestCase
 
     protected function tearDown(): void
     {
-        DbHelper::dropTable($this->db);
-        DbHelper::dropTable($this->db, '{{%test-table-1}}');
-        DbHelper::dropTable($this->db, '{{%test-table-2}}');
+        Migration::dropTable($this->db);
+        Migration::dropTable($this->db, '{{%test-table-1}}');
+        Migration::dropTable($this->db, '{{%test-table-2}}');
 
         $this->db->close();
 

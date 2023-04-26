@@ -6,7 +6,7 @@ namespace Yiisoft\Log\Target\Db\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Db\Connection\ConnectionInterface;
-use Yiisoft\Log\Target\Db\DbHelper;
+use Yiisoft\Log\Target\Db\Migration;
 
 abstract class AbstractDbHelperTest extends TestCase
 {
@@ -14,14 +14,14 @@ abstract class AbstractDbHelperTest extends TestCase
 
     protected function setup(): void
     {
-        DbHelper::ensureTable($this->db);
+        Migration::ensureTable($this->db);
 
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
-        DbHelper::dropTable($this->db);
+        Migration::dropTable($this->db);
 
         $this->db->close();
 
@@ -32,7 +32,7 @@ abstract class AbstractDbHelperTest extends TestCase
 
     public function testDropTable(): void
     {
-        DbHelper::dropTable($this->db);
+        Migration::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
@@ -41,11 +41,11 @@ abstract class AbstractDbHelperTest extends TestCase
     {
         $table = '{{%log}}';
 
-        DbHelper::dropTable($this->db);
+        Migration::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema($table, true));
 
-        DbHelper::ensureTable($this->db);
+        Migration::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema($table, true));
     }
@@ -54,15 +54,15 @@ abstract class AbstractDbHelperTest extends TestCase
     {
         $table = '{{%log}}';
 
-        DbHelper::dropTable($this->db);
+        Migration::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema($table, true));
 
-        DbHelper::ensureTable($this->db);
+        Migration::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema($table));
 
-        DbHelper::ensureTable($this->db);
+        Migration::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema($table));
     }
