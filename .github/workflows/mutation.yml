@@ -51,10 +51,10 @@ jobs:
         options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - name: Checkout
+      - name: Checkout.
         uses: actions/checkout@v3
 
-      - name: Install PHP
+      - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
           php-version: "${{ matrix.php }}"
@@ -63,13 +63,13 @@ jobs:
           coverage: pcov
           tools: composer:v2
 
-      - name: Update composer
+      - name: Update composer.
         run: composer self-update
 
-      - name: Install db-pgsql
+      - name: Install db-pgsql.
         run: composer require yiisoft/db-pgsql --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run infection
+      - name: Run infection.
         run: |
           vendor/bin/roave-infection-static-analysis-plugin -j2 --ignore-msi-with-no-mutations --only-covered --test-framework-options="--testsuite=Pgsql"
         env:
