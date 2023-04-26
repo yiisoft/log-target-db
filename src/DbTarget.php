@@ -12,7 +12,7 @@ use Yiisoft\Log\Target;
 /**
  * Stores log messages in a database table.
  *
- * Database schema can be initialized, you can use the {@see Migration::ensureTable()} method for this.
+ * Use {@see Migration::ensureTable()} to initilize database schema.
  */
 final class DbTarget extends Target
 {
