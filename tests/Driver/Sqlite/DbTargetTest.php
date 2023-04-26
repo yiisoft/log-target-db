@@ -22,7 +22,7 @@ final class DbTargetTest extends AbstractDbTargetTest
 {
     protected function setUp(): void
     {
-      // create connection dbms-specific
+        // create connection dbms-specific
         $this->db = (new SqliteHelper())->createConnection();
 
         parent::setUp();
