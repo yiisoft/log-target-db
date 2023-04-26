@@ -6,24 +6,24 @@ on:
       - 'CHANGELOG.md'
       - '.gitignore'
       - '.gitattributes'
+      - 'infection.json.dist'
       - 'psalm.xml'
 
   push:
-    branches:
-      - "master"
     paths-ignore:
       - 'docs/**'
       - 'README.md'
       - 'CHANGELOG.md'
       - '.gitignore'
       - '.gitattributes'
+      - 'infection.json.dist'
       - 'psalm.xml'
 
-name: mutation test
+name: pgsql
 
 jobs:
-  mutation:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+  tests:
+    name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
 
     env:
       extensions: pdo, pdo_pgsql
@@ -36,12 +36,22 @@ jobs:
           - ubuntu-latest
 
         php:
+          - 8.0
           - 8.1
           - 8.2
 
+        pgsql:
+          - 9
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+
     services:
       postgres:
-        image: postgres:15
+        image: postgres:${{ matrix.pgsql }}
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: root
@@ -57,9 +67,9 @@ jobs:
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "${{ matrix.php }}"
+          php-version: ${{ matrix.php }}
           extensions: ${{ env.extensions }}
-          ini-values: memory_limit=-1
+          ini-values: date.timezone='UTC'
           coverage: pcov
           tools: composer:v2
 
@@ -69,8 +79,12 @@ jobs:
       - name: Install db-pgsql.
         run: composer require yiisoft/db-pgsql --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run infection.
-        run: |
-          vendor/bin/roave-infection-static-analysis-plugin -j2 --ignore-msi-with-no-mutations --only-covered --test-framework-options="--testsuite=Pgsql"
-        env:
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - name: Run tests with phpunit.
+        run: vendor/bin/phpunit --testsuite=Pgsql --coverage-clover=coverage.xml --colors=always
+
+      - name: Upload coverage to Codecov.
+        if: matrix.php == '8.1'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml

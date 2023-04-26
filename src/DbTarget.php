@@ -9,13 +9,10 @@ use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Log\Target;
 
-use function microtime;
-
 /**
- * `DbTarget` stores log messages in a database table.
+ * Stores log messages in a database table.
  *
- * Database schema could be initialized by applying migration:
- * {@see \Yiisoft\Log\Target\Db\Migration\M202101052207CreateLog}.
+ * Use {@see Migration::ensureTable()} to initilize database schema.
  */
 final class DbTarget extends Target
 {
@@ -49,31 +46,31 @@ final class DbTarget extends Target
     /**
      * Stores log messages to the database.
      *
-     * @throws RuntimeException If the log cannot be exported.
+     * @throws RuntimeException If the log can't be exported.
      */
     protected function export(): void
     {
-        $defaultLogTime = microtime(true);
         $formattedMessages = $this->getFormattedMessages();
         $table = $this->db->getQuoter()->quoteTableName($this->table);
 
-        $sql = "INSERT INTO {$table} ([[level]], [[category]], [[log_time]], [[message]])"
-            . ' VALUES (:level, :category, :log_time, :message)';
-
         try {
-            $command = $this->db->createCommand($sql);
+            $command = $this->db->createCommand();
 
             foreach ($this->getMessages() as $key => $message) {
-                $command
-                    ->bindValues(
-                        [
-                            ':level' => $message->level(),
-                            ':category' => $message->context('category', ''),
-                            ':log_time' => $message->context('time', $defaultLogTime),
-                            ':message' => $formattedMessages[$key],
-                        ]
-                    )
-                    ->execute();
+                /** @psalm-var mixed $logTime */
+                $logTime = $message->context('time');
+                $columns = [
+                    'level' => $message->level(),
+                    'category' => $message->context('category', ''),
+                    'log_time' => $logTime,
+                    'message' => $formattedMessages[$key],
+                ];
+
+                if ($logTime === null) {
+                    unset($columns['log_time']);
+                }
+
+                $command->insert($table, $columns)->execute();
             }
         } catch (Throwable $e) {
             throw new RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
