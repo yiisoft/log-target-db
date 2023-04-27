@@ -37,6 +37,10 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testDropTable(): void
     {
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
+
         Migration::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
@@ -51,10 +55,6 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTable(): void
     {
-        Migration::dropTable($this->db);
-
-        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
-
         Migration::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
@@ -71,10 +71,6 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableExist(): void
     {
-        Migration::dropTable($this->db);
-
-        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
-
         Migration::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
