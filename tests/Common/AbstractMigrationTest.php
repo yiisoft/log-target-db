@@ -60,6 +60,8 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
 
         Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
 
     /**
@@ -80,6 +82,8 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
 
         Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
 
     /**
@@ -110,6 +114,8 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
 
         Migration::dropTable($this->db, $tableWithPrefix);
+
+        $this->assertNull($this->db->getTableSchema($tableWithPrefix, true));
     }
 
     /**
@@ -138,6 +144,8 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
 
         Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
 
     public static function tableListWithPrefixProvider(): array
