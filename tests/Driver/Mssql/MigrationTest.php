@@ -10,6 +10,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
+use Yiisoft\Db\Schema\SchemaInterface;
 use Yiisoft\Log\Target\Db\Migration;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
 use Yiisoft\Log\Target\Db\Tests\Support\MssqlFactory;
@@ -21,6 +22,9 @@ use Yiisoft\Log\Target\Db\Tests\Support\MssqlFactory;
  */
 final class MigrationTest extends AbstractMigrationTest
 {
+    protected string $logTime = SchemaInterface::TYPE_DATETIME;
+    protected string $messageType = SchemaInterface::TYPE_STRING;
+
     protected function setUp(): void
     {
         // create connection dbms-specific

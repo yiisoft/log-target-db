@@ -11,47 +11,18 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
+use Yiisoft\Db\Schema\SchemaInterface;
 use Yiisoft\Log\Target\Db\Migration;
 
 abstract class AbstractMigrationTest extends TestCase
 {
     protected ConnectionInterface $db;
-    private string $idType = '';
-    private string $logTime = '';
-    private string $messageType = '';
+    protected string $idType = SchemaInterface::TYPE_BIGINT;
+    protected string $logTime = SchemaInterface::TYPE_TIMESTAMP;
+    protected string $messageType = SchemaInterface::TYPE_TEXT;
 
-    protected function setUp(): void
-    {
-        $this->idType = match ($this->db->getDriverName()) {
-            'oci', 'sqlite' => 'integer',
-            default => 'bigint'
-        };
-
-        $this->logTime = match ($this->db->getDriverName()) {
-            'sqlsrv' => 'datetime',
-            default => 'timestamp',
-        };
-
-        $this->messageType = match ($this->db->getDriverName()) {
-            'sqlsrv' => 'string',
-            default => 'text',
-        };
-
-        parent::setup();
-    }
-
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws Throwable
-     */
     protected function tearDown(): void
     {
-        // drop tables
-        Migration::dropTable($this->db);
-        Migration::dropTable($this->db, '{{%test-table-1}}');
-        Migration::dropTable($this->db, '{{%test-table-2}}');
-
         $this->db->close();
 
         unset($this->db, $this->idType);
@@ -80,15 +51,15 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTable(): void
     {
-        $table = '{{%log}}';
-
         Migration::dropTable($this->db);
 
-        $this->assertNull($this->db->getTableSchema($table, true));
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
 
         Migration::ensureTable($this->db);
 
-        $this->assertNotNull($this->db->getTableSchema($table, true));
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
+
+        Migration::dropTable($this->db);
     }
 
     /**
@@ -100,36 +71,19 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableExist(): void
     {
-        $table = '{{%log}}';
-
         Migration::dropTable($this->db);
 
-        $this->assertNull($this->db->getTableSchema($table, true));
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
 
         Migration::ensureTable($this->db);
 
-        $this->assertNotNull($this->db->getTableSchema($table));
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
 
         Migration::ensureTable($this->db);
 
-        $this->assertNotNull($this->db->getTableSchema($table));
-    }
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
 
-    public static function tableListWithPrefixProvider(): array
-    {
-        return [
-            ['{{%test-table-1}}', 'test-table-1'],
-            ['{{%test-table-2}}', 'test-table-2'],
-        ];
-    }
-
-    public static function tableListIndexesProvider(): array
-    {
-        return [
-            ['{{%log}}', 'log'],
-            ['{{%test-table-1}}', 'test-table-1'],
-            ['{{%test-table-2}}', 'test-table-2'],
-        ];
+        Migration::dropTable($this->db);
     }
 
     /**
@@ -152,12 +106,14 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
         $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
         $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
-        $this->assertSame('string', $tableSchema?->getColumn('level')->getType());
+        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('level')->getType());
         $this->assertSame(16, $tableSchema?->getColumn('level')->getSize());
-        $this->assertSame('string', $tableSchema?->getColumn('category')->getType());
+        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('category')->getType());
         $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
         $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
+
+        Migration::dropTable($this->db, $tableWithPrefix);
     }
 
     /**
@@ -178,11 +134,30 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
         $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
         $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
-        $this->assertSame('string', $tableSchema?->getColumn('level')->getType());
+        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('level')->getType());
         $this->assertSame(16, $tableSchema?->getColumn('level')->getSize());
-        $this->assertSame('string', $tableSchema?->getColumn('category')->getType());
+        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('category')->getType());
         $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
         $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
+
+        Migration::dropTable($this->db);
+    }
+
+    public static function tableListWithPrefixProvider(): array
+    {
+        return [
+            ['{{%test-table-1}}', 'test-table-1'],
+            ['{{%test-table-2}}', 'test-table-2'],
+        ];
+    }
+
+    public static function tableListIndexesProvider(): array
+    {
+        return [
+            ['{{%log}}', 'log'],
+            ['{{%test-table-1}}', 'test-table-1'],
+            ['{{%test-table-2}}', 'test-table-2'],
+        ];
     }
 }

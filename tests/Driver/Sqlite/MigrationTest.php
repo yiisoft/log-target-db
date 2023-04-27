@@ -10,6 +10,7 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
+use Yiisoft\Db\Schema\SchemaInterface;
 use Yiisoft\Log\Target\Db\Migration;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
 use Yiisoft\Log\Target\Db\Tests\Support\SqliteFactory;
@@ -21,6 +22,8 @@ use Yiisoft\Log\Target\Db\Tests\Support\SqliteFactory;
  */
 final class MigrationTest extends AbstractMigrationTest
 {
+    protected string $idType = SchemaInterface::TYPE_INTEGER;
+
     protected function setUp(): void
     {
         // create connection dbms-specific
