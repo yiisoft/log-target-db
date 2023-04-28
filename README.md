@@ -8,7 +8,6 @@
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/log-target-db/v/stable.png)](https://packagist.org/packages/yiisoft/log-target-db)
 [![Total Downloads](https://poser.pugx.org/yiisoft/log-target-db/downloads.png)](https://packagist.org/packages/yiisoft/log-target-db)
-[![Build status](https://github.com/yiisoft/log-target-db/workflows/build/badge.svg)](https://github.com/yiisoft/log-target-db/actions?query=workflow%3Abuild)
 [![codecov](https://codecov.io/gh/yiisoft/log-target-db/branch/master/graph/badge.svg?token=AP7VK8ZYIF)](https://codecov.io/gh/yiisoft/log-target-db)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Flog-target-db%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/log-target-db/master)
 [![static analysis](https://github.com/yiisoft/log-target-db/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/log-target-db/actions?query=workflow%3A%22static+analysis%22)
