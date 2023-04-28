@@ -41,6 +41,9 @@ Migration::dropTable($db, '{{%custom_log_table}}');
 
 ## General usage
 
+When creating an instance of `\Yiisoft\Log\Logger`, you must pass an instance of the database connection,
+for more information see [yiisoft/db](https://github.com/yiisoft/db/tree/master/docs/en#create-connection).
+
 Creating a target:
 
 ```php
