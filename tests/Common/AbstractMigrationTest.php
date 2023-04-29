@@ -37,6 +37,22 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testDropTable(): void
     {
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
+
+        Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws Throwable
+     */
+    public function testDropTableWithCustomTableName(): void
+    {
         Migration::ensureTable($this->db, '{{%custom-log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}', true));
@@ -54,6 +70,24 @@ abstract class AbstractMigrationTest extends TestCase
      * @throws Throwable
      */
     public function testEnsureTable(): void
+    {
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
+
+        Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
+    public function testEnsureTableWithCustomTableName(): void
     {
         Migration::ensureTable($this->db, '{{%custom-log}}');
 
@@ -73,6 +107,28 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableExist(): void
     {
+        Migration::ensureTable($this->db);
+
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
+
+        Migration::ensureTable($this->db, '{{%log}}');
+
+        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
+
+        Migration::dropTable($this->db);
+
+        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
+    public function testEnsureTableExistWithCustomTableName(): void
+    {
         Migration::ensureTable($this->db, '{{%custom-log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
@@ -87,45 +143,13 @@ abstract class AbstractMigrationTest extends TestCase
     }
 
     /**
-     * @dataProvider tableListWithPrefixProvider
-     *
      * @throws Exception
      * @throws InvalidArgumentException
      * @throws InvalidConfigException
      * @throws NotSupportedException
      * @throws Throwable
      */
-    public function testVerifyTableStructure(string $tableWithPrefix, string $table): void
-    {
-        Migration::ensureTable($this->db, $tableWithPrefix);
-
-        $tableSchema = $this->db->getTableSchema($tableWithPrefix);
-        $prefix = $this->db->getTablePrefix();
-
-        $this->assertSame($prefix . $table, $tableSchema?->getName());
-        $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
-        $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
-        $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
-        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('level')->getType());
-        $this->assertSame(16, $tableSchema?->getColumn('level')->getSize());
-        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('category')->getType());
-        $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
-        $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
-        $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
-
-        Migration::dropTable($this->db, $tableWithPrefix);
-
-        $this->assertNull($this->db->getTableSchema($tableWithPrefix, true));
-    }
-
-    /**
-     * @throws Exception
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigException
-     * @throws NotSupportedException
-     * @throws Throwable
-     */
-    public function testVerifyTableLogStructure(): void
+    public function testVerifyTableStructure(): void
     {
         Migration::ensureTable($this->db);
 
@@ -146,6 +170,38 @@ abstract class AbstractMigrationTest extends TestCase
         Migration::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+    }
+
+    /**
+     * @dataProvider tableListWithPrefixProvider
+     *
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws NotSupportedException
+     * @throws Throwable
+     */
+    public function testVerifyTableStructureWithCustomTableName(string $tableWithPrefix, string $table): void
+    {
+        Migration::ensureTable($this->db, $tableWithPrefix);
+
+        $tableSchema = $this->db->getTableSchema($tableWithPrefix);
+        $prefix = $this->db->getTablePrefix();
+
+        $this->assertSame($prefix . $table, $tableSchema?->getName());
+        $this->assertSame(['id'], $tableSchema?->getPrimaryKey());
+        $this->assertSame(['id', 'level', 'category', 'log_time', 'message'], $tableSchema?->getColumnNames());
+        $this->assertSame($this->idType, $tableSchema?->getColumn('id')->getType());
+        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('level')->getType());
+        $this->assertSame(16, $tableSchema?->getColumn('level')->getSize());
+        $this->assertSame(SchemaInterface::TYPE_STRING, $tableSchema?->getColumn('category')->getType());
+        $this->assertSame(255, $tableSchema?->getColumn('category')->getSize());
+        $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
+        $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
+
+        Migration::dropTable($this->db, $tableWithPrefix);
+
+        $this->assertNull($this->db->getTableSchema($tableWithPrefix, true));
     }
 
     public static function tableListWithPrefixProvider(): array
