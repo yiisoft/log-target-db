@@ -37,13 +37,13 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testDropTable(): void
     {
-        Migration::ensureTable($this->db);
+        Migration::ensureTable($this->db, '{{%custom-log}}');
 
-        $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
+        $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}', true));
 
-        Migration::dropTable($this->db);
+        Migration::dropTable($this->db, '{{%custom-log}}');
 
-        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+        $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
     }
 
     /**
@@ -55,13 +55,13 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTable(): void
     {
-        Migration::ensureTable($this->db);
+        Migration::ensureTable($this->db, '{{%custom-log}}');
 
-        $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
+        $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}', true));
 
-        Migration::dropTable($this->db);
+        Migration::dropTable($this->db, '{{%custom-log}}');
 
-        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+        $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
     }
 
     /**
@@ -73,17 +73,17 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableExist(): void
     {
-        Migration::ensureTable($this->db);
+        Migration::ensureTable($this->db, '{{%custom-log}}');
 
-        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
+        $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
 
-        Migration::ensureTable($this->db);
+        Migration::ensureTable($this->db, '{{%custom-log}}');
 
-        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
+        $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
 
-        Migration::dropTable($this->db);
+        Migration::dropTable($this->db, '{{%custom-log}}');
 
-        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+        $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
     }
 
     /**
@@ -159,7 +159,7 @@ abstract class AbstractMigrationTest extends TestCase
     public static function tableListIndexesProvider(): array
     {
         return [
-            ['{{%log}}', 'log'],
+            ['{{%custom-log}}', 'custom-log'],
             ['{{%test-table-1}}', 'test-table-1'],
             ['{{%test-table-2}}', 'test-table-2'],
         ];
