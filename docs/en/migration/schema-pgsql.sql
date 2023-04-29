@@ -1,8 +1,6 @@
 /**
  * Database schema required by yiisoft/log-target-db for PostgreSQL.
  */
-DROP TABLE IF EXISTS "log";
-
 CREATE TABLE "log"
 (
     id BIGSERIAL NOT NULL PRIMARY KEY,

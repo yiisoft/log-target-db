@@ -1,8 +1,6 @@
 /**
  * Database schema required by yiisoft/log-target-db for MySQL.
  */
-DROP TABLE IF EXISTS `log`;
-
 CREATE TABLE `log` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `level` VARCHAR(16),
