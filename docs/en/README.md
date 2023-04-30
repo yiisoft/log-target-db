@@ -13,30 +13,18 @@ The package could be installed with composer:
 composer require yiisoft/log-target-db --prefer-dist
 ```
 
-## Migration
+## Create Table
 
-The package provides a migration that creates the cache table for default `{{%log}}`. You can use it as follows:
+The package provides a `DbHelper::class` that creates the cache table for default `{{%log}}`. You can use it as follows:
 
 ```php
-Migration::ensureTable($db);
+DbHelper::ensureTable($db);
 ```
 
 For custom table name you can use:
 
 ```php
-Migration::ensureTable($db, '{{%custom_log_table}}');
-```
-
-For dropping table you can use:
-
-```php
-Migration::dropTable($db);
-```
-
-For custom table name you can use:
-
-```php
-Migration::dropTable($db, '{{%custom_log_table}}');
+DbHelper::ensureTable($db, '{{%custom_log_table}}');
 ```
 
 > Note: Additionally you can import the `RAW SQL` directly to create the tables.
@@ -46,6 +34,20 @@ Migration::dropTable($db, '{{%custom_log_table}}');
 >- [schema-oracle](/docs/en/migration/schema-oci.sql).
 >- [schema-pgsql](/docs/en/migration/schema-pgsql.sql).
 >- [schema-sqlite](/docs/en/migration/schema-sqlite.sql).
+
+## Drop Table
+
+For dropping table you can use:
+
+```php
+DbHelper::dropTable($db);
+```
+
+For custom table name you can use:
+
+```php
+DbHelper::dropTable($db, '{{%custom_log_table}}');
+```
 
 ## General usage
 
