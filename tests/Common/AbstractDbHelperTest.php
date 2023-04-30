@@ -12,9 +12,9 @@ use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Schema\SchemaInterface;
-use Yiisoft\Log\Target\Db\Migration;
+use Yiisoft\Log\Target\Db\DbHelper;
 
-abstract class AbstractMigrationTest extends TestCase
+abstract class AbstractDbHelperTest extends TestCase
 {
     protected ConnectionInterface $db;
     protected string $idType = SchemaInterface::TYPE_BIGINT;
@@ -37,11 +37,11 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testDropTable(): void
     {
-        Migration::ensureTable($this->db);
+        DbHelper::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
 
-        Migration::dropTable($this->db);
+        DbHelper::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
@@ -53,11 +53,11 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testDropTableWithCustomTableName(): void
     {
-        Migration::ensureTable($this->db, '{{%custom-log}}');
+        DbHelper::ensureTable($this->db, '{{%custom-log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}', true));
 
-        Migration::dropTable($this->db, '{{%custom-log}}');
+        DbHelper::dropTable($this->db, '{{%custom-log}}');
 
         $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
     }
@@ -71,11 +71,11 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTable(): void
     {
-        Migration::ensureTable($this->db);
+        DbHelper::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema('{{%log}}', true));
 
-        Migration::dropTable($this->db);
+        DbHelper::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
@@ -89,11 +89,11 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableWithCustomTableName(): void
     {
-        Migration::ensureTable($this->db, '{{%custom-log}}');
+        DbHelper::ensureTable($this->db, '{{%custom-log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}', true));
 
-        Migration::dropTable($this->db, '{{%custom-log}}');
+        DbHelper::dropTable($this->db, '{{%custom-log}}');
 
         $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
     }
@@ -107,15 +107,15 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableExist(): void
     {
-        Migration::ensureTable($this->db);
+        DbHelper::ensureTable($this->db);
 
         $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
 
-        Migration::ensureTable($this->db, '{{%log}}');
+        DbHelper::ensureTable($this->db, '{{%log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
 
-        Migration::dropTable($this->db);
+        DbHelper::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
@@ -129,15 +129,15 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testEnsureTableExistWithCustomTableName(): void
     {
-        Migration::ensureTable($this->db, '{{%custom-log}}');
+        DbHelper::ensureTable($this->db, '{{%custom-log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
 
-        Migration::ensureTable($this->db, '{{%custom-log}}');
+        DbHelper::ensureTable($this->db, '{{%custom-log}}');
 
         $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
 
-        Migration::dropTable($this->db, '{{%custom-log}}');
+        DbHelper::dropTable($this->db, '{{%custom-log}}');
 
         $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
     }
@@ -151,7 +151,7 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testVerifyTableStructure(): void
     {
-        Migration::ensureTable($this->db);
+        DbHelper::ensureTable($this->db);
 
         $tableSchema = $this->db->getTableSchema('{{%log}}');
         $prefix = $this->db->getTablePrefix();
@@ -167,7 +167,7 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
 
-        Migration::dropTable($this->db);
+        DbHelper::dropTable($this->db);
 
         $this->assertNull($this->db->getTableSchema('{{%log}}', true));
     }
@@ -183,7 +183,7 @@ abstract class AbstractMigrationTest extends TestCase
      */
     public function testVerifyTableStructureWithCustomTableName(string $tableWithPrefix, string $table): void
     {
-        Migration::ensureTable($this->db, $tableWithPrefix);
+        DbHelper::ensureTable($this->db, $tableWithPrefix);
 
         $tableSchema = $this->db->getTableSchema($tableWithPrefix);
         $prefix = $this->db->getTablePrefix();
@@ -199,7 +199,7 @@ abstract class AbstractMigrationTest extends TestCase
         $this->assertSame($this->logTime, $tableSchema?->getColumn('log_time')->getType());
         $this->assertSame($this->messageType, $tableSchema?->getColumn('message')->getType());
 
-        Migration::dropTable($this->db, $tableWithPrefix);
+        DbHelper::dropTable($this->db, $tableWithPrefix);
 
         $this->assertNull($this->db->getTableSchema($tableWithPrefix, true));
     }
