@@ -14,7 +14,7 @@ use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Expression\Expression;
 use Yiisoft\Db\Schema\SchemaInterface;
 
-final class Migration
+final class DbHelper
 {
     /**
      * @throws Exception

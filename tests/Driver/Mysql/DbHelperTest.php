@@ -10,8 +10,8 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
-use Yiisoft\Log\Target\Db\Migration;
-use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
+use Yiisoft\Log\Target\Db\DbHelper;
+use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbHelperTest;
 use Yiisoft\Log\Target\Db\Tests\Support\MysqlFactory;
 
 /**
@@ -19,7 +19,7 @@ use Yiisoft\Log\Target\Db\Tests\Support\MysqlFactory;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class MigrationTest extends AbstractMigrationTest
+final class DbHelperTest extends AbstractDbHelperTest
 {
     protected function setUp(): void
     {
@@ -43,7 +43,7 @@ final class MigrationTest extends AbstractMigrationTest
      */
     public function testVerifyTableIndexes(string $tableWithPrefix, string $table): void
     {
-        Migration::ensureTable($this->db, $tableWithPrefix);
+        DbHelper::ensureTable($this->db, $tableWithPrefix);
 
         $schema = $this->db->getSchema();
         $table = $this->db->getTablePrefix() . $table;

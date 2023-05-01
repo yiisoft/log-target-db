@@ -10,8 +10,9 @@ use Yiisoft\Db\Exception\Exception;
 use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
-use Yiisoft\Log\Target\Db\Migration;
-use Yiisoft\Log\Target\Db\Tests\Common\AbstractMigrationTest;
+use Yiisoft\Db\Schema\SchemaInterface;
+use Yiisoft\Log\Target\Db\DbHelper;
+use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbHelperTest;
 use Yiisoft\Log\Target\Db\Tests\Support\MssqlFactory;
 
 /**
@@ -19,8 +20,11 @@ use Yiisoft\Log\Target\Db\Tests\Support\MssqlFactory;
  *
  * @psalm-suppress PropertyNotSetInConstructor
  */
-final class MigrationTest extends AbstractMigrationTest
+final class DbHelperTest extends AbstractDbHelperTest
 {
+    protected string $logTime = SchemaInterface::TYPE_DATETIME;
+    protected string $messageType = SchemaInterface::TYPE_STRING;
+
     protected function setUp(): void
     {
         // create connection dbms-specific
@@ -43,7 +47,7 @@ final class MigrationTest extends AbstractMigrationTest
      */
     public function testVerifyTableIndexes(string $tableWithPrefix, string $table): void
     {
-        Migration::ensureTable($this->db, $tableWithPrefix);
+        DbHelper::ensureTable($this->db, $tableWithPrefix);
 
         $schema = $this->db->getSchema();
         $table = $this->db->getTablePrefix() . $table;

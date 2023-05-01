@@ -16,7 +16,7 @@ use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
-use Yiisoft\Log\Target\Db\Migration;
+use Yiisoft\Log\Target\Db\DbHelper;
 
 abstract class AbstractDbTargetTest extends TestCase
 {
@@ -33,8 +33,8 @@ abstract class AbstractDbTargetTest extends TestCase
     protected function setup(): void
     {
         // create migration tables
-        Migration::ensureTable($this->db, '{{%test-table-1}}');
-        Migration::ensureTable($this->db, '{{%test-table-2}}');
+        DbHelper::ensureTable($this->db, '{{%test-table-1}}');
+        DbHelper::ensureTable($this->db, '{{%test-table-2}}');
 
         parent::setUp();
     }
@@ -47,8 +47,8 @@ abstract class AbstractDbTargetTest extends TestCase
     protected function tearDown(): void
     {
         // drop tables
-        Migration::dropTable($this->db, '{{%test-table-1}}');
-        Migration::dropTable($this->db, '{{%test-table-2}}');
+        DbHelper::dropTable($this->db, '{{%test-table-1}}');
+        DbHelper::dropTable($this->db, '{{%test-table-2}}');
 
         $this->db->close();
 
