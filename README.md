@@ -15,7 +15,7 @@
 
 This package provides the Database target for the [yiisoft/log](https://github.com/yiisoft/log) library.
 
-## Support databases:
+## Supported databases
 
 |                      Packages                       |      PHP      |    Versions     |                                                                        CI-Actions                                                                         |
 |:---------------------------------------------------:|:-------------:|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------:|
