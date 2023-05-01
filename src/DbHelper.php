@@ -14,6 +14,9 @@ use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Expression\Expression;
 use Yiisoft\Db\Schema\SchemaInterface;
 
+use function in_array;
+use function sprintf;
+
 final class DbHelper
 {
     /**
@@ -28,6 +31,8 @@ final class DbHelper
         $command = $db->createCommand();
         $schema = $db->getSchema();
         $tableRawName = $schema->getRawTableName($table);
+
+        self::validateSupportedDatabase($db);
 
         if ($schema->getTableSchema($table, true) !== null) {
             return;
@@ -87,6 +92,8 @@ final class DbHelper
         $command = $db->createCommand();
         $tableRawName = $db->getSchema()->getRawTableName($table);
 
+        self::validateSupportedDatabase($db);
+
         // drop table
         if ($db->getTableSchema($table, true) !== null) {
             $command->dropTable($table)->execute();
@@ -127,5 +134,19 @@ final class DbHelper
             END;
             SQL,
         )->execute();
+    }
+
+    private static function validateSupportedDatabase(ConnectionInterface $db): void
+    {
+        $driverName = $db->getDriverName();
+
+        if (!in_array($driverName, ['mysql', 'oci', 'pgsql', 'sqlite', 'sqlsrv'], true)) {
+            throw new NotSupportedException(
+                sprintf(
+                    'Database driver `%s` is not supported.',
+                    $driverName,
+                ),
+            );
+        }
     }
 }
