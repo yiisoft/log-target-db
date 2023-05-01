@@ -28,7 +28,7 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 ## Requirements
 
-- The minimum version of PHP required by this package is `8.0`.
+- PHP 8.0 or higher.
 - `PDO` PHP extension.
 
 ## Installation
@@ -39,40 +39,32 @@ The package could be installed with composer:
 composer require yiisoft/log-target-db --prefer-dist
 ```
 
-## Create Table
+## Database Preparing
 
-The package provides a `DbHelper::class` that creates the cache table for default `{{%log}}`. You can use it as follows:
+Package provides two way for preparing database:
+
+1. Raw SQL. You can use it with the migration package used in your application.
+
+    - [MSSQL](/docs/en/migration/schema-mssql.sql),
+    - [MySQL / MariaDB](/docs/en/migration/schema-mysql.sql),
+    - [Oracle](/docs/en/migration/schema-oci.sql),
+    - [PostgreSQL](/docs/en/migration/schema-pgsql.sql),
+    - [SQLite](/docs/en/migration/schema-sqlite.sql),
+
+2. `DbHelper` for create/drop cache table (by default `{{%log}}`).
 
 ```php
+// Create table with default name
 DbHelper::ensureTable($db);
-```
 
-For custom table name you can use:
+// Create table with custom name
+DbHelper::ensureTable($db, '{{%custom_log}}');
 
-```php
-DbHelper::ensureTable($db, '{{%custom_log_table}}');
-```
-
-> Note: Additionally you can import the `RAW SQL` directly to create the tables.
->
->- [schema-mssql](/docs/en/migration/schema-mssql.sql).
->- [schema-mysql](/docs/en/migration/schema-mysql.sql).
->- [schema-oracle](/docs/en/migration/schema-oci.sql).
->- [schema-pgsql](/docs/en/migration/schema-pgsql.sql).
->- [schema-sqlite](/docs/en/migration/schema-sqlite.sql).
-
-## Drop Table
-
-For dropping table you can use:
-
-```php
+// Drop table with default name
 DbHelper::dropTable($db);
-```
 
-For custom table name you can use:
-
-```php
-DbHelper::dropTable($db, '{{%custom_log_table}}');
+// Drop table with custom name
+DbHelper::dropTable($db, '{{%custom_log}}');
 ```
 
 ## General usage
