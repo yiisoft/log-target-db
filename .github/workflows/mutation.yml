@@ -26,7 +26,7 @@ jobs:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     env:
-      extensions: pdo, pdo_pgsql
+      extensions: pdo, pdo_mysql, pdo_pgsql, pdo_oci, pdo_sqlite, pdo_sqlsrv, oci8
 
     runs-on: ${{ matrix.os }}
 
@@ -40,6 +40,37 @@ jobs:
           - 8.2
 
     services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          SA_PASSWORD: YourStrong!Passw0rd
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: --name=mssql --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_PASSWORD: ''
+          MYSQL_DATABASE: yiitest
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      oci:
+        image: gvenzl/oracle-xe:21
+        ports:
+          - 1521:1521
+        env:
+          ORACLE_DATABASE : yiitest
+          ORACLE_PASSWORD : root
+        options: >-
+          --name=oci
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
       postgres:
         image: postgres:15
         env:
@@ -54,6 +85,9 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v3
 
+      - name: Create MS SQL Database.
+        run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
+
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
         with:
@@ -67,7 +101,7 @@ jobs:
         run: composer self-update
 
       - name: Install db-pgsql.
-        run: composer require yiisoft/db-pgsql --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        run: composer require yiisoft/db-mssql yiisoft/db-mysql yiisoft/db-oci yiisoft/db-pgsql yiisoft/db-sqlite --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Run infection.
         run: |
