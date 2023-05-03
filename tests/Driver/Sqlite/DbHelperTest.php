@@ -68,5 +68,7 @@ final class DbHelperTest extends AbstractDbHelperTest
         $this->assertSame("IDX_$table-category", $indexes[2]->getName());
         $this->assertFalse($indexes[2]->isUnique());
         $this->assertFalse($indexes[2]->isPrimary());
+
+        DbHelper::dropTable($this->db, $tableWithPrefix);
     }
 }

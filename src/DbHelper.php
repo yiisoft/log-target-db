@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db;
 
+use RuntimeException;
 use Throwable;
 use Yiisoft\Db\Command\CommandInterface;
 use Yiisoft\Db\Connection\ConnectionInterface;
@@ -29,8 +30,8 @@ final class DbHelper
         $schema = $db->getSchema();
         $tableRawName = $schema->getRawTableName($table);
 
-        if ($schema->getTableSchema($table, true) !== null) {
-            return;
+        if (self::hasTable($db, $table)) {
+            throw new RuntimeException("Table \"$tableRawName\" already exists.");
         }
 
         // `log_Time` Default value custom for all dbms
@@ -85,11 +86,12 @@ final class DbHelper
     public static function dropTable(ConnectionInterface $db, string $table = '{{%log}}'): void
     {
         $command = $db->createCommand();
-        $tableRawName = $db->getSchema()->getRawTableName($table);
+        $schema = $db->getSchema();
+        $tableRawName = $schema->getRawTableName($table);
 
         // drop table
-        if ($db->getTableSchema($table, true) !== null) {
-            $command->dropTable($table)->execute();
+        if (self::hasTable($db, $table)) {
+            $command->dropTable($tableRawName)->execute();
 
             // drop sequence oracle
             if ($db->getDriverName() === 'oci') {
@@ -127,5 +129,10 @@ final class DbHelper
             END;
             SQL,
         )->execute();
+    }
+
+    private static function hasTable(ConnectionInterface $db, string $table): bool
+    {
+        return $db->getTableSchema($table, true) !== null;
     }
 }

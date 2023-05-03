@@ -87,5 +87,7 @@ final class DbHelperTest extends AbstractDbHelperTest
             $this->assertTrue($indexes[3]->isUnique());
             $this->assertTrue($indexes[3]->isPrimary());
         }
+
+        DbHelper::dropTable($this->db, $tableWithPrefix);
     }
 }

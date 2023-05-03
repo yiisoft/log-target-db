@@ -100,7 +100,7 @@ jobs:
       - name: Update composer.
         run: composer self-update
 
-      - name: Install db-pgsql.
+      - name: Install composer dependencies.
         run: composer require yiisoft/db-mssql yiisoft/db-mysql yiisoft/db-oracle yiisoft/db-pgsql yiisoft/db-sqlite --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Run infection.

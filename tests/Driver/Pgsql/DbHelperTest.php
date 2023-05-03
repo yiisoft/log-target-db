@@ -70,5 +70,7 @@ final class DbHelperTest extends AbstractDbHelperTest
         $this->assertSame("IDX_$table-time", $indexes[3]->getName());
         $this->assertFalse($indexes[3]->isUnique());
         $this->assertFalse($indexes[3]->isPrimary());
+
+        DbHelper::dropTable($this->db, $tableWithPrefix);
     }
 }

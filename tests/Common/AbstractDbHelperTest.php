@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db\Tests\Common;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
@@ -107,17 +108,18 @@ abstract class AbstractDbHelperTest extends TestCase
      */
     public function testEnsureTableExist(): void
     {
-        DbHelper::ensureTable($this->db);
+        $prefix = $this->db->getTablePrefix();
 
-        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
+        try {
+            DbHelper::ensureTable($this->db);
+            DbHelper::ensureTable($this->db);
+        } catch (RuntimeException $e) {
+            $this->assertSame("Table \"{$prefix}log\" already exists.", $e->getMessage());
 
-        DbHelper::ensureTable($this->db, '{{%log}}');
+            DbHelper::dropTable($this->db);
 
-        $this->assertNotNull($this->db->getTableSchema('{{%log}}'));
-
-        DbHelper::dropTable($this->db);
-
-        $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+            $this->assertNull($this->db->getTableSchema('{{%log}}', true));
+        }
     }
 
     /**
@@ -129,17 +131,18 @@ abstract class AbstractDbHelperTest extends TestCase
      */
     public function testEnsureTableExistWithCustomTableName(): void
     {
-        DbHelper::ensureTable($this->db, '{{%custom-log}}');
+        $prefix = $this->db->getTablePrefix();
 
-        $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
+        try {
+            DbHelper::ensureTable($this->db, '{{%custom_log}}');
+            DbHelper::ensureTable($this->db, '{{%custom_log}}');
+        } catch (RuntimeException $e) {
+            $this->assertSame("Table \"{$prefix}custom_log\" already exists.", $e->getMessage());
 
-        DbHelper::ensureTable($this->db, '{{%custom-log}}');
+            DbHelper::dropTable($this->db, '{{%custom_log}}');
 
-        $this->assertNotNull($this->db->getTableSchema('{{%custom-log}}'));
-
-        DbHelper::dropTable($this->db, '{{%custom-log}}');
-
-        $this->assertNull($this->db->getTableSchema('{{%custom-log}}', true));
+            $this->assertNull($this->db->getTableSchema('{{%custom_log}}', true));
+        }
     }
 
     /**
