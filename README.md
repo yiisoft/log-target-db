@@ -8,14 +8,23 @@
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/log-target-db/v/stable.png)](https://packagist.org/packages/yiisoft/log-target-db)
 [![Total Downloads](https://poser.pugx.org/yiisoft/log-target-db/downloads.png)](https://packagist.org/packages/yiisoft/log-target-db)
-[![Build status](https://github.com/yiisoft/log-target-db/workflows/build/badge.svg)](https://github.com/yiisoft/log-target-db/actions?query=workflow%3Abuild)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yiisoft/log-target-db/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/log-target-db/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/log-target-db/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/log-target-db/?branch=master)
+[![codecov](https://codecov.io/gh/yiisoft/log-target-db/branch/master/graph/badge.svg?token=AP7VK8ZYIF)](https://codecov.io/gh/yiisoft/log-target-db)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Flog-target-db%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/log-target-db/master)
 [![static analysis](https://github.com/yiisoft/log-target-db/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/log-target-db/actions?query=workflow%3A%22static+analysis%22)
 [![type-coverage](https://shepherd.dev/github/yiisoft/log-target-db/coverage.svg)](https://shepherd.dev/github/yiisoft/log-target-db)
 
 This package provides the Database target for the [yiisoft/log](https://github.com/yiisoft/log) library.
+
+## Supported databases
+
+|                      Packages                       |      PHP      |    Versions     |                                                                        CI-Actions                                                                         |
+|:---------------------------------------------------:|:-------------:|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|  [[db-mssql]](https://github.com/yiisoft/db-mssql)  | **8.0 - 8.2** | **2017 - 2022** |  [![mssql](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml)   | |
+|  [[db-mysql/mariadb]](https://github.com/yiisoft/db-mysql)  | **8.0 - 8.2** |  **5.7-8.0**/**10.4-10.10**  |  [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml)   |
+| [[db-oracle]](https://github.com/yiisoft/db-oracle) | **8.0 - 8.2** |  **11C - 21C**  | [![oracle](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml) |
+|  [[db-pgsql]](https://github.com/yiisoft/db-pgsql)  | **8.0 - 8.2** | **9.0 - 15.0**  |  [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml)   |
+| [[db-sqlite]](https://github.com/yiisoft/db-sqlite) | **8.0 - 8.2** |  **3:latest**   | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
+
 
 ## Requirements
 
@@ -30,7 +39,38 @@ The package could be installed with composer:
 composer require yiisoft/log-target-db --prefer-dist
 ```
 
+## Database Preparing
+
+Package provides two way for preparing database:
+
+1. Raw SQL. You can use it with the migration package used in your application.
+
+    - [MSSQL](/docs/en/migration/schema-mssql.sql),
+    - [MySQL / MariaDB](/docs/en/migration/schema-mysql.sql),
+    - [Oracle](/docs/en/migration/schema-oci.sql),
+    - [PostgreSQL](/docs/en/migration/schema-pgsql.sql),
+    - [SQLite](/docs/en/migration/schema-sqlite.sql),
+
+2. `DbHelper` for create/drop cache table (by default `{{%log}}`).
+
+```php
+// Create table with default name
+DbHelper::ensureTable($db);
+
+// Create table with custom name
+DbHelper::ensureTable($db, '{{%custom_log}}');
+
+// Drop table with default name
+DbHelper::dropTable($db);
+
+// Drop table with custom name
+DbHelper::dropTable($db, '{{%custom_log}}');
+```
+
 ## General usage
+
+When creating an instance of `\Yiisoft\Log\Logger`, you must pass an instance of the database connection,
+for more information see [yiisoft/db](https://github.com/yiisoft/db/tree/master/docs/en#create-connection).
 
 Creating a target:
 
@@ -52,12 +92,12 @@ You can use multiple databases to store log messages:
 ```php
 /**
  * @var \Yiisoft\Db\Connection\ConnectionInterface $mysqlDb
- * @var \Yiisoft\Db\Connection\ConnectionInterface $redisDb
+ * @var \Yiisoft\Db\Connection\ConnectionInterface $sqliteDb
  */
 
 $logger = new \Yiisoft\Log\Logger([
     new \Yiisoft\Log\Target\Db\DbTarget($mysqlDb),
-    new \Yiisoft\Log\Target\Db\DbTarget($redisDb),
+    new \Yiisoft\Log\Target\Db\DbTarget($sqliteDb),
 ]);
 ```
 
@@ -68,40 +108,17 @@ For use in the [Yii framework](http://www.yiiframework.com/), see the configurat
 - [`config/common.php`](https://github.com/yiisoft/log-target-db/blob/master/config/common.php)
 - [`config/params.php`](https://github.com/yiisoft/log-target-db/blob/master/config/params.php)
 
-You need to set up a database connection and run this console command to create tables to store the log messages:
-
-```shell
-./yii migrate/up
-```
-
 See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+
+
+## Support
+
+If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/db/68) is a good place for that.
+You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
 
 ## Testing
 
-### Unit testing
-
-The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
-
-```shell
-./vendor/bin/phpunit
-```
-
-### Mutation testing
-
-The package tests are checked with [Infection](https://infection.github.io/) mutation framework with
-[Infection Static Analysis Plugin](https://github.com/Roave/infection-static-analysis-plugin). To run it:
-
-```shell
-./vendor/bin/roave-infection-static-analysis-plugin
-```
-
-### Static analysis
-
-The code is statically analyzed with [Psalm](https://psalm.dev/). To run static analysis:
-
-```shell
-./vendor/bin/psalm
-```
+[Check the testing instructions](/docs/en/testing.md) to learn about testing.
 
 ### Support the project
 
