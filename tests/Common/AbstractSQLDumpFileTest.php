@@ -14,6 +14,11 @@ use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Schema\SchemaInterface;
 use Yiisoft\Log\Target\Db\DbTarget;
 
+use function array_splice;
+use function implode;
+use function strcmp;
+use function usort;
+
 /**
  * @group Mssql
  *
@@ -102,12 +107,17 @@ abstract class AbstractSQLDumpFileTest extends TestCase
         /** @psalm-var IndexConstraint[] $indexes */
         $indexes = $schema->getTableIndexes($dbTarget->getTable(), true);
 
-        sort($indexes);
+        usort(
+            $indexes,
+            static fn ($a, $b) => strcmp(
+                implode('', $a->getColumnNames()),
+                implode('', $b->getColumnNames()),
+            )
+        );
 
         if ($this->db->getDriverName() === 'oci') {
             array_splice($indexes, 0, 1);
         }
-
 
         foreach ($indexes as $key => $index) {
             $this->assertSame($expectedIndex[$key], $index->getColumnNames()[0]);
@@ -162,7 +172,6 @@ abstract class AbstractSQLDumpFileTest extends TestCase
     private function loadFromSQLDumpFile(string $fixture): void
     {
         $this->db->open();
-        $triggers = [];
 
         if ($this->db->getDriverName() === 'oci') {
             [$creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 1);
