@@ -65,7 +65,7 @@ final class DbSchemaManager
         };
 
         // create table
-        $rawSql[] = $this->command->createTable(
+        $this->command->createTable(
             $table,
             [
                 'id' => $id,
