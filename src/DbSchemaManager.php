@@ -58,10 +58,9 @@ final class DbSchemaManager
         // `id` AutoIncrement custom for all dbms
         $id = match ($this->driverName) {
             'mysql' => $this->schema->createColumn(SchemaInterface::TYPE_BIGINT)->notNull()->append('AUTO_INCREMENT'),
-            'oci' => $this->schema->createColumn(SchemaInterface::TYPE_BIGINT)->notNull(),
             'pgsql' => $this->schema->createColumn('BIGSERIAL')->notNull(),
             'sqlsrv' => $this->schema->createColumn(SchemaInterface::TYPE_BIGINT)->notNull()->append('IDENTITY'),
-            default => $this->schema->createColumn(SchemaInterface::TYPE_INTEGER),
+            default => $this->schema->createColumn(SchemaInterface::TYPE_INTEGER)->notNull(),
         };
 
         // create table
