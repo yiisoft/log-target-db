@@ -73,13 +73,13 @@ $dbSchemaManager = new DbSchemaManager($db);
 $dbSchemaManager->ensureTable();
 
 // Ensure table with custom name
-$dbSchemaManager->ensureTable('{{%custom_yii_log}}');
+$dbSchemaManager->ensureTable('{{%custom_log_table}}');
 
 // Ensure no table with default name
 $dbSchemaManager->ensureNoTable();
 
 // Ensure no table with custom name
-$dbSchemaManager->ensureNoTable('{{%custom_yii_log}}');
+$dbSchemaManager->ensureNoTable('{{%custom_log_table}}');
 ```
 
 ## General usage
