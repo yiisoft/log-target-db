@@ -166,7 +166,7 @@ abstract class AbstractSQLDumpFileTest extends TestCase
 
         if ($this->db->getDriverName() === 'oci') {
             [$creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 1);
-            if (strpos($creates, '/* TRIGGERS */') === false) {
+            if (!str_contains($creates, '/* TRIGGERS */')) {
                 $lines = explode(';', $creates);
             } else {
                 [$statements, $triggers] = explode('/* TRIGGERS */', $creates, 2);
