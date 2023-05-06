@@ -27,10 +27,10 @@ use function usort;
 abstract class AbstractSQLDumpFileTest extends TestCase
 {
     protected ConnectionInterface $db;
-    private string $driverName = '';
     protected string $idType = SchemaInterface::TYPE_BIGINT;
     protected string $logTime = SchemaInterface::TYPE_TIMESTAMP;
     protected string $messageType = SchemaInterface::TYPE_TEXT;
+    private string $driverName = '';
 
     protected function setup(): void
     {

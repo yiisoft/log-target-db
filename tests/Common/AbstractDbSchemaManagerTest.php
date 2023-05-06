@@ -27,7 +27,6 @@ abstract class AbstractDbSchemaManagerTest extends TestCase
     protected string $idType = SchemaInterface::TYPE_BIGINT;
     protected string $logTime = SchemaInterface::TYPE_TIMESTAMP;
     protected string $messageType = SchemaInterface::TYPE_TEXT;
-
     private DbSchemaManager $dbSchemaManager;
 
     protected function setup(): void
@@ -136,7 +135,7 @@ abstract class AbstractDbSchemaManagerTest extends TestCase
 
         usort(
             $indexes,
-            static fn($a, $b) => strcmp(
+            static fn ($a, $b) => strcmp(
                 implode('', $a->getColumnNames()),
                 implode('', $b->getColumnNames()),
             )
