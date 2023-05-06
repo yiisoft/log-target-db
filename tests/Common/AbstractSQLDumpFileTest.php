@@ -31,6 +31,7 @@ abstract class AbstractSQLDumpFileTest extends TestCase
     protected string $logTime = SchemaInterface::TYPE_TIMESTAMP;
     protected string $messageType = SchemaInterface::TYPE_TEXT;
     private string $driverName = '';
+    private string $table = '{{%yii_log}}';
 
     protected function setup(): void
     {
@@ -56,11 +57,11 @@ abstract class AbstractSQLDumpFileTest extends TestCase
     {
         $this->loadFromSQLDumpFile(dirname(__DIR__, 2) . "/sql/$this->driverName-up.sql");
 
-        $this->assertNotNull($this->db->getTableSchema('{{%yii_log}}', true));
+        $this->assertNotNull($this->db->getTableSchema($this->table, true));
 
         $this->loadFromSQLDumpFile(dirname(__DIR__, 2) . "/sql/$this->driverName-down.sql");
 
-        $this->assertNull($this->db->getTableSchema('{{%yii_log}}', true));
+        $this->assertNull($this->db->getTableSchema($this->table, true));
     }
 
     /**
@@ -173,7 +174,7 @@ abstract class AbstractSQLDumpFileTest extends TestCase
     {
         $this->db->open();
 
-        if ($this->db->getDriverName() === 'oci') {
+        if ($this->driverName === 'oci') {
             [$creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 1);
             if (!str_contains($creates, '/* TRIGGERS */')) {
                 $lines = explode(';', $creates);
