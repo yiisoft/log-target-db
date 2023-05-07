@@ -43,8 +43,8 @@ final class DbTargetTest extends AbstractDbTargetTest
      */
     public function testExportWithStoreFailure(): void
     {
-        if ($this->db->getTableSchema('{{%log}}', true) !== null) {
-            $this->db->createCommand('DROP TABLE {{%log}}')->execute();
+        if ($this->db->getTableSchema('{{%yii_log}}', true) !== null) {
+            $this->db->createCommand('DROP TABLE {{%yii_log}}')->execute();
         }
 
         $this->expectException(RuntimeException::class);

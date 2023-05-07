@@ -16,11 +16,12 @@ use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Query\Query;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\Db\DbTarget;
-use Yiisoft\Log\Target\Db\DbHelper;
+use Yiisoft\Log\Target\Db\DbSchemaManager;
 
 abstract class AbstractDbTargetTest extends TestCase
 {
     protected ConnectionInterface $db;
+    protected DbSchemaManager $dbSchemaManager;
     protected string $time = '2023-04-23 12:34:56.123456';
 
     /**
@@ -32,9 +33,12 @@ abstract class AbstractDbTargetTest extends TestCase
      */
     protected function setup(): void
     {
+        // create db manager
+        $this->dbSchemaManager = new DbSchemaManager($this->db);
+
         // create migration tables
-        DbHelper::ensureTable($this->db, '{{%test-table-1}}');
-        DbHelper::ensureTable($this->db, '{{%test-table-2}}');
+        $this->dbSchemaManager->ensureTable('{{%test-table-1}}');
+        $this->dbSchemaManager->ensureTable('{{%test-table-2}}');
 
         parent::setUp();
     }
@@ -47,8 +51,8 @@ abstract class AbstractDbTargetTest extends TestCase
     protected function tearDown(): void
     {
         // drop tables
-        DbHelper::dropTable($this->db, '{{%test-table-1}}');
-        DbHelper::dropTable($this->db, '{{%test-table-2}}');
+        $this->dbSchemaManager->ensureNoTable('{{%test-table-1}}');
+        $this->dbSchemaManager->ensureNoTable('{{%test-table-2}}');
 
         $this->db->close();
 
