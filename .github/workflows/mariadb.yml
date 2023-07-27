@@ -54,8 +54,8 @@ jobs:
           - mariadb:latest
 
     services:
-      mysql:
-        image: ${{ matrix.mysql }}
+      mariadb:
+        image: ${{ matrix.mariadb }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_PASSWORD: ''
