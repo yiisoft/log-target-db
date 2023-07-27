@@ -55,8 +55,8 @@ jobs:
       mysql:
         image: ${{ matrix.mysql }}
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_PASSWORD: 'root'
+          MYSQL_ROOT_PASSWORD: 'root'
           MYSQL_DATABASE: yiitest
         ports:
           - 3306:3306
