@@ -16,7 +16,7 @@ final class MysqlFactory extends ConnectionFactory
         $pdoDriver = new Driver(
             (new Dsn('mysql', '127.0.0.1', 'yiitest', '3306', ['charset' => 'utf8mb4']))->asString(),
             'root',
-            '',
+            'root',
         );
 
         return new Connection($pdoDriver, $this->createSchemaCache());
