@@ -117,11 +117,6 @@ $logger = new \Yiisoft\Log\Logger([
 
 For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 
-For use in the [Yii framework](http://www.yiiframework.com/), see the configuration files:
-
-- [`config/common.php`](https://github.com/yiisoft/log-target-db/blob/master/config/common.php)
-- [`config/params.php`](https://github.com/yiisoft/log-target-db/blob/master/config/params.php)
-
 See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
 
 
