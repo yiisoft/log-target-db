@@ -25,7 +25,6 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 |  [[db-pgsql]](https://github.com/yiisoft/db-pgsql)  | **8.0 - 8.2** | **9.0 - 15.0**  |  [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml)   |
 | [[db-sqlite]](https://github.com/yiisoft/db-sqlite) | **8.0 - 8.2** |  **3:latest**   | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
 
-
 ## Requirements
 
 - PHP 8.0 or higher.
@@ -35,7 +34,7 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 The package could be installed with composer:
 
-```
+```shell
 composer require yiisoft/log-target-db --prefer-dist
 ```
 
@@ -55,7 +54,7 @@ Package provides two way for preparing database:
         - [Oracle](/sql/oci-up.sql),
         - [PostgreSQL](/sql/pgsql-up.sql)
         - [SQLite](/sql/sqlite-up.sql)
-    
+
     - Ensure no tables:
         - [MSSQL](/sql/sqlsrv-down.sql),
         - [MySQL / MariaDB](/sql/mysql-down.sql),
@@ -118,7 +117,6 @@ $logger = new \Yiisoft\Log\Logger([
 For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 
 See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
-
 
 ## Support
 
