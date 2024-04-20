@@ -114,24 +114,27 @@ $logger = new \Yiisoft\Log\Logger([
 ]);
 ```
 
+## Documentation
+
 For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 
-See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+- See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+- Leia [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/pt-BR/runtime/logging.md) para mais informações.
+
+Testing:
+
+- More information can be found in the [Internals.](docs/internals.md)
 
 ## Support
 
-If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/db/68) is a good place for that.
+If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
 You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
 
-## Testing
-
-[Check the testing instructions](/docs/en/testing.md) to learn about testing.
-
-### Support the project
+## Support the project
 
 [![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/yiisoft)
 
-### Follow updates
+## Follow updates
 
 [![Official website](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 [![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/yiiframework)
