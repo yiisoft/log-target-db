@@ -120,10 +120,7 @@ For a description of using the logger, see the [yiisoft/log](https://github.com/
 
 - See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
 - Leia [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/pt-BR/runtime/logging.md) para mais informações.
-
-Testing:
-
-- More information can be found in the [Internals.](docs/internals.md)
+- [Internals](docs/internals.md)
 
 ## Support
 
