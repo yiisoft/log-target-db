@@ -1,4 +1,4 @@
-# Testing
+# Internals
 
 This package can be tested globally or individually for each DBMS.
 
@@ -32,7 +32,11 @@ docker compose up -d
 
 ## Unit testing
 
-The package is tested with [PHPUnit](https://phpunit.de/).
+The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
+
+```shell
+./vendor/bin/phpunit
+```
 
 ### Global testing
 
@@ -59,21 +63,12 @@ vendor/bin/phpunit --testsuite=Pgsql
 ```
 
 Suites available:
+
 - Mssql
 - Mysql
 - Oracle
 - Pgsql
 - Sqlite
-
-## Composer require checker
-
-This package uses [composer-require-checker](https://github.com/maglnet/ComposerRequireChecker) to check if all dependencies are correctly defined in `composer.json`.
-
-To run the checker, execute the following command:
-
-```shell
-./vendor/bin/composer-require-checker
-```
 
 ## Mutation testing
 
@@ -92,10 +87,22 @@ The code is statically analyzed with [Psalm](https://psalm.dev/). To run static 
 ./vendor/bin/psalm
 ```
 
-## Rector
+## Code style
 
-Use [Rector](https://github.com/rectorphp/rector) to make codebase follow some specific rules or use either newest or any specific version of PHP: 
+Use [Rector](https://github.com/rectorphp/rector) to make codebase follow some specific rules or
+use either newest or any specific version of PHP:
 
 ```shell
 ./vendor/bin/rector
+```
+
+## Dependencies
+
+Use [ComposerRequireChecker](https://github.com/maglnet/ComposerRequireChecker) to detect transitive
+[Composer](https://getcomposer.org/) dependencies.
+
+To run the checker, execute the following command:
+
+```shell
+./vendor/bin/composer-require-checker
 ```

@@ -25,7 +25,6 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 |  [[db-pgsql]](https://github.com/yiisoft/db-pgsql)  | **8.0 - 8.2** | **9.0 - 15.0**  |  [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml)   |
 | [[db-sqlite]](https://github.com/yiisoft/db-sqlite) | **8.0 - 8.2** |  **3:latest**   | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
 
-
 ## Requirements
 
 - PHP 8.0 or higher.
@@ -35,7 +34,7 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 The package could be installed with composer:
 
-```
+```shell
 composer require yiisoft/log-target-db --prefer-dist
 ```
 
@@ -55,7 +54,7 @@ Package provides two way for preparing database:
         - [Oracle](/sql/oci-up.sql),
         - [PostgreSQL](/sql/pgsql-up.sql)
         - [SQLite](/sql/sqlite-up.sql)
-    
+
     - Ensure no tables:
         - [MSSQL](/sql/sqlsrv-down.sql),
         - [MySQL / MariaDB](/sql/mysql-down.sql),
@@ -115,25 +114,40 @@ $logger = new \Yiisoft\Log\Logger([
 ]);
 ```
 
-For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+## Documentation
 
-See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+- [English](#english)
+- [Português - Brasil](#português---brasil)
+- [Internals](docs/internals.md)
 
+## English
+
+- For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
+  - [`config/common.php`](https://github.com/yiisoft/log-target-db/blob/master/config/common.php)
+  - [`config/params.php`](https://github.com/yiisoft/log-target-db/blob/master/config/params.php)
+
+- For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+- See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+
+## Português - Brasil
+
+- Para usar com o [Yii framework](https://www.yiiframework.com/), veja os arquivos de configuração:
+  - [`config/common.php`](https://github.com/yiisoft/log-target-db/blob/master/config/common.php)
+  - [`config/params.php`](https://github.com/yiisoft/log-target-db/blob/master/config/params.php)
+
+- Para uma descrição de como usar o logger, veja [yiisoft/log](https://github.com/yiisoft/log).
+- Leia [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/pt-BR/runtime/logging.md) para mais informações.
 
 ## Support
 
-If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/db/68) is a good place for that.
+If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
 You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
 
-## Testing
-
-[Check the testing instructions](/docs/en/testing.md) to learn about testing.
-
-### Support the project
+## Support the project
 
 [![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/yiisoft)
 
-### Follow updates
+## Follow updates
 
 [![Official website](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 [![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/yiiframework)
