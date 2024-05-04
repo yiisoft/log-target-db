@@ -17,8 +17,8 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 ## Supported databases
 
-|                      Packages                       |      PHP      |    Versions     |                                                                        CI-Actions                                                                         |
-|:---------------------------------------------------:|:-------------:|:---------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| Packages | PHP | Versions | CI-Actions |
+|----------|-----|----------|------------|
 |  [[db-mssql]](https://github.com/yiisoft/db-mssql)  | **8.0 - 8.2** | **2017 - 2022** |  [![mssql](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml)   | |
 |  [[db-mysql/mariadb]](https://github.com/yiisoft/db-mysql)  | **8.0 - 8.2** |  **5.7-8.0**/**10.4-10.10**  |  [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml)   |
 | [[db-oracle]](https://github.com/yiisoft/db-oracle) | **8.0 - 8.2** |  **11C - 21C**  | [![oracle](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml) |
@@ -32,10 +32,10 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 ## Installation
 
-The package could be installed with composer:
+The package could be installed via [composer](https://getcomposer.org/download/)
 
 ```shell
-composer require yiisoft/log-target-db --prefer-dist
+composer require yiisoft/log-target-db
 ```
 
 ## Create database connection
@@ -116,32 +116,22 @@ $logger = new \Yiisoft\Log\Logger([
 
 ## Documentation
 
-- [English](#english)
-- [Português - Brasil](#português---brasil)
-- [Internals](docs/internals.md)
-
-## English
-
 - For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
   - [`config/common.php`](https://github.com/yiisoft/log-target-db/blob/master/config/common.php)
   - [`config/params.php`](https://github.com/yiisoft/log-target-db/blob/master/config/params.php)
-
 - For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 - See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
-
-## Português - Brasil
-
-- Para usar com o [Yii framework](https://www.yiiframework.com/), veja os arquivos de configuração:
-  - [`config/common.php`](https://github.com/yiisoft/log-target-db/blob/master/config/common.php)
-  - [`config/params.php`](https://github.com/yiisoft/log-target-db/blob/master/config/params.php)
-
-- Para uma descrição de como usar o logger, veja [yiisoft/log](https://github.com/yiisoft/log).
-- Leia [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/pt-BR/runtime/logging.md) para mais informações.
-
-## Support
+- [Internals](docs/internals.md)
 
 If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
 You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
+
+## License
+
+The Yii Logging Library - DB Target is free software. It is released under the terms of the BSD License.
+Please see [`LICENSE`](./LICENSE.md) for more information.
+
+Maintained by [Yii Software](https://www.yiiframework.com/).
 
 ## Support the project
 
@@ -154,10 +144,3 @@ You may also check out other [Yii Community Resources](https://www.yiiframework.
 [![Telegram](https://img.shields.io/badge/telegram-join-1DA1F2?style=flat&logo=telegram)](https://t.me/yii3en)
 [![Facebook](https://img.shields.io/badge/facebook-join-1DA1F2?style=flat&logo=facebook&logoColor=ffffff)](https://www.facebook.com/groups/yiitalk)
 [![Slack](https://img.shields.io/badge/slack-join-1DA1F2?style=flat&logo=slack)](https://yiiframework.com/go/slack)
-
-## License
-
-The Yii Logging Library - DB Target is free software. It is released under the terms of the BSD License.
-Please see [`LICENSE`](./LICENSE.md) for more information.
-
-Maintained by [Yii Software](https://www.yiiframework.com/).

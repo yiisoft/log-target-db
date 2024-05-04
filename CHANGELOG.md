@@ -1,4 +1,4 @@
-# Yii Log - DB Target Change Log
+# Yii Logging Library - DB Target Change Log
 
 ## 1.0.1 under development
 
