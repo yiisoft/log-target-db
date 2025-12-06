@@ -140,7 +140,7 @@ abstract class AbstractSQLDumpFileTest extends TestCase
      */
     public function testVerifyTableStructure(): void
     {
-        $dbTarget = new Dbtarget($this->db);
+        $dbTarget = new DbTarget($this->db);
 
         $this->loadFromSQLDumpFile(dirname(__DIR__, 2) . "/sql/$this->driverName-up.sql");
 
