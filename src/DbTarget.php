@@ -19,12 +19,14 @@ final class DbTarget extends Target
     /**
      * @param ConnectionInterface $db The database connection instance.
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
+     * @param string[] $levels The log message levels that this target is interested in.
      */
     public function __construct(
         private ConnectionInterface $db,
-        private string $table = '{{%yii_log}}'
+        private string $table = '{{%yii_log}}',
+        array $levels = []
     ) {
-        parent::__construct();
+        parent::__construct($levels);
     }
 
     /**
