@@ -2,7 +2,8 @@
 
 ## 1.0.1 under development
 
-- New: Add optional `$levels` parameter to `DbTarget` constructor allowing log level filtering at instantiation (samdark)
+- New #66: Add optional `$levels` parameter to `DbTarget` constructor allowing log level filtering at instantiation (@samdark)
+- Chg #66: Allow `yiisoft/db` version 2 (@samdark)
 
 ## 1.0.0 May 09, 2023
 
