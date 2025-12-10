@@ -101,8 +101,6 @@ Creating a logger:
 $logger = new \Yiisoft\Log\Logger([$dbTarget]);
 ```
 
-### Filtering log levels
-
 You can filter which log levels are stored in the database by passing the `$levels` parameter to the constructor:
 
 ```php
