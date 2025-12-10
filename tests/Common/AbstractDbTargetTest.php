@@ -161,11 +161,6 @@ abstract class AbstractDbTargetTest extends TestCase
         $this->assertSame([], $this->findData('{{%test-table-1}}'));
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     * @throws Throwable
-     */
     public function testSetLevelsViaConstructor(): void
     {
         $target = new DbTarget($this->db, '{{%test-table-1}}', [LogLevel::ERROR, LogLevel::INFO]);
