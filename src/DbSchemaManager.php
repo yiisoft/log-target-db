@@ -11,6 +11,7 @@ use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Expression\Expression;
+use Yiisoft\Db\Schema\Quoter;
 use Yiisoft\Db\Schema\SchemaInterface;
 
 /**
@@ -37,7 +38,9 @@ final class DbSchemaManager
     {
         $driverName = $this->db->getDriverName();
         $schema = $this->db->getSchema();
-        $tableRawName = $schema->getRawTableName($table);
+        /** @var Quoter $quoter */
+        $quoter = $this->db->getQuoter();
+        $tableRawName = $quoter->getRawTableName($table);
 
         if ($this->hasTable($table)) {
             return;
@@ -97,8 +100,9 @@ final class DbSchemaManager
      */
     public function ensureNoTable(string $table = '{{%yii_log}}'): void
     {
-        $schema = $this->db->getSchema();
-        $tableRawName = $schema->getRawTableName($table);
+        /** @var Quoter $quoter */
+        $quoter = $this->db->getQuoter();
+        $tableRawName = $quoter->getRawTableName($table);
 
         // drop table
         if ($this->db->getTableSchema($table, true) !== null) {
