@@ -10,6 +10,7 @@ on:
       - 'psalm.xml'
 
   push:
+    branches: ['master']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
@@ -21,52 +22,62 @@ on:
 
 name: mssql
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
+    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.server }}
 
     env:
-      extensions: pdo, pdo_sqlsrv
+      extensions: pdo, pdo_sqlsrv-5.12
 
-    runs-on: ${{ matrix.os }}
+    runs-on: 'ubuntu-latest'
 
     strategy:
+      max-parallel: 2
       matrix:
-        os:
-          - ubuntu-latest
-
         php:
-          - 8.0
           - 8.1
           - 8.2
+          - 8.3
+          - 8.4
 
         mssql:
-          - server:2017-latest
-          - server:2019-latest
+          - server: 2022-latest
+            odbc-version: 18
+            flag: "-C"
 
-        exclude:
-          - php: 8.0
-            mssql: server:2017-latest
-          - php: 8.1
-            mssql: server:2017-latest
+        include:
+          - php: 8.4
+            mssql:
+              server: 2019-latest
+              odbc-version: 18
+              flag: "-C"
 
     services:
       mssql:
-        image: mcr.microsoft.com/mssql/${{ matrix.mssql }}
+        image: mcr.microsoft.com/mssql/server:${{ matrix.mssql.server }}
         env:
-          SA_PASSWORD: YourStrong!Passw0rd
+          MSSQL_SA_PASSWORD: YourStrong!Passw0rd
           ACCEPT_EULA: Y
           MSSQL_PID: Developer
         ports:
           - 1433:1433
-        options: --name=mssql --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --name=mssql --health-cmd="/opt/mssql-tools${{ matrix.mssql.odbc-version }}/bin/sqlcmd ${{ matrix.mssql.flag }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
+
+      - name: Install ODBC driver.
+        run: |
+          sudo curl https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
       - name: Create MS SQL Database.
-        run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
+        run: docker exec -i mssql /opt/mssql-tools${{ matrix.mssql.odbc-version }}/bin/sqlcmd ${{ matrix.mssql.flag }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
@@ -87,7 +98,7 @@ jobs:
         run: vendor/bin/phpunit --testsuite=Mssql --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php == '8.4'
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
