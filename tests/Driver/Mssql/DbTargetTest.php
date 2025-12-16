@@ -46,7 +46,7 @@ final class DbTargetTest extends AbstractDbTargetTest
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
-            "SQLSTATE[42S02]: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'log'"
+            "SQLSTATE[42S02]: [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Invalid object name 'log'"
         );
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
