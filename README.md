@@ -17,14 +17,14 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 ## Supported databases
 
-| Packages                                                  | PHP           | Versions | CI-Actions                                                                                                                                                          |
-|-----------------------------------------------------------|---------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [[db-mssql]](https://github.com/yiisoft/db-mssql)         | **8.1 - 8.2** | **2017 - 2022** | [![mssql](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml)    | |
-| [[db-mysql]](https://github.com/yiisoft/db-mysql) (MySQL)   | **8.1 - 8.2** |  **5.7 - 8.0**| [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml)    |
-| [[db-mysql]](https://github.com/yiisoft/db-mysql) (MariaDB) | **8.1 - 8.2** |  **10.4 - 10.10** | [![mariadb](https://github.com/yiisoft/log-target-db/actions/workflows/mariadb.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mariadb.yml)  |
-| [[db-oracle]](https://github.com/yiisoft/db-oracle)       | **8.1 - 8.2** | **11C - 21C** | [![oracle](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml) |
-| [[db-pgsql]](https://github.com/yiisoft/db-pgsql)         | **8.1 - 8.2** | **9.0 - 15.0** | [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml)    |
-| [[db-sqlite]](https://github.com/yiisoft/db-sqlite)       | **8.1 - 8.2** | **3:latest** | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
+| Packages                                                  | PHP           | Versions         | CI-Actions                                                                                                                                                          |
+|-----------------------------------------------------------|---------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[db-mssql]](https://github.com/yiisoft/db-mssql)         | **8.1 - 8.4** | **2017 - 2025**  | [![mssql](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml)    | |
+| [[db-mysql]](https://github.com/yiisoft/db-mysql) (MySQL)   | **8.1 - 8.4** | **5.7 - 9.5**    | [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml)    |
+| [[db-mysql]](https://github.com/yiisoft/db-mysql) (MariaDB) | **8.1 - 8.4** | **10.4 - 12.10** | [![mariadb](https://github.com/yiisoft/log-target-db/actions/workflows/mariadb.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mariadb.yml)  |
+| [[db-oracle]](https://github.com/yiisoft/db-oracle)       | **8.1 - 8.4** | **11C - 21C**    | [![oracle](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml) |
+| [[db-pgsql]](https://github.com/yiisoft/db-pgsql)         | **8.1 - 8.4** | **9.0 - 18.0**   | [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml)    |
+| [[db-sqlite]](https://github.com/yiisoft/db-sqlite)       | **8.1 - 8.4** | **3:latest**     | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
 
 ## Requirements
 

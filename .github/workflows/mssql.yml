@@ -42,6 +42,8 @@ jobs:
           - 8.1
           - 8.2
           - 8.3
+          - 8.4
+          - 8.5
 
         mssql:
           - server: 2025-latest
@@ -49,17 +51,17 @@ jobs:
             flag: "-C"
 
         include:
-          - php: 8.3
+          - php: 8.5
             mssql:
               server: 2017-latest
               odbc-version: ''
               flag: "-C"
-          - php: 8.3
+          - php: 8.5
             mssql:
               server: 2019-latest
               odbc-version: 18
               flag: "-C"
-          - php: 8.3
+          - php: 8.5
             mssql:
               server: 2022-latest
               odbc-version: 18
