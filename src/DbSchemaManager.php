@@ -18,7 +18,7 @@ use Yiisoft\Db\Schema\SchemaInterface;
  */
 final class DbSchemaManager
 {
-    public function __construct(private ConnectionInterface $db)
+    public function __construct(private readonly ConnectionInterface $db)
     {
     }
 
