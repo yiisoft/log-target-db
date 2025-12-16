@@ -1,5 +1,9 @@
 # Yii Logging Library - DB Target Change Log
 
+## 1.1.1 under development
+
+- no changes in this release.
+
 ## 1.1.0 December 16, 2025
 
 - New #66: Add optional `$levels` parameter to `DbTarget` constructor allowing log level filtering at instantiation (@samdark)
