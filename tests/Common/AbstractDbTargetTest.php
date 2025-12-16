@@ -161,6 +161,41 @@ abstract class AbstractDbTargetTest extends TestCase
         $this->assertSame([], $this->findData('{{%test-table-1}}'));
     }
 
+    public function testSetLevelsViaConstructor(): void
+    {
+        $target = new DbTarget($this->db, '{{%test-table-1}}', [LogLevel::ERROR, LogLevel::INFO]);
+        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+
+        $target->collect(
+            [
+                new Message(LogLevel::INFO, 'message-1', ['time' => $this->time]),
+                new Message(LogLevel::DEBUG, 'message-2', ['time' => $this->time]),
+                new Message(LogLevel::ERROR, 'message-3', ['time' => $this->time]),
+            ],
+            true
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'id' => '1',
+                    'level' => LogLevel::INFO,
+                    'category' => '',
+                    'log_time' => $this->time,
+                    'message' => '[info] message-1',
+                ],
+                [
+                    'id' => '2',
+                    'level' => LogLevel::ERROR,
+                    'category' => '',
+                    'log_time' => $this->time,
+                    'message' => '[error] message-3',
+                ],
+            ],
+            $this->findData('{{%test-table-1}}'),
+        );
+    }
+
     protected function createDbTarget(string $table = 'log'): DbTarget
     {
         $target = new DbTarget($this->db, $table);
