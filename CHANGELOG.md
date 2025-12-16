@@ -2,7 +2,7 @@
 
 ## 1.0.1 under development
 
-- Chg #95: Bump PHP to ^8.1 (@batyrmastyr)
+- Chg #74: Bump minimal required PHP version to 8.1 (@batyrmastyr)
 
 ## 1.0.0 May 09, 2023
 
