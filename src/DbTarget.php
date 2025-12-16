@@ -21,8 +21,8 @@ final class DbTarget extends Target
      * @param string $table The name of the database table to store the log messages. Defaults to "log".
      */
     public function __construct(
-        private ConnectionInterface $db,
-        private string $table = '{{%yii_log}}'
+        private readonly ConnectionInterface $db,
+        private readonly string $table = '{{%yii_log}}'
     ) {
         parent::__construct();
     }
