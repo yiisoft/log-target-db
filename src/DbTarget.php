@@ -22,8 +22,8 @@ final class DbTarget extends Target
      * @param string[] $levels The {@see \Psr\Log\LogLevel log message levels} that this target is interested in.
      */
     public function __construct(
-        private ConnectionInterface $db,
-        private string $table = '{{%yii_log}}',
+        private readonly ConnectionInterface $db,
+        private readonly string $table = '{{%yii_log}}',
         array $levels = []
     ) {
         parent::__construct($levels);
