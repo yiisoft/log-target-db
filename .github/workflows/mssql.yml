@@ -33,26 +33,35 @@ jobs:
     env:
       extensions: pdo, pdo_sqlsrv-5.12
 
-    runs-on: 'ubuntu-latest'
+    runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 2
+      max-parallel: 3
       matrix:
         php:
           - 8.1
           - 8.2
           - 8.3
-          - 8.4
 
         mssql:
-          - server: 2022-latest
+          - server: 2025-latest
             odbc-version: 18
             flag: "-C"
 
         include:
-          - php: 8.4
+          - php: 8.3
+            mssql:
+              server: 2017-latest
+              odbc-version: ''
+              flag: "-C"
+          - php: 8.3
             mssql:
               server: 2019-latest
+              odbc-version: 18
+              flag: "-C"
+          - php: 8.3
+            mssql:
+              server: 2022-latest
               odbc-version: 18
               flag: "-C"
 
@@ -98,7 +107,7 @@ jobs:
         run: vendor/bin/phpunit --testsuite=Mssql --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.4'
+        if: matrix.php == '8.3'
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
