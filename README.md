@@ -89,16 +89,37 @@ When creating an instance of `\Yiisoft\Log\Logger`, you must pass an instance of
 Creating a target:
 
 ```php
-$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($db, $table);
+$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($db, $table, $levels);
 ```
 
 - `$db (\Yiisoft\Db\Connection\ConnectionInterface)` - The database connection instance.
-- `$table (string)` - The name of the database table to store the log messages. Defaults to "log".
+- `$table (string)` - The name of the database table to store the log messages. Defaults to "{{%yii_log}}".
+- `$levels (array)` - Optional. The log message levels that this target is interested in. Defaults to empty array (all levels). Example: `[\Psr\Log\LogLevel::ERROR, \Psr\Log\LogLevel::WARNING]`.
 
 Creating a logger:
 
 ```php
 $logger = new \Yiisoft\Log\Logger([$dbTarget]);
+```
+
+You can filter which log levels are stored in the database by passing the `$levels` parameter to the constructor:
+
+```php
+use Psr\Log\LogLevel;
+
+// Only store ERROR and WARNING level messages
+$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget(
+    $db,
+    '{{%yii_log}}',
+    [LogLevel::ERROR, LogLevel::WARNING]
+);
+```
+
+Alternatively, you can set levels after instantiation using the `setLevels()` method:
+
+```php
+$dbTarget = new \Yiisoft\Log\Target\Db\DbTarget($db);
+$dbTarget->setLevels([LogLevel::ERROR, LogLevel::WARNING]);
 ```
 
 You can use multiple databases to store log messages:
