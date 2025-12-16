@@ -17,17 +17,18 @@ This package provides the Database target for the [yiisoft/log](https://github.c
 
 ## Supported databases
 
-| Packages | PHP | Versions | CI-Actions |
-|----------|-----|----------|------------|
-| [[db-mssql]](https://github.com/yiisoft/db-mssql) | **8.0 - 8.2** | **2017 - 2022** | [![mssql](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml) | |
-| [[db-mysql/mariadb]](https://github.com/yiisoft/db-mysql)  | **8.0 - 8.2** |  **5.7-8.0**/**10.4-10.10** | [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml) |
-| [[db-oracle]](https://github.com/yiisoft/db-oracle) | **8.0 - 8.2** | **11C - 21C** | [![oracle](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml) |
-| [[db-pgsql]](https://github.com/yiisoft/db-pgsql) | **8.0 - 8.2** | **9.0 - 15.0** | [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml) |
-| [[db-sqlite]](https://github.com/yiisoft/db-sqlite) | **8.0 - 8.2** | **3:latest** | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
+| Packages                                                  | PHP           | Versions | CI-Actions                                                                                                                                                          |
+|-----------------------------------------------------------|---------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [[db-mssql]](https://github.com/yiisoft/db-mssql)         | **8.1 - 8.2** | **2017 - 2022** | [![mssql](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mssql.yml)    | |
+| [[db-mysql/mysql]](https://github.com/yiisoft/db-mysql)   | **8.1 - 8.2** |  **5.7-8.0**| [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml)    |
+| [[db-mysql/mariadb]](https://github.com/yiisoft/db-mysql) | **8.1 - 8.2** |  **10.4-10.10** | [![mysql](https://github.com/yiisoft/log-target-db/actions/workflows/mariadb.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/mysql.yml)  |
+| [[db-oracle]](https://github.com/yiisoft/db-oracle)       | **8.1 - 8.2** | **11C - 21C** | [![oracle](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/oracle.yml) |
+| [[db-pgsql]](https://github.com/yiisoft/db-pgsql)         | **8.1 - 8.2** | **9.0 - 15.0** | [![pgsql](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/pgsql.yml)    |
+| [[db-sqlite]](https://github.com/yiisoft/db-sqlite)       | **8.1 - 8.2** | **3:latest** | [![sqlite](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml/badge.svg)](https://github.com/yiisoft/log-target-db/actions/workflows/sqlite.yml) |
 
 ## Requirements
 
-- PHP 8.0 or higher.
+- PHP 8.1 or higher.
 - `PDO` PHP extension.
 
 ## Installation
