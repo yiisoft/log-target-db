@@ -10,6 +10,7 @@ on:
       - 'psalm.xml'
 
   push:
+    branches: ['master']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
@@ -21,6 +22,10 @@ on:
 
 name: oracle
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-oracle-${{ matrix.oracle }}
@@ -28,20 +33,27 @@ jobs:
     env:
       extensions: pdo, pdo_oci, oci8
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
+      max-parallel: 2
       matrix:
-        os:
-          - ubuntu-latest
-
         php:
-          - 8.1
-          - 8.2
+          - 8.5
 
         oracle:
           - 18
           - 21
+
+        include:
+          - php: 8.1
+            oracle: latest
+          - php: 8.2
+            oracle: latest
+          - php: 8.3
+            oracle: latest
+          - php: 8.4
+            oracle: latest
 
     services:
       oci:
@@ -74,6 +86,10 @@ jobs:
       - name: Update composer.
         run: composer self-update
 
+      - uses: "ramsey/composer-install@v3"
+        with:
+          composer-options: "--prefer-dist --no-interaction --no-progress --ansi"
+
       - name: Install db-oracle.
         run: composer require yiisoft/db-oracle --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
@@ -81,7 +97,7 @@ jobs:
         run: vendor/bin/phpunit --testsuite=Oracle --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php == '8.5'
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

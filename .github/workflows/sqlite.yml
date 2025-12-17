@@ -10,6 +10,7 @@ on:
       - 'psalm.xml'
 
   push:
+    branches: ['master']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
@@ -21,6 +22,10 @@ on:
 
 name: sqlite
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
@@ -31,6 +36,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      max-parallel: 2
       matrix:
         os:
           - ubuntu-latest
@@ -39,6 +45,9 @@ jobs:
         php:
           - 8.1
           - 8.2
+          - 8.3
+          - 8.4
+          - 8.5
 
     steps:
       - name: Checkout.
@@ -56,6 +65,10 @@ jobs:
       - name: Update composer.
         run: composer self-update
 
+      - uses: "ramsey/composer-install@v3"
+        with:
+          composer-options: "--prefer-dist --no-interaction --no-progress --ansi"
+
       - name: Install db-sqlite.
         run: composer require yiisoft/db-sqlite --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
@@ -63,7 +76,7 @@ jobs:
         run: vendor/bin/phpunit --testsuite=Sqlite --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
+        if: matrix.php == '8.5'
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
