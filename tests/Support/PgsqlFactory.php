@@ -14,7 +14,7 @@ final class PgsqlFactory extends ConnectionFactory
     public function createConnection(): ConnectionInterface
     {
         $pdoDriver = new Driver(
-            (new Dsn('pgsql', '127.0.0.1', 'yiitest', '5432'))->asString(),
+            new Dsn('pgsql', '127.0.0.1', 'yiitest', '5432'),
             'root',
             'root',
         );

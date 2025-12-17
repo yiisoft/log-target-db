@@ -10,7 +10,6 @@ use Psr\Log\LogLevel;
 use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
-use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Query\Query;
@@ -26,7 +25,6 @@ abstract class AbstractDbTargetTest extends TestCase
 
     /**
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws InvalidConfigException
      * @throws NotSupportedException
      * @throws Throwable

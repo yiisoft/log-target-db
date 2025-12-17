@@ -7,12 +7,10 @@ namespace Yiisoft\Log\Target\Db;
 use Throwable;
 use Yiisoft\Db\Connection\ConnectionInterface;
 use Yiisoft\Db\Exception\Exception;
-use Yiisoft\Db\Exception\InvalidArgumentException;
 use Yiisoft\Db\Exception\InvalidConfigException;
 use Yiisoft\Db\Exception\NotSupportedException;
 use Yiisoft\Db\Expression\Expression;
 use Yiisoft\Db\Schema\Quoter;
-use Yiisoft\Db\Schema\SchemaInterface;
 
 /**
  * Manages the log table schema in the database.
@@ -29,7 +27,6 @@ final class DbSchemaManager
      * @param string $table The name of the log table. Defaults to '{{%yii_log}}'.
      *
      * @throws Exception
-     * @throws InvalidArgumentException
      * @throws InvalidConfigException
      * @throws NotSupportedException
      * @throws Throwable
@@ -37,10 +34,8 @@ final class DbSchemaManager
     public function ensureTable(string $table = '{{%yii_log}}'): void
     {
         $driverName = $this->db->getDriverName();
-        $schema = $this->db->getSchema();
-        /** @var Quoter $quoter */
-        $quoter = $this->db->getQuoter();
-        $tableRawName = $quoter->getRawTableName($table);
+        $columnBuilderClass = $this->db->getColumnBuilderClass();
+        $tableRawName = $this->db->getQuoter()->getRawTableName($table);
 
         if ($this->hasTable($table)) {
             return;
@@ -55,16 +50,16 @@ final class DbSchemaManager
 
         // `log_Time` Type custom for all dbms
         $logTimeType = match ($driverName) {
-            'sqlsrv' => $schema->createColumn('DATETIME2(6)')->defaultValue($defaultValue),
-            default => $schema->createColumn(SchemaInterface::TYPE_TIMESTAMP, 6)->defaultValue($defaultValue),
+            'sqlsrv' => $columnBuilderClass::structured('DATETIME2(6)'),
+            default => $columnBuilderClass::timestamp( 6),
         };
 
         // `id` AutoIncrement custom for all dbms
         $id = match ($driverName) {
-            'mysql' => $schema->createColumn(SchemaInterface::TYPE_BIGINT)->notNull()->append('AUTO_INCREMENT'),
-            'pgsql' => $schema->createColumn('BIGSERIAL')->notNull(),
-            'sqlsrv' => $schema->createColumn(SchemaInterface::TYPE_BIGINT)->notNull()->append('IDENTITY'),
-            default => $schema->createColumn(SchemaInterface::TYPE_INTEGER)->notNull(),
+            'mysql' => $columnBuilderClass::bigint()->notNull()->autoIncrement(),
+            'pgsql' => $columnBuilderClass::structured('BIGSERIAL')->notNull(),
+            'sqlsrv' => $columnBuilderClass::bigint()->notNull()->extra('IDENTITY'),
+            default => $columnBuilderClass::integer()->notNull(),
         };
 
         // create table
@@ -72,17 +67,13 @@ final class DbSchemaManager
             $table,
             [
                 'id' => $id,
-                'level' => $schema->createColumn(SchemaInterface::TYPE_STRING, 16),
-                'category' => $schema->createColumn(SchemaInterface::TYPE_STRING),
-                'log_time' => $logTimeType,
-                'message' => $schema->createColumn(SchemaInterface::TYPE_TEXT),
+                'level' => $columnBuilderClass::string(16),
+                'category' => $columnBuilderClass::string(),
+                'log_time' => $logTimeType->defaultValue($defaultValue),
+                'message' => $columnBuilderClass::text(),
                 "CONSTRAINT [[PK_$tableRawName]] PRIMARY KEY ([[id]])",
             ],
         )->execute();
-
-        if ($driverName === 'oci') {
-            $this->addSequenceAndTrigger($tableRawName);
-        }
 
         $this->db->createCommand()->createIndex($table, "IDX_{$tableRawName}-category", 'category')->execute();
         $this->db->createCommand()->createIndex($table, "IDX_{$tableRawName}-level", 'level')->execute();
@@ -107,52 +98,7 @@ final class DbSchemaManager
         // drop table
         if ($this->db->getTableSchema($table, true) !== null) {
             $this->db->createCommand()->dropTable($tableRawName)->execute();
-
-            // drop sequence oracle
-            if ($this->db->getDriverName() === 'oci') {
-                $this->db
-                    ->createCommand()
-                    ->setSql(
-                        <<<SQL
-                        DROP SEQUENCE {{{$tableRawName}_SEQ}}
-                        SQL,
-                    )
-                    ->execute();
-            }
         }
-    }
-
-    /**
-     * @throws Exception
-     * @throws Throwable
-     */
-    private function addSequenceAndTrigger(string $tableRawName): void
-    {
-        // create sequence oracle
-        $this->db
-            ->createCommand()
-            ->setSql(
-                <<<SQL
-                CREATE SEQUENCE {{{$tableRawName}_SEQ}}
-                START WITH 1
-                INCREMENT BY 1
-                NOMAXVALUE
-                SQL,
-            )
-            ->execute();
-
-        // create trigger oracle
-        $this->db
-            ->createCommand()
-            ->setSql(
-                <<<SQL
-                CREATE TRIGGER {{{$tableRawName}_TRG}} BEFORE INSERT ON {{{$tableRawName}}} FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
-                IF INSERTING AND :NEW."id" IS NULL THEN SELECT {{{$tableRawName}_SEQ}}.NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
-                END COLUMN_SEQUENCES;
-                END;
-                SQL,
-            )
-            ->execute();
     }
 
     /**

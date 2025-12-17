@@ -14,7 +14,7 @@ final class MssqlFactory extends ConnectionFactory
     public function createConnection(): ConnectionInterface
     {
         $pdoDriver = new Driver(
-            (new Dsn('sqlsrv', 'localhost', 'yiitest;TrustServerCertificate=1'))->asString(),
+            new Dsn('sqlsrv', 'localhost', 'yiitest;TrustServerCertificate=1'),
             'SA',
             'YourStrong!Passw0rd',
         );
