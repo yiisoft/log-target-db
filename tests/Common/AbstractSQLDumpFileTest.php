@@ -37,8 +37,6 @@ abstract class AbstractSQLDumpFileTest extends TestCase
         parent::setUp();
 
         $this->driverName = $this->db->getDriverName();
-
-        unlink(__DIR__ .'/../Support/runtime/yiitest.sq3');
     }
 
     protected function tearDown(): void
@@ -91,7 +89,7 @@ abstract class AbstractSQLDumpFileTest extends TestCase
         if ($this->db->getDriverName() === 'mysql') {
             $expectedIndexName = [
                 "IDX_$tableRawName-category",
-                null,
+                'PRIMARY',
                 "IDX_$tableRawName-level",
                 "IDX_$tableRawName-time",
             ];

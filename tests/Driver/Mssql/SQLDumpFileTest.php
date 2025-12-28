@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\Db\Tests\Driver\Mssql;
 
 use Yiisoft\Db\Constant\ColumnType;
-use Yiisoft\Db\Schema\SchemaInterface;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractSQLDumpFileTest;
 use Yiisoft\Log\Target\Db\Tests\Support\MssqlFactory;
 

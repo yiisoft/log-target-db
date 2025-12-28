@@ -51,7 +51,7 @@ final class DbSchemaManager
         // `log_Time` Type custom for all dbms
         $logTimeType = match ($driverName) {
             'sqlsrv' => $columnBuilderClass::structured('DATETIME2(6)'),
-            default => $columnBuilderClass::timestamp( 6),
+            default => $columnBuilderClass::timestamp(6),
         };
 
         // `id` AutoIncrement custom for all dbms

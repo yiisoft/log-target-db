@@ -33,6 +33,7 @@
         "ext-pdo": "*",
         "psr/log": "^3.0",
         "yiisoft/db": "^2.0",
+        "yiisoft/db-sqlite": "^2.0",
         "yiisoft/log": "^2.2"
     },
     "require-dev": {
