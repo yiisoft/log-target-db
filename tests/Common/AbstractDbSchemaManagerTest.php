@@ -111,7 +111,7 @@ abstract class AbstractDbSchemaManagerTest extends TestCase
         if ($this->db->getDriverName() === 'mysql') {
             $expectedIndexName = [
                 "IDX_$tableRawName-category",
-                null,
+                'PRIMARY',
                 "IDX_$tableRawName-level",
                 "IDX_$tableRawName-time",
             ];
