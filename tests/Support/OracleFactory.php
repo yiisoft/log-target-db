@@ -15,7 +15,7 @@ final class OracleFactory extends ConnectionFactory
     public function createConnection(): ConnectionInterface
     {
         $pdoDriver = new Driver(
-            (new Dsn('oci', 'localhost', 'XE', '1521', ['charset' => 'AL32UTF8']))->asString(),
+            new Dsn('oci', 'localhost', 'XE', '1521', ['charset' => 'AL32UTF8']),
             'system',
             'root'
         );

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\Db\Tests\Driver\Pgsql;
 
+use Yiisoft\Db\Constant\ColumnType;
 use Yiisoft\Log\Target\Db\Tests\Common\AbstractDbSchemaManagerTest;
 use Yiisoft\Log\Target\Db\Tests\Support\PgsqlFactory;
 
@@ -14,6 +15,8 @@ use Yiisoft\Log\Target\Db\Tests\Support\PgsqlFactory;
  */
 final class DbSchemaManagerTest extends AbstractDbSchemaManagerTest
 {
+    protected string $logTime = ColumnType::DATETIME;
+
     protected function setUp(): void
     {
         // create connection dbms-specific

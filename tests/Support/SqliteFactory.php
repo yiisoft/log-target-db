@@ -13,7 +13,7 @@ final class SqliteFactory extends ConnectionFactory
 {
     public function createConnection(): ConnectionInterface
     {
-        $pdoDriver = new Driver((new Dsn('sqlite', __DIR__ . '/runtime/yiitest.sq3'))->asString());
+        $pdoDriver = new Driver(new Dsn('sqlite', __DIR__ . '/runtime/yiitest.sq3'));
 
         return new Connection($pdoDriver, $this->createSchemaCache());
     }
