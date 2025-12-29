@@ -58,7 +58,7 @@ final class DbSchemaManager
             'mysql' => $columnBuilderClass::bigint()->notNull()->autoIncrement(),
             'pgsql' => $columnBuilderClass::structured('BIGSERIAL')->notNull(),
             'sqlsrv' => $columnBuilderClass::bigint()->notNull()->extra('IDENTITY'),
-            default => $columnBuilderClass::integer()->notNull(),
+            default => $columnBuilderClass::integer()->notNull()->autoIncrement(),
         };
 
         // create table

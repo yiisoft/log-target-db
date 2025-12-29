@@ -15,6 +15,8 @@ use Yiisoft\Log\Target\Db\Tests\Support\OracleFactory;
  */
 final class SQLDumpFileTest extends AbstractSQLDumpFileTest
 {
+    protected string $logTime = ColumnType::DATETIME;
+
     protected string $idType = ColumnType::INTEGER;
 
     protected function setUp(): void
