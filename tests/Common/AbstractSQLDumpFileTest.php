@@ -18,6 +18,7 @@ use function array_splice;
 use function implode;
 use function strcmp;
 use function usort;
+use function dirname;
 
 /**
  * @group Mssql
@@ -110,10 +111,10 @@ abstract class AbstractSQLDumpFileTest extends TestCase
 
         usort(
             $indexes,
-            static fn ($a, $b) => strcmp(
+            static fn($a, $b) => strcmp(
                 implode('', $a->getColumnNames()),
                 implode('', $b->getColumnNames()),
-            )
+            ),
         );
 
         if ($this->db->getDriverName() === 'oci') {

@@ -164,7 +164,7 @@ abstract class AbstractDbTargetTest extends TestCase
     public function testSetLevelsViaConstructor(): void
     {
         $target = new DbTarget($this->db, '{{%test-table-1}}', [LogLevel::ERROR, LogLevel::INFO]);
-        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
 
         $target->collect(
             [
@@ -172,7 +172,7 @@ abstract class AbstractDbTargetTest extends TestCase
                 new Message(LogLevel::DEBUG, 'message-2', ['time' => $this->time]),
                 new Message(LogLevel::ERROR, 'message-3', ['time' => $this->time]),
             ],
-            true
+            true,
         );
 
         $this->assertEquals(
@@ -199,7 +199,7 @@ abstract class AbstractDbTargetTest extends TestCase
     protected function createDbTarget(string $table = 'log'): DbTarget
     {
         $target = new DbTarget($this->db, $table);
-        $target->setFormat(fn (Message $message) => "[{$message->level()}] {$message->message()}");
+        $target->setFormat(fn(Message $message) => "[{$message->level()}] {$message->message()}");
 
         return $target;
     }

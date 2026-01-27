@@ -46,7 +46,7 @@ final class DbTargetTest extends AbstractDbTargetTest
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
-            "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'yiitest.log' doesn't exist"
+            "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'yiitest.log' doesn't exist",
         );
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
     }
