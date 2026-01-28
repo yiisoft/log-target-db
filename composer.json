@@ -36,13 +36,15 @@
         "yiisoft/log": "^2.2"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.93",
         "maglnet/composer-require-checker": "^4.2",
         "phpunit/phpunit": "^9.6|^10.1",
         "rector/rector": "^2.0.3",
         "roave/infection-static-analysis-plugin": "^1.25|^1.29",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^5.8|^6.13.1",
-        "yiisoft/cache": "^3.0"
+        "yiisoft/cache": "^3.0",
+        "yiisoft/code-style": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -63,6 +65,7 @@
     },
     "scripts": {
         "test": "phpunit --testdox --no-interaction",
-        "test-watch": "phpunit-watcher watch"
+        "test-watch": "phpunit-watcher watch",
+        "cs-fix": "php-cs-fixer fix"
     }
 }

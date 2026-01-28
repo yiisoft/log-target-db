@@ -135,10 +135,10 @@ abstract class AbstractDbSchemaManagerTest extends TestCase
 
         usort(
             $indexes,
-            static fn ($a, $b) => strcmp(
+            static fn($a, $b) => strcmp(
                 implode('', $a->getColumnNames()),
                 implode('', $b->getColumnNames()),
-            )
+            ),
         );
 
         if ($this->db->getDriverName() === 'oci') {

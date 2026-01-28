@@ -49,7 +49,7 @@ final class DbTargetTest extends AbstractDbTargetTest
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
-            'SQLSTATE[HY000]: General error: 942 OCIStmtExecute: ORA-00942: table or view does not exist'
+            'SQLSTATE[HY000]: General error: 942 OCIStmtExecute: ORA-00942: table or view does not exist',
         );
         $this->createDbTarget()->collect([new Message(LogLevel::INFO, 'Message')], true);
     }

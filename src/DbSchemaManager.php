@@ -19,9 +19,7 @@ use Yiisoft\Db\Schema\SchemaInterface;
  */
 final class DbSchemaManager
 {
-    public function __construct(private readonly ConnectionInterface $db)
-    {
-    }
+    public function __construct(private readonly ConnectionInterface $db) {}
 
     /**
      * Ensures that the log table exists in the database.

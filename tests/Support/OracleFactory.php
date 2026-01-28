@@ -17,7 +17,7 @@ final class OracleFactory extends ConnectionFactory
         $pdoDriver = new Driver(
             (new Dsn('oci', 'localhost', 'XE', '1521', ['charset' => 'AL32UTF8']))->asString(),
             'system',
-            'root'
+            'root',
         );
         $pdoDriver->attributes([PDO::ATTR_STRINGIFY_FETCHES => true]);
 
