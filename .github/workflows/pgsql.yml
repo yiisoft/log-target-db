@@ -68,7 +68,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:${{ matrix.pgsql }}
+        image: postgres:${{ matrix.pgsql }} # zizmor: ignore[unpinned-images]
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: root

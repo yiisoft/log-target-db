@@ -59,7 +59,7 @@ jobs:
 
     services:
       oci:
-        image: gvenzl/oracle-xe:${{ matrix.oracle }}
+        image: gvenzl/oracle-xe:${{ matrix.oracle }} # zizmor: ignore[unpinned-images]
         ports:
           - 1521:1521
         env:

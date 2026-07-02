@@ -69,7 +69,7 @@ jobs:
 
     services:
       mysql:
-        image: mariadb:${{ matrix.mariadb }}
+        image: mariadb:${{ matrix.mariadb }} # zizmor: ignore[unpinned-images]
         env:
           MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: true
           MARIADB_ROOT_PASSWORD: ''

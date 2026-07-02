@@ -42,7 +42,7 @@ jobs:
 
     services:
       mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: mcr.microsoft.com/mssql/server:2022-latest # zizmor: ignore[unpinned-images]
         env:
           MSSQL_SA_PASSWORD: YourStrong!Passw0rd
           ACCEPT_EULA: Y
@@ -51,7 +51,7 @@ jobs:
           - 1433:1433
         options: --name=mssql --health-cmd="/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
       mysql:
-        image: mysql:9
+        image: mysql:9 # zizmor: ignore[unpinned-images]
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_PASSWORD: ''
@@ -60,7 +60,7 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
       oci:
-        image: gvenzl/oracle-xe:21
+        image: gvenzl/oracle-xe:21 # zizmor: ignore[unpinned-images]
         ports:
           - 1521:1521
         env:
@@ -73,7 +73,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
       postgres:
-        image: postgres:15
+        image: postgres:15 # zizmor: ignore[unpinned-images]
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: root
