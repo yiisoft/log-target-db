@@ -26,6 +26,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-oracle-${{ matrix.oracle }}
@@ -47,17 +49,17 @@ jobs:
 
         include:
           - php: 8.1
-            oracle: latest
+            oracle: 21
           - php: 8.2
-            oracle: latest
+            oracle: 21
           - php: 8.3
-            oracle: latest
+            oracle: 21
           - php: 8.4
-            oracle: latest
+            oracle: 21
 
     services:
       oci:
-        image: gvenzl/oracle-xe:${{ matrix.oracle }}
+        image: gvenzl/oracle-xe:${{ matrix.oracle }} # zizmor: ignore[unpinned-images]
         ports:
           - 1521:1521
         env:
@@ -72,10 +74,12 @@ jobs:
 
     steps:
       - name: Checkout.
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          persist-credentials: false
 
       - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ env.extensions }}
@@ -86,7 +90,7 @@ jobs:
       - name: Update composer.
         run: composer self-update
 
-      - uses: "ramsey/composer-install@v3"
+      - uses: ramsey/composer-install@a8d0d959dab41457692a5e2041bd9b757a119e3f
         with:
           composer-options: "--prefer-dist --no-interaction --no-progress --ansi"
 
@@ -98,7 +102,7 @@ jobs:
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.5'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
