@@ -1,39 +1,31 @@
+name: mariadb
+
 on:
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
-
+    paths: &paths
+      - 'src/**'
+      - 'sql/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'phpunit.xml.dist'
+      - '.github/workflows/mariadb.yml'
   push:
     branches: ['master']
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'infection.json.dist'
-      - 'psalm.xml'
+    paths: *paths
 
-name: mariadb
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
 
     env:
-      EXTENSIONS: pdo, pdo_mysql
+      extensions: pdo, pdo_mysql
 
     runs-on: ubuntu-latest
 
