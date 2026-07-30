@@ -4,7 +4,6 @@ on:
   pull_request:
     paths: &paths
       - 'src/**'
-      - 'sql/**'
       - 'tests/**'
       - 'composer.json'
       - '.github/workflows/composer-require-checker.yml'

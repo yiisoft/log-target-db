@@ -4,7 +4,6 @@ on:
   pull_request:
     paths: &paths
       - 'src/**'
-      - 'sql/**'
       - 'composer.json'
       - '.github/workflows/bc.yml'
   push:
