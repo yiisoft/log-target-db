@@ -1,28 +1,26 @@
+name: mutation test
+
 on:
   pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'psalm.xml'
-
+    paths: &paths
+      - 'src/**'
+      - 'sql/**'
+      - 'tests/**'
+      - 'composer.json'
+      - 'phpunit.xml.dist'
+      - 'infection.json.dist'
+      - '.github/workflows/mutation.yml'
   push:
-    branches:
-      - "master"
-    paths-ignore:
-      - 'docs/**'
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'psalm.xml'
-
-name: mutation test
+    branches: ['master']
+    paths: *paths
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   mutation:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
@@ -84,7 +82,7 @@ jobs:
 
     steps:
       - name: Checkout.
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -97,7 +95,7 @@ jobs:
           sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
       - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
         with:
           php-version: "${{ matrix.php }}"
           extensions: ${{ env.extensions }}
