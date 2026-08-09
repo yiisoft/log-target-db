@@ -2,6 +2,7 @@
 
 ## 1.1.1 under development
 
+- Enh #91: Remove unused `ext-pdo` and `psr/log` dependencies (@vjik)
 - Enh #78: Explicitly import classes in "use" section (@mspirkov)
 
 ## 1.1.0 December 16, 2025
